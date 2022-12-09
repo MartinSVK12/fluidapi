@@ -5,5 +5,3 @@ Blocks added by this mod should serve as templates for other mod developers and 
 
 ## Licence
 Please credit me if you're using this in your own creations, thanks!
-
-*Repository W.I.P: Source code will be added later.*
