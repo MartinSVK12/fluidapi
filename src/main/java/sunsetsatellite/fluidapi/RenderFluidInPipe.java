@@ -48,7 +48,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
         GL11.glDisable(GL11.GL_LIGHTING);
 
         if(fluidId != -1)
-        drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0);
+        drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0,tileEntity1);
         GL11.glEnable(GL11.GL_LIGHTING);
 
         GL11.glPopMatrix();
@@ -61,7 +61,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
             GL11.glScalef(0.5f, mapped,0.5f);
             GL11.glDisable(GL11.GL_LIGHTING);
             if(fluidId != -1)
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0);
+                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0,tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
         }
@@ -73,7 +73,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
             GL11.glScalef(0.5f, mapped,0.5f);
             GL11.glDisable(GL11.GL_LIGHTING);
             if(fluidId != -1)
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0);
+                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0,tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
         }
@@ -85,7 +85,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
             GL11.glScalef(mapped, 0.5f,mapped);
             GL11.glDisable(GL11.GL_LIGHTING);
             if(fluidId != -1)
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0);
+                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0,tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
         }
@@ -97,7 +97,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
             GL11.glScalef(mapped, 0.5f,mapped);
             GL11.glDisable(GL11.GL_LIGHTING);
             if(fluidId != -1)
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0);
+                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0, tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
         }
@@ -109,7 +109,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
             GL11.glScalef(0.5f, mapped,0.5f);
             GL11.glDisable(GL11.GL_LIGHTING);
             if(fluidId != -1)
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0);
+                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0, tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
         }
@@ -121,19 +121,19 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
             GL11.glScalef(0.5f, mapped,0.5f);
             GL11.glDisable(GL11.GL_LIGHTING);
             if(fluidId != -1)
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0);
+                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0, tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
         }
     }
 
 
-    public void drawBlock(FontRenderer fontrenderer, RenderEngine renderengine, int i, int j, int k, int l, int i1) {
+    public void drawBlock(FontRenderer fontrenderer, RenderEngine renderengine, int i, int j, int k, int l, int i1, TileEntity tile) {
         renderengine.bindTexture(renderengine.getTexture("/terrain.png"));
         //ForgeHooksClient.overrideTexture(Block.blocksList[i]);
         Block f1 = Block.blocksList[i];
         GL11.glPushMatrix();
-        this.blockRenderer.renderBlock(f1, j, 0.0F);
+        this.blockRenderer.renderBlock(f1, j, renderengine.minecraft.theWorld, tile.xCoord, tile.yCoord, tile.zCoord);
         GL11.glPopMatrix();
         GL11.glEnable(GL11.GL_CULL_FACE);
     }

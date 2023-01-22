@@ -1,6 +1,7 @@
 package sunsetsatellite.fluidapi;
 
 import net.minecraft.src.*;
+import net.minecraft.src.helper.Color;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -98,7 +99,14 @@ public class GuiFluid extends GuiContainer {
                 GL11.glEnable(GL11.GL_LIGHTING);
                 return;
             }
+
             itemRender.renderItemIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack4, i2, i3,1.0F);
+            ContainerFluid container = ((ContainerFluid) inventorySlots);
+            if(slot1.getFluidStack().getLiquid() == Block.fluidWaterFlowing){
+                Color c = new Color().setARGB(Block.fluidWaterFlowing.colorMultiplier(this.mc.theWorld, this.mc.theWorld,container.tile.xCoord,container.tile.yCoord,container.tile.zCoord));
+                c.setRGBA(c.getRed(),c.getGreen(),c.getBlue(),0x40);
+                this.drawRect(slot1.xPos, slot1.yPos, slot1.xPos+16, slot1.yPos+16,c.value);
+            }
             itemRender.renderItemOverlayIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack4, i2, i3,1.0F);
         }
     }

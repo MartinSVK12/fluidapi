@@ -5,17 +5,14 @@
 
 package sunsetsatellite.fluidapi;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.IBlockAccess;
-import net.minecraft.src.Tessellator;
-import net.minecraft.src.TextureFX;
+import net.minecraft.src.*;
+import net.minecraft.src.helper.Color;
+import org.lwjgl.Sys;
+import org.lwjgl.opengl.GL11;
 
 public class RenderFluid {
-    public IBlockAccess blockAccess;
     public int overrideBlockTexture;
     public boolean flipTexture;
-    public boolean renderAllFaces;
-    public boolean field_31088_b;
     private int uvRotateEast = 0;
     private int uvRotateWest = 0;
     private int uvRotateSouth = 0;
@@ -23,34 +20,6 @@ public class RenderFluid {
     private int uvRotateTop = 0;
     private int uvRotateBottom = 0;
     public boolean enableAO;
-    public float lightValueOwn;
-    public float aoLightValueXNeg;
-    public float aoLightValueYNeg;
-    public float aoLightValueZNeg;
-    public float aoLightValueXPos;
-    public float aoLightValueYPos;
-    public float aoLightValueZPos;
-    public float field_22377_m;
-    public float field_22376_n;
-    public float field_22375_o;
-    public float field_22374_p;
-    public float field_22373_q;
-    public float field_22372_r;
-    public float field_22371_s;
-    public float field_22370_t;
-    public float field_22369_u;
-    public float field_22368_v;
-    public float field_22367_w;
-    public float field_22366_x;
-    public float field_22365_y;
-    public float field_22364_z;
-    public float field_22362_A;
-    public float field_22360_B;
-    public float field_22358_C;
-    public float field_22356_D;
-    public float field_22354_E;
-    public float field_22353_F;
-    public int field_22352_G;
     public float colorRedTopLeft;
     public float colorRedBottomLeft;
     public float colorRedBottomRight;
@@ -63,49 +32,9 @@ public class RenderFluid {
     public float colorBlueBottomLeft;
     public float colorBlueBottomRight;
     public float colorBlueTopRight;
-    public boolean field_22339_T;
-    public boolean field_22338_U;
-    public boolean field_22337_V;
-    public boolean field_22336_W;
-    public boolean field_22335_X;
-    public boolean field_22334_Y;
-    public boolean field_22333_Z;
-    public boolean field_22363_aa;
-    public boolean field_22361_ab;
-    public boolean field_22359_ac;
-    public boolean field_22357_ad;
-    public boolean field_22355_ae;
 
     public RenderFluid() {
-        this.blockAccess = null;
         this.enableAO = false;
-        this.lightValueOwn = 0.0F;
-        this.aoLightValueXNeg = 0.0F;
-        this.aoLightValueYNeg = 0.0F;
-        this.aoLightValueZNeg = 0.0F;
-        this.aoLightValueXPos = 0.0F;
-        this.aoLightValueYPos = 0.0F;
-        this.aoLightValueZPos = 0.0F;
-        this.field_22377_m = 0.0F;
-        this.field_22376_n = 0.0F;
-        this.field_22375_o = 0.0F;
-        this.field_22374_p = 0.0F;
-        this.field_22373_q = 0.0F;
-        this.field_22372_r = 0.0F;
-        this.field_22371_s = 0.0F;
-        this.field_22370_t = 0.0F;
-        this.field_22369_u = 0.0F;
-        this.field_22368_v = 0.0F;
-        this.field_22367_w = 0.0F;
-        this.field_22366_x = 0.0F;
-        this.field_22365_y = 0.0F;
-        this.field_22364_z = 0.0F;
-        this.field_22362_A = 0.0F;
-        this.field_22360_B = 0.0F;
-        this.field_22358_C = 0.0F;
-        this.field_22356_D = 0.0F;
-        this.field_22354_E = 0.0F;
-        this.field_22353_F = 0.0F;
         this.colorRedTopLeft = 0.0F;
         this.colorRedBottomLeft = 0.0F;
         this.colorRedBottomRight = 0.0F;
@@ -118,29 +47,14 @@ public class RenderFluid {
         this.colorBlueBottomLeft = 0.0F;
         this.colorBlueBottomRight = 0.0F;
         this.colorBlueTopRight = 0.0F;
-        this.field_22339_T = false;
-        this.field_22338_U = false;
-        this.field_22337_V = false;
-        this.field_22336_W = false;
-        this.field_22335_X = false;
-        this.field_22334_Y = false;
-        this.field_22333_Z = false;
-        this.field_22363_aa = false;
-        this.field_22361_ab = false;
-        this.field_22359_ac = false;
-        this.field_22357_ad = false;
-        this.field_22355_ae = false;
         this.overrideBlockTexture = -1;
         this.flipTexture = false;
-        this.renderAllFaces = false;
-        this.field_31088_b = true;
         this.uvRotateEast = 0;
         this.uvRotateWest = 0;
         this.uvRotateSouth = 0;
         this.uvRotateNorth = 0;
         this.uvRotateTop = 0;
         this.uvRotateBottom = 0;
-        this.field_22352_G = 1;
     }
 
     public void renderBottomFace(Block block, double d, double d1, double d2, int i) {
@@ -669,11 +583,17 @@ public class RenderFluid {
 
     }
 
-    public void renderBlock(Block block, int i, float f){
+    public void renderBlock(Block block, int i, World world, int x, int y, int z){
         Tessellator tessellator = Tessellator.instance;
         //block.setBlockBoundsForItemRender();
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, -1.0F, 0.0F);
+        if(block.blockID == Block.fluidWaterFlowing.blockID){
+            Color c = new Color().setARGB(Block.fluidWaterFlowing.colorMultiplier(world, world, x,y,z));
+            GL11.glColor4f(c.getRed()/255.0f,c.getGreen()/255.0f,c.getBlue()/255.0f,1.0f);
+        } else {
+            GL11.glColor4f(1.0f,1.0F,1.0f,1.0f);
+        }
         this.renderBottomFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(0, i));
         tessellator.draw();
         tessellator.startDrawingQuads();
