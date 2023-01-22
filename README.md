@@ -1,5 +1,5 @@
-# Fluid API for b1.7.3
-Improved fluid storage and transport for Minecraft b1.7.3.
+# Fluid API for Better Than Adventure
+Improved fluid storage and transport for Babric/BTA.
 
 Blocks added by this mod should serve as templates for other mod developers and can be disabled completely in the config.
 
