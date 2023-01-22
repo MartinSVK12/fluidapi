@@ -4,10 +4,10 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.src.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import turniplabs.halplibe.helper.BlockHelper;
-import turniplabs.halplibe.helper.EntityHelper;
+import turniplabs.halplibe.helper.*;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class FluidAPI implements ModInitializer {
@@ -36,18 +36,38 @@ public class FluidAPI implements ModInitializer {
     @Override
     public void onInitialize() {
         Config.init();
+        oilTex = registerFluidTexture(MOD_ID,"oil.png");
+        if(Config.getFromConfig("enableOil",1) == 1){
+            oilFlowing = BlockHelper.createBlock(MOD_ID,new BlockFluidFlowing(Config.getFromConfig("oil",903),Material.water),"oilFlowing","oil.png",Block.soundPowderFootstep,1.0f,1.0f,0).setNotInCreativeMenu().setPlaceOverwrites().setTexCoords(oilTex[0],oilTex[1],oilTex[2],oilTex[3],oilTex[4],oilTex[5],oilTex[6],oilTex[7],oilTex[8],oilTex[9],oilTex[10],oilTex[11]);
+            oilStill = BlockHelper.createBlock(MOD_ID,new BlockFluidStill(Config.getFromConfig("oil",903)+1,Material.water),"oilStill","oil.png",Block.soundPowderFootstep,1.0f,1.0f,0).setNotInCreativeMenu().setPlaceOverwrites().setTexCoords(oilTex[0],oilTex[1],oilTex[2],oilTex[3],oilTex[4],oilTex[5],oilTex[6],oilTex[7],oilTex[8],oilTex[9],oilTex[10],oilTex[11]);
+            bucketOil = ItemHelper.createItem(MOD_ID,new ItemBucket(Config.getFromConfig("bucketOil",500),oilFlowing.blockID),"bucketOil","bucketOil.png").setContainerItem(Item.bucket);
+        }
         registerFluids();
         LOGGER.info("FluidAPI initialized.");
     }
 
+    public static int[] registerFluidTexture(String modId, String texture){
+        int[] origin = BlockCoords.nextCoords();
+        TextureHelper.addTextureToTerrain(modId,texture,origin[0],origin[1]);
+        TextureHelper.addTextureToTerrain(modId,texture,origin[0]+1,origin[1]);
+        TextureHelper.addTextureToTerrain(modId,texture,origin[0]+2,origin[1]);
+        TextureHelper.addTextureToTerrain(modId,texture,origin[0]+1,origin[1]+1);
+        TextureHelper.addTextureToTerrain(modId,texture,origin[0]+2,origin[1]+1);
+        return new int[]{origin[0],origin[1],origin[0]+1,origin[1]-1,origin[0]+2,origin[1]-1,origin[0]+1,origin[1],origin[0]+2,origin[1],origin[0],origin[1]};
+    }
+
     public static Block fluidTank;
     public static Block fluidPipe;
-    //public static Block fluidPump;
     public static Block fluidMachine;
+    public static Block oilFlowing;
+    public static Block oilStill;
+    public static Item bucketOil;
+    public static int[] oilTex;
+    
 
-    public static HashMap<ItemBucket, BlockFluid> fluids = new HashMap<>();
-    public static HashMap<BlockFluid, ItemBucket> fluidsInv = new HashMap<>();
-    public static HashMap<ItemBucket, ItemBucketEmpty> fluidContainers = new HashMap<>();
+    public static HashMap<Item, BlockFluid> fluids = new HashMap<>();
+    public static HashMap<BlockFluid, Item> fluidsInv = new HashMap<>();
+    public static HashMap<Item, Item> fluidContainers = new HashMap<>();
 
     public static void registerFluids(){
         for (Item b : Item.itemsList) {
@@ -55,9 +75,9 @@ public class FluidAPI implements ModInitializer {
                 if(b instanceof ItemBucket){
                     int fluidId = (int) FluidAPI.getPrivateValue(ItemBucket.class,b,0);
                     if(fluidId > 0){
-                        fluids.put((ItemBucket) b,(BlockFluid) Block.blocksList[fluidId]);
-                        fluidsInv.put((BlockFluid) Block.blocksList[fluidId],(ItemBucket) b);
-                        fluidContainers.put((ItemBucket) b, (ItemBucketEmpty) b.getContainerItem());
+                        fluids.put(b,(BlockFluid) Block.blocksList[fluidId]);
+                        fluidsInv.put((BlockFluid) Block.blocksList[fluidId], b);
+                        fluidContainers.put(b, b.getContainerItem());
                     }
                 }
             } catch (NoSuchFieldException ignored) {}

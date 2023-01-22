@@ -21,7 +21,7 @@ public class Config {
             configWriter.write("// FluidAPI configuration file. Configure options here.");
             configWriter.write(System.getProperty("line.separator") +"enableTank=1");
             configWriter.write(System.getProperty("line.separator") +"enablePipes=1");
-            configWriter.write(System.getProperty("line.separator") +"enableWaterProxy=1");
+            configWriter.write(System.getProperty("line.separator") +"enableOil=1");
             configWriter.write(System.getProperty("line.separator") +"enableMachine=1");
             configWriter.write(System.getProperty("line.separator") +"//Configure ID's here. Note: 'null' means a default value will be used.");
 

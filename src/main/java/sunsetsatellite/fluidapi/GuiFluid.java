@@ -140,20 +140,22 @@ public class GuiFluid extends GuiContainer {
                         }
                     }
                 }
-                if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucket){
+                if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucket) {
                     ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
-                    if(bucket == Item.bucketWater || bucket == Item.bucketLava){
-                        if (slot.getFluidStack() == null) {
+                    if (slot.getFluidStack() == null) {
+                        inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
+                        slot.putStack(new FluidStack(FluidAPI.fluids.get(bucket), 1000));
+                    } else if (slot.getFluidStack() != null && slot.getFluidStack().getLiquid() == FluidAPI.fluids.get(bucket)) {
+                        if (slot.getFluidStack().amount + 1000 <= fluidContainer.tile.getFluidCapacityForSlot(slot.slotIndex)) {
                             inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
-                            slot.putStack(new FluidStack(FluidAPI.fluids.get(bucket), 1000));
-                        } else if (slot.getFluidStack() != null && slot.getFluidStack().getLiquid() == FluidAPI.fluids.get(bucket)) {
-                            if (slot.getFluidStack().amount + 1000 <= fluidContainer.tile.getFluidCapacityForSlot(slot.slotIndex)) {
-                                inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
-                                slot.getFluidStack().amount += 1000;
-                                slot.onSlotChanged();
-                            }
+                            slot.getFluidStack().amount += 1000;
+                            slot.onSlotChanged();
                         }
-                    } else if(FluidAPI.fluids.get(bucket) != null || FluidAPI.fluidContainers.containsValue(bucket)){
+                    }
+                }
+                if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof IFluidInventory) {
+                    ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
+                    if(FluidAPI.fluids.get(bucket) != null || FluidAPI.fluidContainers.containsValue(bucket)){
                         IItemFluidContainer container = (IItemFluidContainer) bucket;
                         if(container.canDrain(inventoryPlayer.getHeldItemStack())){
                             if (fluidContainer.tile.getFluidInSlot(slot.slotIndex) == null){

@@ -45,8 +45,8 @@ public class BlockFluidTank extends BlockContainer {
                 }
             }
             if(item != null && FluidAPI.fluids.get(entityplayer.inventory.getCurrentItem().getItem()) != null){
-                ItemBucket bucket = (ItemBucket) entityplayer.inventory.getCurrentItem().getItem();
-                if(bucket == Item.bucketWater || bucket == Item.bucketLava){
+                Item bucket = (Item) entityplayer.inventory.getCurrentItem().getItem();
+                if(bucket == Item.bucketWater || bucket == Item.bucketLava || bucket instanceof ItemBucket){
                     if (tile.getFluidInSlot(0) == null) {
                         entityplayer.inventory.getCurrentItem().itemID = bucket.getContainerItem().itemID;
                         tile.setFluidInSlot(0,new FluidStack(FluidAPI.fluids.get(bucket), 1000));
@@ -57,25 +57,27 @@ public class BlockFluidTank extends BlockContainer {
                             tile.onFluidInventoryChanged();
                         }
                     }
-                } else if(FluidAPI.fluids.get(bucket) != null || FluidAPI.fluidContainers.containsValue(bucket)){
-                    IItemFluidContainer container = (IItemFluidContainer) bucket;
-                    if(container.canDrain(entityplayer.inventory.getCurrentItem())) {
-                        if (tile.getFluidInSlot(0) == null) {
-                            container.drain(entityplayer.inventory.getCurrentItem(), tile.getFluidInSlot(0), tile);
-                        } else if (tile.getFluidInSlot(0).amount < tile.getFluidCapacityForSlot(0)) {
-                            container.drain(entityplayer.inventory.getCurrentItem(), tile.getFluidInSlot(0), tile);
-                        } else if (tile.getFluidInSlot(0).amount >= tile.getFluidCapacityForSlot(0)) {
-                            if (container.canFill(entityplayer.inventory.getCurrentItem())) {
-                                ItemStack stack = container.fill(0, tile, entityplayer.inventory.getCurrentItem());
-                                if (stack != null) {
-                                    entityplayer.inventory.setHeldItemStack(stack);
+                } else if(bucket instanceof IItemFluidContainer){
+                    if(FluidAPI.fluids.get(bucket) != null || FluidAPI.fluidContainers.containsValue(bucket)) {
+                        IItemFluidContainer container = (IItemFluidContainer) bucket;
+                        if (container.canDrain(entityplayer.inventory.getCurrentItem())) {
+                            if (tile.getFluidInSlot(0) == null) {
+                                container.drain(entityplayer.inventory.getCurrentItem(), tile.getFluidInSlot(0), tile);
+                            } else if (tile.getFluidInSlot(0).amount < tile.getFluidCapacityForSlot(0)) {
+                                container.drain(entityplayer.inventory.getCurrentItem(), tile.getFluidInSlot(0), tile);
+                            } else if (tile.getFluidInSlot(0).amount >= tile.getFluidCapacityForSlot(0)) {
+                                if (container.canFill(entityplayer.inventory.getCurrentItem())) {
+                                    ItemStack stack = container.fill(0, tile, entityplayer.inventory.getCurrentItem());
+                                    if (stack != null) {
+                                        entityplayer.inventory.setHeldItemStack(stack);
+                                    }
                                 }
                             }
-                        }
-                    } else if(container.canFill(entityplayer.inventory.getCurrentItem())) {
-                        ItemStack stack = container.fill(0, tile, entityplayer.inventory.getCurrentItem());
-                        if (stack != null) {
-                            entityplayer.inventory.setHeldItemStack(stack);
+                        } else if (container.canFill(entityplayer.inventory.getCurrentItem())) {
+                            ItemStack stack = container.fill(0, tile, entityplayer.inventory.getCurrentItem());
+                            if (stack != null) {
+                                entityplayer.inventory.setHeldItemStack(stack);
+                            }
                         }
                     }
                 }
