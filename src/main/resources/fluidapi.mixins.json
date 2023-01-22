@@ -4,7 +4,6 @@
   "package": "sunsetsatellite.fluidapi.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "mixins.EntityPlayerMPMixin",
     "mixins.EntityPlayerSPMixin",
     "mixins.RenderBlocksMixin"
   ],
