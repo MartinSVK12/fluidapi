@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "sunsetsatellite.fluidapi.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "mixins.EntityPlayerMPMixin",
+    "mixins.EntityPlayerSPMixin",
+    "mixins.RenderBlocksMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
