@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class MachineRecipes {
     private static final MachineRecipes instance = new MachineRecipes();
-    private Map recipeList = new HashMap();
+    private HashMap<Integer,FluidStack> recipeList = new HashMap();
 
     public static final MachineRecipes getInstance() {
         return instance;
@@ -29,7 +29,7 @@ public class MachineRecipes {
         return stack == null ? null : stack.copy();
     }
 
-    public Map getRecipeList() {
+    public HashMap<Integer,FluidStack> getRecipeList() {
         return this.recipeList;
     }
 }

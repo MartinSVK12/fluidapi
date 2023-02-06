@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "mixins.EntityPlayerSPMixin",
+    "mixins.GuiContainerMixin",
     "mixins.ItemBucketEmptyMixin",
     "mixins.RenderBlocksMixin"
   ],

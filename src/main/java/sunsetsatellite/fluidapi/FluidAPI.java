@@ -1,9 +1,13 @@
 package sunsetsatellite.fluidapi;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.src.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sunsetsatellite.fluidapi.gbookpp.RecipeFluid;
+import sunsetsatellite.fluidapi.gbookpp.RecipeHandlerFluid;
+import sunsetsatellite.guidebookpp.GuidebookPlusPlus;
 import turniplabs.halplibe.helper.*;
 
 import java.lang.reflect.Field;
@@ -43,6 +47,9 @@ public class FluidAPI implements ModInitializer {
             bucketOil = ItemHelper.createItem(MOD_ID,new ItemBucket(Config.getFromConfig("bucketOil",500),oilFlowing.blockID),"bucketOil","bucketOil.png").setContainerItem(Item.bucket);
         }
         registerFluids();
+        if(FabricLoader.getInstance().isModLoaded("fluidapi")){
+            GuidebookPlusPlus.addHandler(new RecipeHandlerFluid(), RecipeFluid.class);
+        }
         LOGGER.info("FluidAPI initialized.");
     }
 
