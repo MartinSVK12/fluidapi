@@ -28,7 +28,8 @@
 
   "depends": {
     "fabricloader": ">=0.13.3",
-    "halplibe": ">=1.1.3"
+    "halplibe": ">=1.1.3",
+    "guidebookpp": ">=1.2"
   },
   "suggests": {
   }
