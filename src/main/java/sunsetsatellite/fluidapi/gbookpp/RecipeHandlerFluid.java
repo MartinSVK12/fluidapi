@@ -5,7 +5,6 @@ import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.FluidStack;
 import sunsetsatellite.fluidapi.MachineRecipes;
 import sunsetsatellite.guidebookpp.IRecipeHandlerBase;
-import sunsetsatellite.guidebookpp.recipes.RecipeFurnace;
 
 import java.util.*;
 
@@ -51,5 +50,32 @@ public class RecipeHandlerFluid
             }
         });
         return recipes;
+    }
+
+    @Override
+    public ArrayList<?> getRecipesFiltered(String name) {
+        if(name.equals("")){
+            return getRecipes();
+        }
+        HashMap<Integer,FluidStack> rawRecipes = new HashMap<>(MachineRecipes.getInstance().getRecipeList());
+        ArrayList<RecipeFluid> recipes = new ArrayList<>();
+        rawRecipes.forEach((I,O)->{
+            ArrayList<ItemStack> singletonList = new ArrayList<>(Collections.singleton(new ItemStack(I, 1, 0)));
+            ArrayList<FluidStack> singletonList2 = new ArrayList<>(Collections.singleton(O));
+            recipes.add(new RecipeFluid(singletonList,null,null, singletonList2));
+        });
+        recipes.removeIf((R)->!getNameOfRecipeOutput(R).contains(name.toLowerCase()));
+        return recipes;
+    }
+
+    @Override
+    public String getNameOfRecipeOutput(Object recipe){
+        StringTranslate trans = StringTranslate.getInstance();
+        return trans.translateKey(((RecipeFluid)recipe).fluidOutputs.get(0).getFluidName()+".name").toLowerCase();
+    }
+
+    @Override
+    public String getHandlerName() {
+        return "fluid machine";
     }
 }
