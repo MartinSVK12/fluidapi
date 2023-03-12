@@ -1,9 +1,6 @@
 package sunsetsatellite.fluidapi;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.BlockFluid;
-import net.minecraft.src.Item;
-import net.minecraft.src.NBTTagCompound;
+import net.minecraft.src.*;
 
 public final class FluidStack {
     public int amount;
@@ -61,4 +58,13 @@ public final class FluidStack {
     public boolean isStackEqual(FluidStack stack){
         return stack.liquid == liquid && stack.amount == amount;
     }
+
+    public static boolean areFluidStacksEqual(FluidStack fluidStack, FluidStack fluidStack1) {
+        if (fluidStack == null && fluidStack1 == null) {
+            return true;
+        } else {
+            return fluidStack != null && fluidStack1 != null && fluidStack.isStackEqual(fluidStack1);
+        }
+    }
+
 }

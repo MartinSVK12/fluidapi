@@ -1,24 +1,37 @@
 package sunsetsatellite.fluidapi;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayerMP;
+import sunsetsatellite.fluidapi.mixin.accessors.PacketAccessor;
+import sunsetsatellite.fluidapi.mp.packets.PacketFluidWindowClick;
+import sunsetsatellite.fluidapi.mp.packets.PacketSetFluidSlot;
+import sunsetsatellite.fluidapi.mp.packets.PacketUpdateClientFluidRender;
 import turniplabs.halplibe.helper.*;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FluidAPI implements ModInitializer {
     public static final String MOD_ID = "fluidapi";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+    public static HashMap<String, ArrayList<Class<?>>> nameToGuiMap = new HashMap<>();
+
     public FluidAPI(){
         Config.init();
+        PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketSetFluidSlotID",110),true,false, PacketSetFluidSlot.class);
+        PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketFluidWindowClickID",111),false,true, PacketFluidWindowClick.class);
+        PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketUpdateClientFluidRenderID",112),true,false, PacketUpdateClientFluidRender.class);
 
         if(Config.getFromConfig("enableTank",1) == 1){
             fluidTank = BlockHelper.createBlock(MOD_ID,new BlockFluidTank(Config.getFromConfig("fluidTank",900),Material.glass),"fluidTank","tank.png",Block.soundGlassFootstep,1,1,0);
             EntityHelper.createSpecialTileEntity(TileEntityFluidTank.class,new RenderFluidInBlock(),"Fluid Tank");
+            addToNameGuiMap("Fluid Tank", GuiFluidTank.class, TileEntityFluidTank.class);
 
         }
         if(Config.getFromConfig("enablePipes",1) == 1){
@@ -29,6 +42,7 @@ public class FluidAPI implements ModInitializer {
         if(Config.getFromConfig("enableMachine",1) == 1){
             fluidMachine = BlockHelper.createBlock(MOD_ID,new BlockMachine(Config.getFromConfig("fluidMachine",902),Material.glass),"fluidMachine","tank.png","tank.png","machine.png","tank.png","tank.png","tank.png",Block.soundGlassFootstep,1,1,0);
             EntityHelper.createSpecialTileEntity(TileEntityMachine.class,new RenderFluidInBlock(),"Fluid Machine");
+            addToNameGuiMap("Fluid Machine", GuiMachine.class, TileEntityMachine.class);
         }
     }
 
@@ -129,6 +143,21 @@ public class FluidAPI implements ModInitializer {
             illegalAccessException4.printStackTrace();
             return null;
         }
+    }
+
+    public static void displayGui(EntityPlayer entityplayer, GuiScreen guiScreen, Container container, IInventory tile) {
+        if(entityplayer instanceof EntityPlayerMP) {
+            ((IEntityPlayerMP)entityplayer).displayGuiScreen(guiScreen,container,tile);
+        } else {
+            Minecraft.getMinecraft().displayGuiScreen(guiScreen);
+        }
+    }
+
+    public static void addToNameGuiMap(String name, Class<? extends Gui> guiClass, Class<? extends TileEntity> tileEntityClass){
+        ArrayList<Class<?>> list = new ArrayList<>();
+        list.add(guiClass);
+        list.add(tileEntityClass);
+        nameToGuiMap.put(name,list);
     }
 
 

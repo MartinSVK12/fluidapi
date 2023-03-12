@@ -26,9 +26,9 @@ public class BlockMachine extends BlockContainerRotatable {
             return true;
         } else
         {
-            TileEntityFluidItemContainer tile = (TileEntityFluidItemContainer) world.getBlockTileEntity(i, j, k);
+            TileEntityMachine tile = (TileEntityMachine) world.getBlockTileEntity(i, j, k);
             if(tile != null) {
-                ((IOpenGUI)entityplayer).displayGUI(new GuiMachine(entityplayer.inventory, tile));
+                FluidAPI.displayGui(entityplayer,new GuiMachine(entityplayer.inventory, tile),new ContainerMachine(entityplayer.inventory,tile),tile);
             }
             return true;
         }
@@ -37,7 +37,6 @@ public class BlockMachine extends BlockContainerRotatable {
     @Override
     public void onBlockRemoval(World world, int i, int j, int k) {
         TileEntityMachine tile = (TileEntityMachine) world.getBlockTileEntity(i, j, k);
-        //System.out.println(TileEntityDigitalChest);
         if (tile != null) {
             tile.dir.forEach((K,V)-> {
                 TileEntity tile2 = world.getBlockTileEntity(i + (int) V.xCoord, j + (int) V.yCoord, k + (int) V.zCoord);

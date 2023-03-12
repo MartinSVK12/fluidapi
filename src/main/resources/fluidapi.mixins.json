@@ -4,9 +4,14 @@
   "package": "sunsetsatellite.fluidapi.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "mixins.EntityPlayerSPMixin",
+    "accessors.PacketAccessor",
+    "mixins.EntityPlayerMPMixin",
     "mixins.GuiContainerMixin",
     "mixins.ItemBucketEmptyMixin",
+    "mixins.NetClientHandlerMixin",
+    "mixins.NetServerHandlerMixin",
+    "mixins.PlayerControllerMixin",
+    "mixins.PlayerControllerMPMixin",
     "mixins.RenderBlocksMixin"
   ],
   "client": [

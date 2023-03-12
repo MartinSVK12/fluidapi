@@ -1,7 +1,7 @@
 package sunsetsatellite.fluidapi;
 
 public class SlotFluid {
-    protected final IFluidInventory fluidInventory;
+    public final IFluidInventory fluidInventory;
     protected final int slotIndex;
     public int slotNumber;
     public int xPos;

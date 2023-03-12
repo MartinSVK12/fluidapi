@@ -1,15 +1,14 @@
 package sunsetsatellite.fluidapi;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
 import net.minecraft.src.helper.Color;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import sunsetsatellite.fluidapi.interfaces.mixins.IPlayerController;
 
 public class GuiFluid extends GuiContainer {
-    public GuiFluid(InventoryPlayer invP, TileEntityFluidItemContainer tile) {
-        super(new ContainerFluid(invP, tile));
-        inventoryPlayer = invP;
-    }
 
     public GuiFluid(ContainerFluid containerFluid, InventoryPlayer invP) {
         super(containerFluid);
@@ -21,7 +20,6 @@ public class GuiFluid extends GuiContainer {
         super.drawScreen(i1, i2, f3);
         int i4 = (this.width - this.xSize) / 2;
         int i5 = (this.height - this.ySize) / 2;
-        //this.drawGuiContainerBackgroundLayer(f3);
         GL11.glPushMatrix();
         GL11.glRotatef(120.0F, 1.0F, 0.0F, 0.0F);
         RenderHelper.enableStandardItemLighting();
@@ -123,63 +121,32 @@ public class GuiFluid extends GuiContainer {
         return null;
     }
 
-    public void mouseClicked(int i1, int i2, int i3) {
-        super.mouseClicked(i1, i2, i3);
-        ContainerFluid fluidContainer = ((ContainerFluid) inventorySlots);
-        if (i3 == 0 || i3 == 1) {
-            SlotFluid slot = this.getFluidSlotAtPosition(i1, i2);
-            if(slot != null){
-                //InventoryPlayer inventoryPlayer = ModLoader.getMinecraftInstance().thePlayer.inventory;
-                if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucketEmpty) {
-                    if (inventoryPlayer.getHeldItemStack().getItem() == Item.bucket) {
-                        if (slot.getFluidStack() != null && slot.getFluidStack().amount >= 1000) {
-                            inventoryPlayer.setHeldItemStack(new ItemStack(FluidAPI.fluidsInv.get(slot.getFluidStack().liquid), 1));
-                            fluidContainer.tile.decrFluidAmount(slot.slotIndex, 1000);
-                            slot.onPickupFromSlot(slot.getFluidStack());
-                            return;
-                        }
-                    }
+    public void mouseClicked(int x, int y, int button) {
+        super.mouseClicked(x, y, button);
+        if (button == 0 || button == 1 || button == 10) {
+            SlotFluid slot = this.getFluidSlotAtPosition(x, y);
+            int l = (this.width - this.xSize) / 2;
+            int i1 = (this.height - this.ySize) / 2;
+            boolean flag = x < l || y < i1 || x >= l + this.xSize || y >= i1 + this.ySize;
+            int j1 = -1;
+            if (slot != null) {
+                j1 = slot.slotIndex;
+            }
+
+            if (flag) {
+                j1 = -999;
+            }
+
+            if (j1 != -1) {
+                boolean shift = j1 != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54) || button == 10);
+                boolean control = j1 != -999 && (Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157));
+                if (this.mc.gameSettings.swapCraftingButtons.value) {
+                    boolean a = shift;
+                    shift = control;
+                    control = a;
                 }
-                if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucket) {
-                    ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
-                    if (slot.getFluidStack() == null) {
-                        inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
-                        slot.putStack(new FluidStack(FluidAPI.fluids.get(bucket), 1000));
-                    } else if (slot.getFluidStack() != null && slot.getFluidStack().getLiquid() == FluidAPI.fluids.get(bucket)) {
-                        if (slot.getFluidStack().amount + 1000 <= fluidContainer.tile.getFluidCapacityForSlot(slot.slotIndex)) {
-                            inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
-                            slot.getFluidStack().amount += 1000;
-                            slot.onSlotChanged();
-                        }
-                    }
-                }
-                if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof IFluidInventory) {
-                    ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
-                    if(FluidAPI.fluids.get(bucket) != null || FluidAPI.fluidContainers.containsValue(bucket)){
-                        IItemFluidContainer container = (IItemFluidContainer) bucket;
-                        if(container.canDrain(inventoryPlayer.getHeldItemStack())){
-                            if (fluidContainer.tile.getFluidInSlot(slot.slotIndex) == null){
-                                container.drain(inventoryPlayer.getHeldItemStack(), slot, fluidContainer.tile);
-                            }
-                            else if (fluidContainer.tile.getFluidInSlot(slot.slotIndex).amount < fluidContainer.tile.getFluidCapacityForSlot(slot.slotIndex)) {
-                                container.drain(inventoryPlayer.getHeldItemStack(), slot, fluidContainer.tile);
-                            }
-                            else if(fluidContainer.tile.getFluidInSlot(slot.slotIndex).amount >= fluidContainer.tile.getFluidCapacityForSlot(slot.slotIndex)){
-                                if(container.canFill(inventoryPlayer.getHeldItemStack())){
-                                    ItemStack stack = container.fill(slot,inventoryPlayer.getHeldItemStack());
-                                    if(stack != null){
-                                        inventoryPlayer.setHeldItemStack(stack);
-                                    }
-                                }
-                            }
-                        } else if(container.canFill(inventoryPlayer.getHeldItemStack())){
-                            ItemStack stack = container.fill(slot,inventoryPlayer.getHeldItemStack());
-                            if(stack != null){
-                                inventoryPlayer.setHeldItemStack(stack);
-                            }
-                        }
-                    }
-                }
+
+                ((IPlayerController)this.mc.playerController).fluidPickUpFromInventory(this.inventorySlots.windowId, j1, button == 10 ? 0 : button, shift, control, this.mc.thePlayer);
             }
         }
     }

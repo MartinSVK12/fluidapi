@@ -1,18 +1,20 @@
 package sunsetsatellite.fluidapi;
 
-import net.minecraft.src.Container;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
+import net.minecraft.src.*;
+import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayerMP;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContainerFluid extends Container {
 
     public ArrayList<SlotFluid> fluidSlots = new ArrayList<>();
+    public List<FluidStack> fluidItemStacks = new ArrayList<>();
 
     protected void addFluidSlot(SlotFluid slot){
         slot.slotNumber = this.fluidSlots.size();
         this.fluidSlots.add(slot);
+        this.fluidItemStacks.add(null);
     }
 
     public SlotFluid getFluidSlot(int idx) { return this.fluidSlots.get(idx); }
@@ -31,4 +33,101 @@ public class ContainerFluid extends Container {
     }
 
     protected TileEntityFluidItemContainer tile;
+
+    @Override
+    public void updateInventory() {
+        super.updateInventory();
+        for (int i = 0; i < this.fluidSlots.size(); i++) {
+            FluidStack fluidStack = this.fluidSlots.get(i).getFluidStack();
+            FluidStack fluidStack1 = this.fluidItemStacks.get(i);
+            this.fluidItemStacks.set(i, fluidStack1);
+            for (ICrafting crafter : this.crafters) {
+                ((IEntityPlayerMP) crafter).updateFluidSlot(this, i, fluidStack);
+
+            }
+        }
+        for(int i = 0; i < this.inventorySlots.size(); ++i) {
+            ItemStack itemstack = this.inventorySlots.get(i).getStack();
+            ItemStack itemstack1 = this.inventoryItemStacks.get(i);
+            this.inventoryItemStacks.set(i, itemstack1);
+            for (ICrafting crafter : this.crafters) {
+                crafter.updateInventorySlot(this, i, itemstack);
+            }
+        }
+    }
+
+    @Override
+    public ItemStack clickInventorySlot(int slotID, int button, boolean shift, boolean control, EntityPlayer player) {
+        return super.clickInventorySlot(slotID, button, shift, control, player);
+    }
+
+    public FluidStack clickFluidSlot(int slotID, int button, boolean shift, boolean control, EntityPlayer entityplayer) {
+        if(slotID == -999){
+            return null;
+        }
+        SlotFluid slot = fluidSlots.get(slotID);
+        InventoryPlayer inventoryPlayer = entityplayer.inventory;
+        if(slot != null){
+            if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucketEmpty) {
+                if (inventoryPlayer.getHeldItemStack().getItem() == Item.bucket) {
+                    if (slot.getFluidStack() != null && slot.getFluidStack().amount >= 1000) {
+                        inventoryPlayer.setHeldItemStack(new ItemStack(FluidAPI.fluidsInv.get(slot.getFluidStack().liquid), 1));
+                        tile.decrFluidAmount(slot.slotIndex, 1000);
+                        slot.onPickupFromSlot(slot.getFluidStack());
+                        slot.onSlotChanged();
+                        return fluidSlots.get(slotID).getFluidStack();
+                    }
+                }
+            }
+            if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucket) {
+                ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
+                if (slot.getFluidStack() == null) {
+                    inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
+                    slot.putStack(new FluidStack(FluidAPI.fluids.get(bucket), 1000));
+                    slot.onSlotChanged();
+                } else if (slot.getFluidStack() != null && slot.getFluidStack().getLiquid() == FluidAPI.fluids.get(bucket)) {
+                    if (slot.getFluidStack().amount + 1000 <= tile.getFluidCapacityForSlot(slot.slotIndex)) {
+                        inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
+                        slot.getFluidStack().amount += 1000;
+                        slot.onSlotChanged();
+                    }
+                }
+            }
+            if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof IFluidInventory) {
+                ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
+                if(FluidAPI.fluids.get(bucket) != null || FluidAPI.fluidContainers.containsValue(bucket)){
+                    IItemFluidContainer container = (IItemFluidContainer) bucket;
+                    if(container.canDrain(inventoryPlayer.getHeldItemStack())){
+                        if (tile.getFluidInSlot(slot.slotIndex) == null){
+                            container.drain(inventoryPlayer.getHeldItemStack(), slot, tile);
+                            slot.onSlotChanged();
+                        }
+                        else if (tile.getFluidInSlot(slot.slotIndex).amount < tile.getFluidCapacityForSlot(slot.slotIndex)) {
+                            container.drain(inventoryPlayer.getHeldItemStack(), slot, tile);
+                            slot.onSlotChanged();
+                        }
+                        else if(tile.getFluidInSlot(slot.slotIndex).amount >= tile.getFluidCapacityForSlot(slot.slotIndex)){
+                            if(container.canFill(inventoryPlayer.getHeldItemStack())){
+                                ItemStack stack = container.fill(slot,inventoryPlayer.getHeldItemStack());
+                                if(stack != null){
+                                    inventoryPlayer.setHeldItemStack(stack);
+                                    inventoryPlayer.onInventoryChanged();
+                                }
+                                slot.onSlotChanged();
+                            }
+                        }
+                    } else if(container.canFill(inventoryPlayer.getHeldItemStack())){
+                        ItemStack stack = container.fill(slot,inventoryPlayer.getHeldItemStack());
+                        if(stack != null){
+                            inventoryPlayer.setHeldItemStack(stack);
+                        }
+                        slot.onSlotChanged();
+                    }
+                }
+            }
+            slot.onSlotChanged();
+            updateInventory();
+        }
+        return fluidSlots.get(slotID).getFluidStack();
+    }
 }

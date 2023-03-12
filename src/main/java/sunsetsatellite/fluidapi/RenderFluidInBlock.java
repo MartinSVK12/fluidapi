@@ -1,7 +1,10 @@
 package sunsetsatellite.fluidapi;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Arrays;
 
 public class RenderFluidInBlock extends TileEntitySpecialRenderer {
     @Override
@@ -13,15 +16,21 @@ public class RenderFluidInBlock extends TileEntitySpecialRenderer {
         float fluidMaxAmount = 1;
         int fluidId = FluidAPI.fluidTank.blockID;
 
-        if(((TileEntityFluidContainer) tileEntity1).fluidContents[0] != null){
-            if(((TileEntityFluidContainer) tileEntity1).fluidContents[0].getLiquid() != null){
-                fluidMaxAmount = ((TileEntityFluidContainer) tileEntity1).getFluidCapacityForSlot(0);
-                fluidAmount = ((TileEntityFluidContainer) tileEntity1).fluidContents[0].amount;
-                fluidId = ((TileEntityFluidContainer) tileEntity1).fluidContents[0].getLiquid().blockID;
+        if(Minecraft.getMinecraft().theWorld.isMultiplayerAndNotHost){
+            if(((TileEntityFluidContainer) tileEntity1).shownFluid != null){
+                fluidId = ((TileEntityFluidContainer) tileEntity1).shownFluid.getLiquid().blockID;
+                fluidAmount = ((TileEntityFluidContainer) tileEntity1).shownFluid.amount;
+                fluidMaxAmount = ((TileEntityFluidContainer) tileEntity1).shownMaxAmount;
             }
-
+        } else {
+            if(((TileEntityFluidContainer) tileEntity1).fluidContents[0] != null){
+                if(((TileEntityFluidContainer) tileEntity1).fluidContents[0].getLiquid() != null){
+                    fluidMaxAmount = ((TileEntityFluidContainer) tileEntity1).getFluidCapacityForSlot(0);
+                    fluidAmount = ((TileEntityFluidContainer) tileEntity1).fluidContents[0].amount;
+                    fluidId = ((TileEntityFluidContainer) tileEntity1).fluidContents[0].getLiquid().blockID;
+                }
+            }
         }
-
 
         float amount = Math.abs((fluidAmount / fluidMaxAmount) - 0.01f);
 
@@ -40,7 +49,6 @@ public class RenderFluidInBlock extends TileEntitySpecialRenderer {
 
     public void drawBlock(FontRenderer fontrenderer, RenderEngine renderengine, int i, int j, int k, int l, int i1, TileEntity tile) {
         renderengine.bindTexture(renderengine.getTexture("/terrain.png"));
-        //ForgeHooksClient.overrideTexture(Block.blocksList[i]);
         Block f1 = Block.blocksList[i];
         GL11.glPushMatrix();
         this.blockRenderer.renderBlock(f1, j, renderengine.minecraft.theWorld, tile.xCoord, tile.yCoord, tile.zCoord);

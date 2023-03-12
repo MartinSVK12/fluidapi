@@ -28,9 +28,7 @@ public class BlockFluidTank extends BlockContainer {
         } else
         {
             TileEntityFluidItemContainer tile = (TileEntityFluidItemContainer) world.getBlockTileEntity(i, j, k);
-            //System.out.println(TileEntityDigitalChest);
             ItemStack item = entityplayer.inventory.getCurrentItem();
-            //FluidAPI.LOGGER.info(String.valueOf(item));
             if(item != null) {
                 if (item.getItem() instanceof ItemBucketEmpty) {
                     if (entityplayer.inventory.getCurrentItem().getItem() == Item.bucket) {
@@ -38,7 +36,6 @@ public class BlockFluidTank extends BlockContainer {
                             entityplayer.inventory.getCurrentItem().itemID = FluidAPI.fluidsInv.get(tile.getFluidInSlot(0).liquid).itemID;
                             tile.decrFluidAmount(0, 1000);
                             tile.onFluidInventoryChanged();
-                            //slot.onPickupFromSlot(tile.getFluidInSlot(0));
                             return true;
                         }
                     }
@@ -84,7 +81,7 @@ public class BlockFluidTank extends BlockContainer {
                 return true;
             }
             if(tile != null) {
-                ((IOpenGUI)entityplayer).displayGUI(new GuiFluidTank(entityplayer.inventory, tile));
+                FluidAPI.displayGui(entityplayer,new GuiFluidTank(entityplayer.inventory, tile),new ContainerFluidTank(entityplayer.inventory,tile),tile);
             }
             return true;
         }
@@ -93,7 +90,6 @@ public class BlockFluidTank extends BlockContainer {
     @Override
     public void onBlockRemoval(World world, int i, int j, int k) {
         TileEntityFluidTank tile = (TileEntityFluidTank) world.getBlockTileEntity(i, j, k);
-        //System.out.println(TileEntityDigitalChest);
         if (tile != null) {
             tile.dir.forEach((K,V)-> {
                 TileEntity tile2 = world.getBlockTileEntity(i + (int) V.xCoord, j + (int) V.yCoord, k + (int) V.zCoord);

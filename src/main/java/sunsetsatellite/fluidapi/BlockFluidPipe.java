@@ -12,9 +12,8 @@ public class BlockFluidPipe extends BlockContainer {
 
     @Override
     public boolean blockActivated(World world, int i, int j, int k, EntityPlayer entityplayer) {
-        if(entityplayer.isSneaking()){
+        if(entityplayer.isSneaking() && !world.isMultiplayerAndNotHost){
             TileEntityFluidPipe tile = (TileEntityFluidPipe) world.getBlockTileEntity(i,j,k);
-            //tile.isPressurized = !tile.isPressurized;
             if(tile.getFluidInSlot(0) != null && tile.getFluidInSlot(0).getLiquid() != null){
                 entityplayer.addChatMessage("Liquid: "+tile.getFluidInSlot(0).toString());
             } else {

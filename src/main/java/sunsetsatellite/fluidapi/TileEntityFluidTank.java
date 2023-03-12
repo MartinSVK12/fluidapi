@@ -1,9 +1,12 @@
 package sunsetsatellite.fluidapi;
 
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.Vec3D;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +23,11 @@ public class TileEntityFluidTank extends TileEntityFluidItemContainer
     public void updateEntity() {
         extractFluids();
         super.updateEntity();
+    }
+
+    @Override
+    public String getInvName() {
+        return "Fluid Tank";
     }
 
     public void extractFluids(){

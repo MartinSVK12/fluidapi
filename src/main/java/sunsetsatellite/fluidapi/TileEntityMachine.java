@@ -36,6 +36,7 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
 
     @Override
     public void updateEntity() {
+        super.updateEntity();
         World world = worldObj;
         world.markBlocksDirty(xCoord,yCoord,zCoord,xCoord,yCoord,zCoord);
         extractFluids();
@@ -78,6 +79,10 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
 
     }
 
+    @Override
+    public String getInvName() {
+        return "Fluid Machine";
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound nBTTagCompound1) {
@@ -140,7 +145,6 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
         } else {
             FluidStack stack = MachineRecipes.getInstance().getResult(itemContents[0].itemID);
             return stack != null && (fluidContents[0] == null || (fluidContents[0].isFluidEqual(stack) && (fluidContents[0].amount < fluidCapacity[0])));
-            //return stack != null && (itemContents[2] == null || (itemContents[2].isItemEqual(stack) && (itemContents[2].stackSize < getInventoryStackLimit() && itemContents[2].stackSize < itemContents[2].getMaxStackSize() || itemContents[2].stackSize < stack.getMaxStackSize())));
         }
     }
 
@@ -206,22 +210,4 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
         });
     }
 
-    /*@Override
-    public int getDynamicTexture(int side, BlockMultiID block) {
-        if(getStackInSlot(0) != null && isBurning()){
-            return BlockTextures.EXTRACTOR_PROTOTYPE_SIDE_ACTIVE.ordinal();
-        }
-        if (getStackInSlot(0) != null && !isBurning()) {
-            return BlockTextures.EXTRACTOR_PROTOTYPE_SIDE_INACTIVE.ordinal();
-        } else if(getStackInSlot(0) == null && !isBurning()) {
-            return BlockTextures.EXTRACTOR_PROTOTYPE_SIDE_EMPTY.ordinal();
-        } else {
-            return BlockTextures.EXTRACTOR_PROTOTYPE_SIDE_EMPTY.ordinal();
-        }
-    }
-
-    @Override
-    public ArrayList<Integer> getDynamicSides(int front) {
-        return new ArrayList<>(Arrays.asList(2, 3, 4, 5));
-    }*/
 }

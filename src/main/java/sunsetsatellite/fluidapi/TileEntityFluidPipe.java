@@ -16,8 +16,6 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
     public TileEntityFluidPipe(){
         fluidCapacity[0] = 1000;
         transferSpeed = 20;
-        //transferSpeed = 1;
-        //fluidContents[0] = new FluidStack((BlockFluid) Block.waterMoving, 1000);
     }
 
     public void insertIntoEmptyExternal(TileEntityFluidContainer inv, FluidStack intFluid, int amount){
@@ -78,6 +76,11 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
                 incrFluidAmount(0, size);
             }
         }
+    }
+
+    @Override
+    public String getInvName() {
+        return "Fluid Pipe";
     }
 
     @Override

@@ -23,6 +23,10 @@ public class Config {
             configWriter.write(System.getProperty("line.separator") +"enablePipes=1");
             configWriter.write(System.getProperty("line.separator") +"enableOil=1");
             configWriter.write(System.getProperty("line.separator") +"enableMachine=1");
+            configWriter.write(System.getProperty("line.separator") +"GuiID=8");
+            configWriter.write(System.getProperty("line.separator") +"PacketSetFluidSlotID=110");
+            configWriter.write(System.getProperty("line.separator") +"PacketFluidWindowClickID=111");
+            configWriter.write(System.getProperty("line.separator") +"PacketUpdateClientFluidRender=112");
             configWriter.write(System.getProperty("line.separator") +"//Configure ID's here. Note: 'null' means a default value will be used.");
 
             for (Field field : FluidAPI.class.getFields()) {
@@ -65,7 +69,6 @@ public class Config {
                     String as[] = s.split("=");
                     String name = as[0];
                     int id = Integer.parseInt(as[1]);
-                    //System.out.println(name +" ("+s2+") "+": "+id);
                     if (name.equals(s2)){
                         return id;
                     } else {

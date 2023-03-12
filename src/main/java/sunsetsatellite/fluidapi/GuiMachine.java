@@ -8,7 +8,7 @@ public class GuiMachine extends GuiFluid {
 
     String name = "Fluid Machine";
     public GuiMachine(InventoryPlayer inventoryPlayer, TileEntity tile) {
-        super(new ContainerExtractor(inventoryPlayer, (TileEntityFluidItemContainer) tile),inventoryPlayer);
+        super(new ContainerMachine(inventoryPlayer, (TileEntityFluidItemContainer) tile),inventoryPlayer);
         machine = (TileEntityMachine)tile;
     }
 

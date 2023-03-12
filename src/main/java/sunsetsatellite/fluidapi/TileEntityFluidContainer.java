@@ -1,6 +1,7 @@
 package sunsetsatellite.fluidapi;
 
 import net.minecraft.src.*;
+import sunsetsatellite.fluidapi.mp.packets.PacketUpdateClientFluidRender;
 
 import java.util.HashMap;
 
@@ -9,6 +10,9 @@ public class TileEntityFluidContainer extends TileEntity
     
     public FluidStack[] fluidContents = new FluidStack[1];
     public int[] fluidCapacity = new int[1];
+
+    public FluidStack shownFluid = fluidContents[0];
+    public int shownMaxAmount = 0;
 
     public int transferSpeed = 20;
 
@@ -49,6 +53,18 @@ public class TileEntityFluidContainer extends TileEntity
             }
         }
 
+    }
+
+    @Override
+    public void updateEntity() {
+        super.updateEntity();
+        if(!worldObj.isMultiplayerAndNotHost){
+            for (EntityPlayer player : worldObj.players) {
+                if(player instanceof EntityPlayerMP){
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new PacketUpdateClientFluidRender(xCoord,yCoord,zCoord,fluidContents[0],fluidCapacity[0]));
+                }
+            }
+        }
     }
 
     public void writeToNBT(NBTTagCompound nBTTagCompound1) {
@@ -100,8 +116,7 @@ public class TileEntityFluidContainer extends TileEntity
             return;
         }
         this.fluidContents[slot] = fluid;
-
-        this.onInventoryChanged();
+        this.onFluidInventoryChanged();
     }
 
     public void setOrModifyFluidInSlot(int slot, FluidStack fluid, boolean add){
@@ -114,6 +129,7 @@ public class TileEntityFluidContainer extends TileEntity
                 decrFluidAmount(0,fluid.amount);
             }
         }
+        this.onFluidInventoryChanged();
     }
 
     @Override
@@ -127,7 +143,7 @@ public class TileEntityFluidContainer extends TileEntity
             if(this.fluidContents[slot].amount <= amount) {
                 fluidStack = this.fluidContents[slot];
                 this.fluidContents[slot] = null;
-                this.onInventoryChanged();
+                this.onFluidInventoryChanged();
                 return fluidStack;
             } else {
                 fluidStack = this.fluidContents[slot].splitStack(amount);
@@ -135,7 +151,7 @@ public class TileEntityFluidContainer extends TileEntity
                     this.fluidContents[slot] = null;
                 }
 
-                this.onInventoryChanged();
+                this.onFluidInventoryChanged();
                 return fluidStack;
             }
         } else {
@@ -153,12 +169,12 @@ public class TileEntityFluidContainer extends TileEntity
             FluidStack fluidStack;
             if(this.fluidContents[slot].amount + amount > this.fluidCapacity[slot]) {
                 fluidStack = this.fluidContents[slot];
-                this.onInventoryChanged();
+                this.onFluidInventoryChanged();
                 return fluidStack;
             } else {
                 fluidStack = this.fluidContents[slot];
                 fluidStack.amount += amount;
-                this.onInventoryChanged();
+                this.onFluidInventoryChanged();
                 return fluidStack;
             }
         } else {
@@ -173,7 +189,9 @@ public class TileEntityFluidContainer extends TileEntity
 
     @Override
     public void onFluidInventoryChanged() {
-
+        if (this.worldObj != null) {
+            this.worldObj.updateTileEntityChunkAndSendToPlayer(this.xCoord, this.yCoord, this.zCoord, this);
+        }
     }
 
 
