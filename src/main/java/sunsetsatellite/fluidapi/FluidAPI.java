@@ -64,8 +64,8 @@ public class FluidAPI implements ModInitializer {
     @Override
     public void onInitialize() {
         Config.init();
-        oilTex = registerFluidTexture(MOD_ID,"oil.png");
         if(Config.getFromConfig("enableOil",1) == 1){
+            oilTex = registerFluidTexture(MOD_ID,"oil.png");
             oilFlowing = BlockHelper.createBlock(MOD_ID,new BlockFluidFlowing(Config.getFromConfig("oil",903),Material.water),"oilFlowing","oil.png",Block.soundPowderFootstep,1.0f,1.0f,0).setNotInCreativeMenu().setPlaceOverwrites().setTexCoords(oilTex[0],oilTex[1],oilTex[2],oilTex[3],oilTex[4],oilTex[5],oilTex[6],oilTex[7],oilTex[8],oilTex[9],oilTex[10],oilTex[11]);
             oilStill = BlockHelper.createBlock(MOD_ID,new BlockFluidStill(Config.getFromConfig("oil",903)+1,Material.water),"oilStill","oil.png",Block.soundPowderFootstep,1.0f,1.0f,0).setNotInCreativeMenu().setPlaceOverwrites().setTexCoords(oilTex[0],oilTex[1],oilTex[2],oilTex[3],oilTex[4],oilTex[5],oilTex[6],oilTex[7],oilTex[8],oilTex[9],oilTex[10],oilTex[11]);
             bucketOil = ItemHelper.createItem(MOD_ID,new ItemBucket(Config.getFromConfig("bucketOil",500),oilFlowing.blockID),"bucketOil","bucketOil.png").setContainerItem(Item.bucket);
@@ -74,7 +74,6 @@ public class FluidAPI implements ModInitializer {
         FabricLoader.getInstance().getEntrypointContainers("fluidapi", FluidAPIPlugin.class).forEach(plugin -> {
             plugin.getEntrypoint().initializePlugin(fluidRegistry,LOGGER);
         });
-        //registerFluids();
         LOGGER.info("FluidAPI initialized.");
     }
 

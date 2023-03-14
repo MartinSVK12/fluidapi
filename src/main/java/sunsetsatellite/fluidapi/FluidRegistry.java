@@ -11,9 +11,9 @@ public class FluidRegistry {
 
     public FluidRegistry(){};
 
-    public static HashMap<Item, BlockFluid> fluids = new HashMap<>();
-    public static HashMap<BlockFluid, Item> fluidsInv = new HashMap<>();
-    public static HashMap<Item, Item> fluidContainers = new HashMap<>();
+    public HashMap<Item, BlockFluid> fluids = new HashMap<>();
+    public HashMap<BlockFluid, Item> fluidsInv = new HashMap<>();
+    public HashMap<Item, Item> fluidContainers = new HashMap<>();
 
     public void addFluid(BlockFluid block, Item containerFilled, Item containerEmpty){
         FluidAPI.LOGGER.info("Adding fluid: "+block.getBlockName(0));
