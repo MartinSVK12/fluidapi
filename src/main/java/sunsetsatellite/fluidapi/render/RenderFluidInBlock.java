@@ -1,10 +1,10 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
 import org.lwjgl.opengl.GL11;
-
-import java.util.Arrays;
+import sunsetsatellite.fluidapi.FluidAPI;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidContainer;
 
 public class RenderFluidInBlock extends TileEntitySpecialRenderer {
     @Override

@@ -2,8 +2,8 @@ package sunsetsatellite.fluidapi.gbookpp;
 
 import net.minecraft.src.*;
 import sunsetsatellite.fluidapi.FluidAPI;
-import sunsetsatellite.fluidapi.FluidStack;
-import sunsetsatellite.fluidapi.MachineRecipes;
+import sunsetsatellite.fluidapi.api.FluidStack;
+import sunsetsatellite.fluidapi.util.MachineRecipes;
 import sunsetsatellite.guidebookpp.IRecipeHandlerBase;
 
 import java.util.*;
@@ -36,11 +36,6 @@ public class RecipeHandlerFluid
         ArrayList<RecipeFluid> recipes = new ArrayList<>();
         rawRecipes.forEach((I,O)->{
 
-            /*if(usage){
-                if(O.isItemEqual(filter)){
-                    recipes.add(new RecipeFurnace(new ItemStack(I,1,0),O));
-                }
-            } else {*/
             if(usage){
                 if(new ItemStack(I,1,0).isItemEqual(filter)){
                     ArrayList<ItemStack> singletonList = new ArrayList<>(Collections.singleton(new ItemStack(I, 1, 0)));

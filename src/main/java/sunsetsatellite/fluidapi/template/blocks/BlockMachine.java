@@ -1,6 +1,12 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.template.blocks;
 
 import net.minecraft.src.*;
+import sunsetsatellite.fluidapi.*;
+import sunsetsatellite.fluidapi.template.containers.ContainerMachine;
+import sunsetsatellite.fluidapi.template.gui.GuiMachine;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityMachine;
+import sunsetsatellite.fluidapi.util.Direction;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -38,12 +44,12 @@ public class BlockMachine extends BlockContainerRotatable {
     public void onBlockRemoval(World world, int i, int j, int k) {
         TileEntityMachine tile = (TileEntityMachine) world.getBlockTileEntity(i, j, k);
         if (tile != null) {
-            tile.dir.forEach((K,V)-> {
-                TileEntity tile2 = world.getBlockTileEntity(i + (int) V.xCoord, j + (int) V.yCoord, k + (int) V.zCoord);
+            for (Direction dir : Direction.values()) {
+                TileEntity tile2 = dir.getTileEntity(world,tile);
                 if (tile2 instanceof TileEntityFluidPipe) {
                     tile.unpressurizePipes((TileEntityFluidPipe) tile2,new ArrayList<>());
                 }
-            });
+            }
         }
         super.onBlockRemoval(world, i, j, k);
     }

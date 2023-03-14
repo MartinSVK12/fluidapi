@@ -3,7 +3,7 @@
 // (powered by FernFlower decompiler)
 //
 
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.render;
 
 import net.minecraft.src.*;
 import net.minecraft.src.helper.Color;

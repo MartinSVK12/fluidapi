@@ -1,4 +1,4 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.api;
 
 public class SlotFluid {
     public final IFluidInventory fluidInventory;

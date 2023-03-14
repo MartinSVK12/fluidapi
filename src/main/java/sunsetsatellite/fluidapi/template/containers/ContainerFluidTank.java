@@ -1,8 +1,11 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.template.containers;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.Slot;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
+import sunsetsatellite.fluidapi.api.ContainerFluid;
+import sunsetsatellite.fluidapi.api.SlotFluid;
 
 public class ContainerFluidTank extends ContainerFluid {
 

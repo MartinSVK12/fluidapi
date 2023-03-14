@@ -1,9 +1,9 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.render;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.RenderBlocks;
-import org.lwjgl.Sys;
+import sunsetsatellite.fluidapi.api.IFluidInventory;
 
 public class RenderPipeBlock {
     public static boolean render(RenderBlocks renderblocks, IBlockAccess blockAccess, int i, int j, int k, Block block, int l) {

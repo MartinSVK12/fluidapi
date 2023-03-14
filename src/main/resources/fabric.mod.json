@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "fluidapi",
-  "version": "1.2",
+  "version": "1.3",
 
   "name": "Fluid API (BTA)",
   "description": "API for fluid transport and storage.",
@@ -23,6 +23,10 @@
     ],
     "guidebookpp": [
         "sunsetsatellite.fluidapi.gbookpp.FluidPlugin"
+    ],
+    "fluidapi": [
+        "sunsetsatellite.fluidapi.DefaultPlugin",
+      "sunsetsatellite.fluidapi.OilPlugin"
     ]
   },
   "mixins": [

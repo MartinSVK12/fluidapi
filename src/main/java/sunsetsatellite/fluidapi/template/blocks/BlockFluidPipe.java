@@ -1,6 +1,8 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.template.blocks;
 
 import net.minecraft.src.*;
+import sunsetsatellite.fluidapi.FluidAPI;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
 
 import java.util.Random;
 

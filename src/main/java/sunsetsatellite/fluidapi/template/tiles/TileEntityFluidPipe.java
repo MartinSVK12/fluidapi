@@ -1,6 +1,8 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.template.tiles;
 
 import net.minecraft.src.TileEntity;
+import sunsetsatellite.fluidapi.api.FluidStack;
+import sunsetsatellite.fluidapi.util.Direction;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -91,13 +93,10 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
             rememberTicks = 0;
             last = null;
         }
-        HashMap<String, TileEntity> neighbors = new HashMap<>();
-        neighbors.put("X+", worldObj.getBlockTileEntity(xCoord + 1, yCoord, zCoord));
-        neighbors.put("Y-", worldObj.getBlockTileEntity(xCoord, yCoord + 1, zCoord));
-        neighbors.put("Z+", worldObj.getBlockTileEntity(xCoord, yCoord, zCoord + 1));
-        neighbors.put("X-", worldObj.getBlockTileEntity(xCoord - 1, yCoord, zCoord));
-        neighbors.put("Y+", worldObj.getBlockTileEntity(xCoord, yCoord - 1, zCoord));
-        neighbors.put("Z-", worldObj.getBlockTileEntity(xCoord, yCoord, zCoord - 1));
+        HashMap<Direction, TileEntity> neighbors = new HashMap<>();
+        for (Direction dir : Direction.values()) {
+            neighbors.put(dir,dir.getTileEntity(worldObj,this));
+        }
         neighbors.forEach((side, tile) -> {
             if (tile instanceof TileEntityFluidPipe && !tile.equals(last)) {
                 TileEntityFluidContainer inv = (TileEntityFluidPipe) tile;
@@ -105,21 +104,21 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
                 FluidStack extFluid = inv.getFluidInSlot(0);
                 //insert into external empty
                 if (intFluid != null && extFluid == null) {
-                    if (!Objects.equals(side, "Y-") || isPressurized) {
+                    if (!Objects.equals(side, Direction.Y_NEG) || isPressurized) {
                         last = (TileEntityFluidPipe) tile;
                         ((TileEntityFluidPipe) tile).last = this;
                         insertIntoEmptyExternal(inv, intFluid, transferSpeed);
                     }
                     //extract from external not empty
                 } else if (intFluid == null && extFluid != null) {
-                    if (!Objects.equals(side, "Y+") || isPressurized) {
+                    if (!Objects.equals(side, Direction.Y_POS) || isPressurized) {
                         last = (TileEntityFluidPipe) tile;
                         ((TileEntityFluidPipe) tile).last = this;
                         extractFromExternalWhenEmpty(inv, extFluid, transferSpeed);
                     }
                 } else if (intFluid != null && extFluid != null) {
                     if (intFluid.isFluidEqual(extFluid)) {
-                        if (Objects.equals(side, "Y-") && !isPressurized) {
+                        if (Objects.equals(side, Direction.Y_NEG) && !isPressurized) {
                             last = (TileEntityFluidPipe) tile;
                             ((TileEntityFluidPipe) tile).last = this;
                             TakeFromExternal(inv, intFluid, extFluid, transferSpeed);

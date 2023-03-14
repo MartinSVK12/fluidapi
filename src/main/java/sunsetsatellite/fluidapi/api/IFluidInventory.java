@@ -1,4 +1,4 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.api;
 
 public interface IFluidInventory {
     FluidStack getFluidInSlot(int slot);

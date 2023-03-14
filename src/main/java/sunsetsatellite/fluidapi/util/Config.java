@@ -1,8 +1,9 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
+import sunsetsatellite.fluidapi.FluidAPI;
 
 import java.io.*;
 import java.lang.reflect.Field;

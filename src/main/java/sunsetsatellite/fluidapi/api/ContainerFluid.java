@@ -1,6 +1,8 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.api;
 
 import net.minecraft.src.*;
+import sunsetsatellite.fluidapi.FluidAPI;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
 import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayerMP;
 
 import java.util.ArrayList;
@@ -71,7 +73,7 @@ public class ContainerFluid extends Container {
             if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucketEmpty) {
                 if (inventoryPlayer.getHeldItemStack().getItem() == Item.bucket) {
                     if (slot.getFluidStack() != null && slot.getFluidStack().amount >= 1000) {
-                        inventoryPlayer.setHeldItemStack(new ItemStack(FluidAPI.fluidsInv.get(slot.getFluidStack().liquid), 1));
+                        inventoryPlayer.setHeldItemStack(new ItemStack(FluidAPI.fluidRegistry.fluidsInv.get(slot.getFluidStack().liquid), 1));
                         tile.decrFluidAmount(slot.slotIndex, 1000);
                         slot.onPickupFromSlot(slot.getFluidStack());
                         slot.onSlotChanged();
@@ -83,9 +85,9 @@ public class ContainerFluid extends Container {
                 ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
                 if (slot.getFluidStack() == null) {
                     inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
-                    slot.putStack(new FluidStack(FluidAPI.fluids.get(bucket), 1000));
+                    slot.putStack(new FluidStack(FluidAPI.fluidRegistry.fluids.get(bucket), 1000));
                     slot.onSlotChanged();
-                } else if (slot.getFluidStack() != null && slot.getFluidStack().getLiquid() == FluidAPI.fluids.get(bucket)) {
+                } else if (slot.getFluidStack() != null && slot.getFluidStack().getLiquid() == FluidAPI.fluidRegistry.fluids.get(bucket)) {
                     if (slot.getFluidStack().amount + 1000 <= tile.getFluidCapacityForSlot(slot.slotIndex)) {
                         inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
                         slot.getFluidStack().amount += 1000;
@@ -95,7 +97,7 @@ public class ContainerFluid extends Container {
             }
             if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof IFluidInventory) {
                 ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
-                if(FluidAPI.fluids.get(bucket) != null || FluidAPI.fluidContainers.containsValue(bucket)){
+                if(FluidAPI.fluidRegistry.fluids.get(bucket) != null || FluidAPI.fluidRegistry.fluidContainers.containsValue(bucket)){
                     IItemFluidContainer container = (IItemFluidContainer) bucket;
                     if(container.canDrain(inventoryPlayer.getHeldItemStack())){
                         if (tile.getFluidInSlot(slot.slotIndex) == null){

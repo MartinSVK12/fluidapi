@@ -1,6 +1,7 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.template.tiles;
 
 import net.minecraft.src.*;
+import sunsetsatellite.fluidapi.api.FluidStack;
 
 public class TileEntityFluidItemContainer extends TileEntityFluidContainer
     implements IInventory {

@@ -1,7 +1,7 @@
 package sunsetsatellite.fluidapi.gbookpp;
 
 import net.minecraft.src.ItemStack;
-import sunsetsatellite.fluidapi.FluidStack;
+import sunsetsatellite.fluidapi.api.FluidStack;
 
 import java.util.ArrayList;
 

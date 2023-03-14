@@ -1,15 +1,14 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.util;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.BlockFluid;
-import net.minecraft.src.ItemStack;
+import sunsetsatellite.fluidapi.api.FluidStack;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class MachineRecipes {
     private static final MachineRecipes instance = new MachineRecipes();
-    private HashMap<Integer,FluidStack> recipeList = new HashMap();
+    private HashMap<Integer, FluidStack> recipeList = new HashMap();
 
     public static final MachineRecipes getInstance() {
         return instance;

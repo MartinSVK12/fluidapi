@@ -4,7 +4,7 @@ import net.minecraft.src.Block;
 import net.minecraft.src.BlockFluid;
 import net.minecraft.src.NetHandler;
 import net.minecraft.src.Packet;
-import sunsetsatellite.fluidapi.FluidStack;
+import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.interfaces.mixins.INetClientHandler;
 
 import java.io.DataInputStream;

@@ -1,6 +1,7 @@
 package sunsetsatellite.fluidapi;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
 import org.slf4j.Logger;
@@ -10,6 +11,19 @@ import sunsetsatellite.fluidapi.mixin.accessors.PacketAccessor;
 import sunsetsatellite.fluidapi.mp.packets.PacketFluidWindowClick;
 import sunsetsatellite.fluidapi.mp.packets.PacketSetFluidSlot;
 import sunsetsatellite.fluidapi.mp.packets.PacketUpdateClientFluidRender;
+import sunsetsatellite.fluidapi.render.RenderFluidInBlock;
+import sunsetsatellite.fluidapi.render.RenderFluidInPipe;
+import sunsetsatellite.fluidapi.template.blocks.BlockFluidPipe;
+import sunsetsatellite.fluidapi.template.blocks.BlockFluidTank;
+import sunsetsatellite.fluidapi.template.blocks.BlockMachine;
+import sunsetsatellite.fluidapi.template.gui.GuiFluidTank;
+import sunsetsatellite.fluidapi.template.gui.GuiMachine;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidTank;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityMachine;
+import sunsetsatellite.fluidapi.util.Config;
+import sunsetsatellite.guidebookpp.CustomGuidebookRecipeRegistry;
+import sunsetsatellite.guidebookpp.GuidebookCustomRecipePlugin;
 import turniplabs.halplibe.helper.*;
 
 import java.lang.reflect.Field;
@@ -21,6 +35,7 @@ public class FluidAPI implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static HashMap<String, ArrayList<Class<?>>> nameToGuiMap = new HashMap<>();
+    public static FluidRegistry fluidRegistry = new FluidRegistry();
 
     public FluidAPI(){
         Config.init();
@@ -55,7 +70,11 @@ public class FluidAPI implements ModInitializer {
             oilStill = BlockHelper.createBlock(MOD_ID,new BlockFluidStill(Config.getFromConfig("oil",903)+1,Material.water),"oilStill","oil.png",Block.soundPowderFootstep,1.0f,1.0f,0).setNotInCreativeMenu().setPlaceOverwrites().setTexCoords(oilTex[0],oilTex[1],oilTex[2],oilTex[3],oilTex[4],oilTex[5],oilTex[6],oilTex[7],oilTex[8],oilTex[9],oilTex[10],oilTex[11]);
             bucketOil = ItemHelper.createItem(MOD_ID,new ItemBucket(Config.getFromConfig("bucketOil",500),oilFlowing.blockID),"bucketOil","bucketOil.png").setContainerItem(Item.bucket);
         }
-        registerFluids();
+        LOGGER.info("Loading plugins..");
+        FabricLoader.getInstance().getEntrypointContainers("fluidapi", FluidAPIPlugin.class).forEach(plugin -> {
+            plugin.getEntrypoint().initializePlugin(fluidRegistry,LOGGER);
+        });
+        //registerFluids();
         LOGGER.info("FluidAPI initialized.");
     }
 
@@ -78,19 +97,15 @@ public class FluidAPI implements ModInitializer {
     public static int[] oilTex;
     
 
-    public static HashMap<Item, BlockFluid> fluids = new HashMap<>();
-    public static HashMap<BlockFluid, Item> fluidsInv = new HashMap<>();
-    public static HashMap<Item, Item> fluidContainers = new HashMap<>();
 
-    public static void registerFluids(){
+
+    /*public static void registerFluids(){
         for (Item b : Item.itemsList) {
             try {
                 if(b instanceof ItemBucket){
                     int fluidId = (int) FluidAPI.getPrivateValue(ItemBucket.class,b,0);
                     if(fluidId > 0){
-                        fluids.put(b,(BlockFluid) Block.blocksList[fluidId]);
-                        fluidsInv.put((BlockFluid) Block.blocksList[fluidId], b);
-                        fluidContainers.put(b, b.getContainerItem());
+
                     }
                 }
             } catch (NoSuchFieldException ignored) {}
@@ -108,7 +123,7 @@ public class FluidAPI implements ModInitializer {
         fluidContainers.forEach((K,V)->{
             LOGGER.info(K.getItemName() + " -> " + V.getItemName());
         });
-    }
+    }*/
 
     public static double map(double valueCoord1,
                              double startCoord1, double endCoord1,

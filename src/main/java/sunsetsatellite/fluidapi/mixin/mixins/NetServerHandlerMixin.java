@@ -3,12 +3,10 @@ package sunsetsatellite.fluidapi.mixin.mixins;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import sunsetsatellite.fluidapi.ContainerFluid;
-import sunsetsatellite.fluidapi.FluidStack;
+import sunsetsatellite.fluidapi.api.ContainerFluid;
+import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.interfaces.mixins.INetServerHandler;
 import sunsetsatellite.fluidapi.mp.packets.PacketFluidWindowClick;
-
-import java.util.ArrayList;
 
 @Mixin(
         value = NetServerHandler.class,

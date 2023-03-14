@@ -1,7 +1,11 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.template.tiles;
 
 import net.minecraft.src.*;
+import sunsetsatellite.fluidapi.api.FluidStack;
+import sunsetsatellite.fluidapi.api.IFluidInventory;
 import sunsetsatellite.fluidapi.mp.packets.PacketUpdateClientFluidRender;
+import sunsetsatellite.fluidapi.util.Connection;
+import sunsetsatellite.fluidapi.util.Direction;
 
 import java.util.HashMap;
 
@@ -16,23 +20,12 @@ public class TileEntityFluidContainer extends TileEntity
 
     public int transferSpeed = 20;
 
-    public HashMap<String, Boolean> isInput = new HashMap<>();
-    public final HashMap<String, Vec3D> dir = new HashMap<>();
+    public HashMap<Direction, Connection> connections = new HashMap<>();
 
     public TileEntityFluidContainer(){
-        isInput.put("Y+",null);
-        isInput.put("Y-",null);
-        isInput.put("X+",null);
-        isInput.put("X-",null);
-        isInput.put("Z+",null);
-        isInput.put("Z-",null);
-
-        dir.put("Y+",Vec3D.createVectorHelper(0,1,0));
-        dir.put("Y-",Vec3D.createVectorHelper(0,-1,0));
-        dir.put("X+",Vec3D.createVectorHelper(1,0,0));
-        dir.put("X-",Vec3D.createVectorHelper(-1,0,0));
-        dir.put("Z+",Vec3D.createVectorHelper(0,0,1));
-        dir.put("Z-",Vec3D.createVectorHelper(0,0,-1));
+        for (Direction dir : Direction.values()) {
+            connections.put(dir,Connection.NONE);
+        }
     }
 
     public String getInvName() {
@@ -196,8 +189,8 @@ public class TileEntityFluidContainer extends TileEntity
 
 
 
-    public void moveFluids(String K, TileEntityFluidPipe tile, int amount){
-        if(isInput.get(K) != null && isInput.get(K)){
+    public void moveFluids(Direction dir, TileEntityFluidPipe tile, int amount){
+        if(connections.get(dir) != Connection.NONE && connections.get(dir) == Connection.INPUT){
             if(tile.getFluidInSlot(0) != null){
                 if(getFluidInSlot(0) != null){
                     tile.AddToExternal(this, tile.getFluidInSlot(0),this.getFluidInSlot(0), amount);
@@ -205,7 +198,7 @@ public class TileEntityFluidContainer extends TileEntity
                     tile.insertIntoEmptyExternal(this,tile.getFluidInSlot(0), amount);
                 }
             }
-        } else if(isInput.get(K) != null && !isInput.get(K)){
+        } else if(connections.get(dir) != Connection.NONE && connections.get(dir) == Connection.OUTPUT){
             if(getFluidInSlot(0) != null){
                 if(tile.getFluidInSlot(0) != null){
                     tile.TakeFromExternal(this, tile.getFluidInSlot(0),this.getFluidInSlot(0), amount);

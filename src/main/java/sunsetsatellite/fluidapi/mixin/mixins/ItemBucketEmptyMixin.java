@@ -41,8 +41,8 @@ public class ItemBucketEmptyMixin {
                 int k = movingobjectposition.blockZ;
                 if (world.getBlockId(i, j, k) != 0){
                     Block block = Block.blocksList[world.getBlockId(i, j, k)-1];
-                    if (FluidAPI.fluids.containsValue(block) && world.getBlockMetadata(i, j, k) == 0) {
-                        if (UseBucket(entityplayer, new ItemStack(FluidAPI.fluidsInv.get(block)))) {
+                    if (FluidAPI.fluidRegistry.fluids.containsValue(block) && world.getBlockMetadata(i, j, k) == 0) {
+                        if (UseBucket(entityplayer, new ItemStack(FluidAPI.fluidRegistry.fluidsInv.get(block)))) {
                             world.setBlockWithNotify(i, j, k, 0);
                             entityplayer.swingItem();
                         }

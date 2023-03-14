@@ -1,7 +1,15 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.template.blocks;
 
 import net.minecraft.src.*;
-import org.lwjgl.Sys;
+import sunsetsatellite.fluidapi.*;
+import sunsetsatellite.fluidapi.api.FluidStack;
+import sunsetsatellite.fluidapi.api.IItemFluidContainer;
+import sunsetsatellite.fluidapi.template.containers.ContainerFluidTank;
+import sunsetsatellite.fluidapi.template.gui.GuiFluidTank;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidTank;
+import sunsetsatellite.fluidapi.util.Direction;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -33,7 +41,7 @@ public class BlockFluidTank extends BlockContainer {
                 if (item.getItem() instanceof ItemBucketEmpty) {
                     if (entityplayer.inventory.getCurrentItem().getItem() == Item.bucket) {
                         if (tile.getFluidInSlot(0) != null && tile.getFluidInSlot(0).amount >= 1000) {
-                            entityplayer.inventory.getCurrentItem().itemID = FluidAPI.fluidsInv.get(tile.getFluidInSlot(0).liquid).itemID;
+                            entityplayer.inventory.getCurrentItem().itemID = FluidAPI.fluidRegistry.fluidsInv.get(tile.getFluidInSlot(0).liquid).itemID;
                             tile.decrFluidAmount(0, 1000);
                             tile.onFluidInventoryChanged();
                             return true;
@@ -41,13 +49,13 @@ public class BlockFluidTank extends BlockContainer {
                     }
                 }
             }
-            if(item != null && FluidAPI.fluids.get(entityplayer.inventory.getCurrentItem().getItem()) != null){
+            if(item != null && FluidAPI.fluidRegistry.fluids.get(entityplayer.inventory.getCurrentItem().getItem()) != null){
                 Item bucket = (Item) entityplayer.inventory.getCurrentItem().getItem();
                 if(bucket == Item.bucketWater || bucket == Item.bucketLava || bucket instanceof ItemBucket){
                     if (tile.getFluidInSlot(0) == null) {
                         entityplayer.inventory.getCurrentItem().itemID = bucket.getContainerItem().itemID;
-                        tile.setFluidInSlot(0,new FluidStack(FluidAPI.fluids.get(bucket), 1000));
-                    } else if (tile.getFluidInSlot(0)  != null && tile.getFluidInSlot(0).getLiquid() == FluidAPI.fluids.get(bucket)) {
+                        tile.setFluidInSlot(0,new FluidStack(FluidAPI.fluidRegistry.fluids.get(bucket), 1000));
+                    } else if (tile.getFluidInSlot(0)  != null && tile.getFluidInSlot(0).getLiquid() == FluidAPI.fluidRegistry.fluids.get(bucket)) {
                         if (tile.getFluidInSlot(0) .amount + 1000 <= tile.getFluidCapacityForSlot(0)) {
                             entityplayer.inventory.getCurrentItem().itemID = bucket.getContainerItem().itemID;
                             tile.getFluidInSlot(0).amount += 1000;
@@ -55,7 +63,7 @@ public class BlockFluidTank extends BlockContainer {
                         }
                     }
                 } else if(bucket instanceof IItemFluidContainer){
-                    if(FluidAPI.fluids.get(bucket) != null || FluidAPI.fluidContainers.containsValue(bucket)) {
+                    if(FluidAPI.fluidRegistry.fluids.get(bucket) != null || FluidAPI.fluidRegistry.fluidContainers.containsValue(bucket)) {
                         IItemFluidContainer container = (IItemFluidContainer) bucket;
                         if (container.canDrain(entityplayer.inventory.getCurrentItem())) {
                             if (tile.getFluidInSlot(0) == null) {
@@ -91,12 +99,12 @@ public class BlockFluidTank extends BlockContainer {
     public void onBlockRemoval(World world, int i, int j, int k) {
         TileEntityFluidTank tile = (TileEntityFluidTank) world.getBlockTileEntity(i, j, k);
         if (tile != null) {
-            tile.dir.forEach((K,V)-> {
-                TileEntity tile2 = world.getBlockTileEntity(i + (int) V.xCoord, j + (int) V.yCoord, k + (int) V.zCoord);
+            for (Direction dir : Direction.values()) {
+                TileEntity tile2 = dir.getTileEntity(world,tile);
                 if (tile2 instanceof TileEntityFluidPipe) {
                     tile.unpressurizePipes((TileEntityFluidPipe) tile2,new ArrayList<>());
                 }
-            });
+            }
         }
         super.onBlockRemoval(world, i, j, k);
     }

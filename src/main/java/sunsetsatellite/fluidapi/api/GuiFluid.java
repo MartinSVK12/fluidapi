@@ -1,11 +1,11 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.api;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
 import net.minecraft.src.helper.Color;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.interfaces.mixins.IPlayerController;
 
 public class GuiFluid extends GuiContainer {

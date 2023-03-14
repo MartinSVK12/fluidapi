@@ -1,9 +1,13 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.template.containers;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICrafting;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.Slot;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityMachine;
+import sunsetsatellite.fluidapi.api.ContainerFluid;
+import sunsetsatellite.fluidapi.api.SlotFluid;
 
 import java.util.Iterator;
 

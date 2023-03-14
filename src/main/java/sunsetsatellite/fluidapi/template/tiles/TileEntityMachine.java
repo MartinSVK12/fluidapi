@@ -1,16 +1,20 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.template.tiles;
 
 import net.minecraft.src.*;
+import sunsetsatellite.fluidapi.util.Connection;
+import sunsetsatellite.fluidapi.util.Direction;
+import sunsetsatellite.fluidapi.util.MachineRecipes;
+import sunsetsatellite.fluidapi.api.FluidStack;
+import sunsetsatellite.fluidapi.api.IPipePressurizer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TileEntityMachine extends TileEntityFluidItemContainer
     implements IPipePressurizer {
     public TileEntityMachine(){
-        isInput.replace("Y+",false);
+        connections.replace(Direction.Y_POS, Connection.OUTPUT);
 
         fluidCapacity[0] = 4000;
     }
@@ -157,21 +161,22 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
     }
 
     public void extractFluids(){
-        for (Map.Entry<String, Vec3D> entry : dir.entrySet()) {
-            String K = entry.getKey();
-            Vec3D V = entry.getValue();
-            TileEntity tile = worldObj.getBlockTileEntity(xCoord + (int) V.xCoord, yCoord + (int) V.yCoord, zCoord + (int) V.zCoord);
+        for (Map.Entry<Direction, Connection> e : connections.entrySet()) {
+            Direction dir = e.getKey();
+            Connection connection = e.getValue();
+            TileEntity tile = dir.getTileEntity(worldObj,this);
             if (tile instanceof TileEntityFluidPipe) {
                 pressurizePipes((TileEntityFluidPipe) tile, new ArrayList<>());
-                moveFluids(K, (TileEntityFluidPipe) tile, transferSpeed);
+                moveFluids(dir, (TileEntityFluidPipe) tile, transferSpeed);
+                ((TileEntityFluidPipe) tile).rememberTicks = 100;
             }
         }
     }
 
     public void pressurizePipes(TileEntityFluidPipe pipe, ArrayList<HashMap<String,Integer>> already){
         pipe.isPressurized = true;
-        dir.forEach((K,V)-> {
-            TileEntity tile = worldObj.getBlockTileEntity(pipe.xCoord + (int) V.xCoord, pipe.yCoord + (int) V.yCoord, pipe.zCoord + (int) V.zCoord);
+        for (Direction dir : Direction.values()) {
+            TileEntity tile = dir.getTileEntity(worldObj,this);
             if (tile instanceof TileEntityFluidPipe) {
                 for (HashMap<String, Integer> V2 : already) {
                     if (V2.get("x") == tile.xCoord && V2.get("y") == tile.yCoord && V2.get("z") == tile.zCoord) {
@@ -186,13 +191,13 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
                 ((TileEntityFluidPipe) tile).isPressurized = true;
                 pressurizePipes((TileEntityFluidPipe) tile,already);
             }
-        });
+        }
     }
 
     public void unpressurizePipes(TileEntityFluidPipe pipe,ArrayList<HashMap<String,Integer>> already){
         pipe.isPressurized = false;
-        dir.forEach((K,V)-> {
-            TileEntity tile = worldObj.getBlockTileEntity(pipe.xCoord + (int) V.xCoord, pipe.yCoord + (int) V.yCoord, pipe.zCoord + (int) V.zCoord);
+        for (Direction dir : Direction.values()) {
+            TileEntity tile = dir.getTileEntity(worldObj,this);
             if (tile instanceof TileEntityFluidPipe) {
                 for (HashMap<String, Integer> V2 : already) {
                     if (V2.get("x") == tile.xCoord && V2.get("y") == tile.yCoord && V2.get("z") == tile.zCoord) {
@@ -207,7 +212,7 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
                 ((TileEntityFluidPipe) tile).isPressurized = false;
                 unpressurizePipes((TileEntityFluidPipe) tile,already);
             }
-        });
+        }
     }
 
 }

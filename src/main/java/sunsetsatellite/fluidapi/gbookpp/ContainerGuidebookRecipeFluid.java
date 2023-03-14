@@ -2,7 +2,7 @@ package sunsetsatellite.fluidapi.gbookpp;
 
 import net.minecraft.src.*;
 import org.lwjgl.opengl.GL11;
-import sunsetsatellite.fluidapi.FluidStack;
+import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.guidebookpp.GuidebookPlusPlus;
 import sunsetsatellite.guidebookpp.IContainerRecipeBase;
 

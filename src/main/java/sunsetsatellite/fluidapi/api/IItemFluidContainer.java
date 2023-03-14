@@ -1,6 +1,7 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.api;
 
 import net.minecraft.src.ItemStack;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidContainer;
 
 public interface IItemFluidContainer {
     int getCapacity(ItemStack stack);

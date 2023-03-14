@@ -3,8 +3,8 @@ package sunsetsatellite.fluidapi.mixin.mixins;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import sunsetsatellite.fluidapi.Config;
-import sunsetsatellite.fluidapi.FluidStack;
+import sunsetsatellite.fluidapi.util.Config;
+import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayerMP;
 import sunsetsatellite.fluidapi.mp.packets.PacketSetFluidSlot;
 

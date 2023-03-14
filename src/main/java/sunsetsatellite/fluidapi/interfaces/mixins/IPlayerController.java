@@ -1,8 +1,7 @@
 package sunsetsatellite.fluidapi.interfaces.mixins;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
-import sunsetsatellite.fluidapi.FluidStack;
+import sunsetsatellite.fluidapi.api.FluidStack;
 
 public interface IPlayerController {
 

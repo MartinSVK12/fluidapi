@@ -1,11 +1,10 @@
 package sunsetsatellite.fluidapi.mixin.mixins;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
 import net.minecraft.src.PlayerController;
 import org.spongepowered.asm.mixin.Mixin;
-import sunsetsatellite.fluidapi.ContainerFluid;
-import sunsetsatellite.fluidapi.FluidStack;
+import sunsetsatellite.fluidapi.api.ContainerFluid;
+import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.interfaces.mixins.IPlayerController;
 
 @Mixin(

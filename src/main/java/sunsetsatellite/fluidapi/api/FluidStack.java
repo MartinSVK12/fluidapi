@@ -1,4 +1,4 @@
-package sunsetsatellite.fluidapi;
+package sunsetsatellite.fluidapi.api;
 
 import net.minecraft.src.*;
 

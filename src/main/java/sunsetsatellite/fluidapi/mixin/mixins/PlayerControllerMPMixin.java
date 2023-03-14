@@ -4,9 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import sunsetsatellite.fluidapi.ContainerFluid;
-import sunsetsatellite.fluidapi.FluidStack;
-import sunsetsatellite.fluidapi.interfaces.mixins.IPlayerController;
+import sunsetsatellite.fluidapi.api.ContainerFluid;
+import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.interfaces.mixins.IPlayerControllerMP;
 import sunsetsatellite.fluidapi.mp.packets.PacketFluidWindowClick;
 

@@ -1,7 +1,7 @@
 package sunsetsatellite.fluidapi.mp.packets;
 
 import net.minecraft.src.*;
-import sunsetsatellite.fluidapi.FluidStack;
+import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.interfaces.mixins.INetClientHandler;
 
 import java.io.DataInputStream;
