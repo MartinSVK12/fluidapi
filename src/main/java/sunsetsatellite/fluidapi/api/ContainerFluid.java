@@ -93,7 +93,7 @@ public class ContainerFluid extends Container {
                     }
                 }
             }
-            if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof IFluidInventory) {
+            if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof IItemFluidContainer) {
                 ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
                 if(FluidAPI.fluidRegistry.fluids.get(bucket) != null || FluidAPI.fluidRegistry.fluidContainers.containsValue(bucket)){
                     IItemFluidContainer container = (IItemFluidContainer) bucket;
