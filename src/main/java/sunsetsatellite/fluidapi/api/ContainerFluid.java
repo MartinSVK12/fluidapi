@@ -94,21 +94,20 @@ public class ContainerFluid extends Container {
                 }
             }
             if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof IItemFluidContainer) {
-                ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
-                if(FluidAPI.fluidRegistry.fluids.get(bucket) != null || FluidAPI.fluidRegistry.fluidContainers.containsValue(bucket)){
-                    IItemFluidContainer container = (IItemFluidContainer) bucket;
-                    if(container.canDrain(inventoryPlayer.getHeldItemStack())){
+                IItemFluidContainer item = (IItemFluidContainer) inventoryPlayer.getHeldItemStack().getItem();
+                if(FluidAPI.fluidRegistry.fluids.get(item) != null || FluidAPI.fluidRegistry.fluidContainers.containsValue(item)){
+                    if(item.canDrain(inventoryPlayer.getHeldItemStack())){
                         if (tile.getFluidInSlot(slot.slotIndex) == null){
-                            container.drain(inventoryPlayer.getHeldItemStack(), slot, tile);
+                            item.drain(inventoryPlayer.getHeldItemStack(), slot, tile);
                             slot.onSlotChanged();
                         }
                         else if (tile.getFluidInSlot(slot.slotIndex).amount < tile.getFluidCapacityForSlot(slot.slotIndex)) {
-                            container.drain(inventoryPlayer.getHeldItemStack(), slot, tile);
+                            item.drain(inventoryPlayer.getHeldItemStack(), slot, tile);
                             slot.onSlotChanged();
                         }
                         else if(tile.getFluidInSlot(slot.slotIndex).amount >= tile.getFluidCapacityForSlot(slot.slotIndex)){
-                            if(container.canFill(inventoryPlayer.getHeldItemStack())){
-                                ItemStack stack = container.fill(slot,inventoryPlayer.getHeldItemStack());
+                            if(item.canFill(inventoryPlayer.getHeldItemStack())){
+                                ItemStack stack = item.fill(slot,inventoryPlayer.getHeldItemStack());
                                 if(stack != null){
                                     inventoryPlayer.setHeldItemStack(stack);
                                     inventoryPlayer.onInventoryChanged();
@@ -116,8 +115,8 @@ public class ContainerFluid extends Container {
                                 slot.onSlotChanged();
                             }
                         }
-                    } else if(container.canFill(inventoryPlayer.getHeldItemStack())){
-                        ItemStack stack = container.fill(slot,inventoryPlayer.getHeldItemStack());
+                    } else if(item.canFill(inventoryPlayer.getHeldItemStack())){
+                        ItemStack stack = item.fill(slot,inventoryPlayer.getHeldItemStack());
                         if(stack != null){
                             inventoryPlayer.setHeldItemStack(stack);
                         }
