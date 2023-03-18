@@ -1,6 +1,7 @@
 package sunsetsatellite.fluidapi.template.tiles;
 
 import net.minecraft.src.TileEntity;
+import org.lwjgl.Sys;
 import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.util.Direction;
 
@@ -47,7 +48,7 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
     }
 
     public void AddToExternal(TileEntityFluidContainer inv, FluidStack intFluid, FluidStack extFluid, int amount){
-        if (intFluid.isFluidEqual(extFluid) && inv.acceptedFluids.get(0).contains(intFluid.liquid)) {
+        if (intFluid.isFluidEqual(extFluid) && (inv.acceptedFluids.get(0).contains(intFluid.liquid) || inv.acceptedFluids.get(0).isEmpty())) {
             if (extFluid.amount + amount <= inv.getFluidCapacityForSlot(0)) {
                 if (intFluid.amount >= amount) {
                     inv.incrFluidAmount(0, amount);
@@ -66,7 +67,7 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
     }
 
     public void TakeFromExternal(TileEntityFluidContainer inv, FluidStack intFluid, FluidStack extFluid, int amount){
-        if (intFluid.isFluidEqual(extFluid) && acceptedFluids.get(0).contains(extFluid)) {
+        if (intFluid.isFluidEqual(extFluid) && (acceptedFluids.get(0).contains(extFluid.liquid) || acceptedFluids.get(0).isEmpty())) {
             if (intFluid.amount + amount <= getFluidCapacityForSlot(0)) {
                 if (extFluid.amount >= amount) {
                     inv.decrFluidAmount(0, amount);
