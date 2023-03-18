@@ -20,8 +20,6 @@ public class TileEntityFluidTank extends TileEntityFluidItemContainer
         transferSpeed = 50;
         connections.replace(Direction.Y_POS, Connection.INPUT);
         connections.replace(Direction.Y_NEG, Connection.OUTPUT);
-        acceptedFluids.get(0).add((BlockFluid) FluidAPI.oilFlowing);
-        //acceptedFluids.get(0).add((BlockFluid) Block.fluidWaterFlowing);
     }
 
     @Override
