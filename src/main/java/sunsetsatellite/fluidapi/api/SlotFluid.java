@@ -1,5 +1,10 @@
 package sunsetsatellite.fluidapi.api;
 
+import net.minecraft.src.BlockFluid;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidContainer;
+
+import java.util.ArrayList;
+
 public class SlotFluid {
     public final IFluidInventory fluidInventory;
     protected final int slotIndex;
@@ -35,8 +40,10 @@ public class SlotFluid {
     }
 
     public void putStack(FluidStack stack) {
-        this.fluidInventory.setFluidInSlot(this.slotIndex, stack);
-        this.onSlotChanged();
+        if(fluidInventory.getAllowedFluidsForSLot(slotIndex).isEmpty() || fluidInventory.getAllowedFluidsForSLot(slotIndex).contains(stack.liquid)){
+            this.fluidInventory.setFluidInSlot(this.slotIndex, stack);
+            this.onSlotChanged();
+        }
     }
 
     public int getBackgroundIconIndex() {

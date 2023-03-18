@@ -21,24 +21,28 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
     }
 
     public void insertIntoEmptyExternal(TileEntityFluidContainer inv, FluidStack intFluid, int amount){
-        if(intFluid.amount >= amount){
-            inv.setFluidInSlot(0,new FluidStack(intFluid.getLiquid(),amount));
-            decrFluidAmount(0,amount);
-        } else {
-            int size = intFluid.amount;
-            inv.setFluidInSlot(0,new FluidStack(intFluid.getLiquid(),size));
-            decrFluidAmount(0,size);
+        if(inv.acceptedFluids.get(0).contains(intFluid.liquid) || inv.acceptedFluids.get(0).isEmpty()){
+            if(intFluid.amount >= amount){
+                inv.setFluidInSlot(0,new FluidStack(intFluid.getLiquid(),amount));
+                decrFluidAmount(0,amount);
+            } else {
+                int size = intFluid.amount;
+                inv.setFluidInSlot(0,new FluidStack(intFluid.getLiquid(),size));
+                decrFluidAmount(0,size);
+            }
         }
     }
 
     public void extractFromExternalWhenEmpty(TileEntityFluidContainer inv, FluidStack extFluid, int amount){
-        if(extFluid.amount >= amount){
-            setFluidInSlot(0, new FluidStack(extFluid.getLiquid(),amount));
-            inv.decrFluidAmount(0,amount);
-        } else {
-            int size = extFluid.amount;
-            setFluidInSlot(0, new FluidStack(extFluid.getLiquid(),size));
-            inv.decrFluidAmount(0,size);
+        if(acceptedFluids.get(0).contains(extFluid.liquid) || acceptedFluids.get(0).isEmpty()) {
+            if (extFluid.amount >= amount) {
+                setFluidInSlot(0, new FluidStack(extFluid.getLiquid(), amount));
+                inv.decrFluidAmount(0, amount);
+            } else {
+                int size = extFluid.amount;
+                setFluidInSlot(0, new FluidStack(extFluid.getLiquid(), size));
+                inv.decrFluidAmount(0, size);
+            }
         }
     }
 

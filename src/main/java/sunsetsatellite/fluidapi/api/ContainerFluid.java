@@ -82,45 +82,51 @@ public class ContainerFluid extends Container {
             if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucket) {
                 ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
                 if (slot.getFluidStack() == null) {
-                    inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
-                    slot.putStack(new FluidStack(FluidAPI.fluidRegistry.fluids.get(bucket), 1000));
-                    slot.onSlotChanged();
+                    if(tile.acceptedFluids.get(slotID).isEmpty() || tile.acceptedFluids.get(slotID).contains(FluidAPI.fluidRegistry.fluids.get(bucket))){
+                        inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
+                        slot.putStack(new FluidStack(FluidAPI.fluidRegistry.fluids.get(bucket), 1000));
+                        slot.onSlotChanged();
+                    }
                 } else if (slot.getFluidStack() != null && slot.getFluidStack().getLiquid() == FluidAPI.fluidRegistry.fluids.get(bucket)) {
                     if (slot.getFluidStack().amount + 1000 <= tile.getFluidCapacityForSlot(slot.slotIndex)) {
-                        inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
-                        slot.getFluidStack().amount += 1000;
-                        slot.onSlotChanged();
+                        if(tile.acceptedFluids.get(slotID).isEmpty() || tile.acceptedFluids.get(slotID).contains(FluidAPI.fluidRegistry.fluids.get(bucket))){
+                            inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
+                            slot.getFluidStack().amount += 1000;
+                            slot.onSlotChanged();
+                        }
                     }
                 }
             }
             if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof IItemFluidContainer) {
                 IItemFluidContainer item = (IItemFluidContainer) inventoryPlayer.getHeldItemStack().getItem();
                 if(FluidAPI.fluidRegistry.fluids.get(item) != null || FluidAPI.fluidRegistry.fluidContainers.containsValue(item)){
-                    if(item.canDrain(inventoryPlayer.getHeldItemStack())){
-                        if (tile.getFluidInSlot(slot.slotIndex) == null){
-                            item.drain(inventoryPlayer.getHeldItemStack(), slot, tile);
-                            slot.onSlotChanged();
-                        }
-                        else if (tile.getFluidInSlot(slot.slotIndex).amount < tile.getFluidCapacityForSlot(slot.slotIndex)) {
-                            item.drain(inventoryPlayer.getHeldItemStack(), slot, tile);
-                            slot.onSlotChanged();
-                        }
-                        else if(tile.getFluidInSlot(slot.slotIndex).amount >= tile.getFluidCapacityForSlot(slot.slotIndex)){
-                            if(item.canFill(inventoryPlayer.getHeldItemStack())){
-                                ItemStack stack = item.fill(slot,inventoryPlayer.getHeldItemStack());
-                                if(stack != null){
-                                    inventoryPlayer.setHeldItemStack(stack);
-                                    inventoryPlayer.onInventoryChanged();
-                                }
+                    if(tile.acceptedFluids.get(slotID).isEmpty() || tile.acceptedFluids.get(slotID).contains(FluidAPI.fluidRegistry.fluids.get(item))){
+                        if(item.canDrain(inventoryPlayer.getHeldItemStack())){
+                            if (tile.getFluidInSlot(slot.slotIndex) == null){
+                                item.drain(inventoryPlayer.getHeldItemStack(), slot, tile);
                                 slot.onSlotChanged();
                             }
+                            else if (tile.getFluidInSlot(slot.slotIndex).amount < tile.getFluidCapacityForSlot(slot.slotIndex)) {
+                                item.drain(inventoryPlayer.getHeldItemStack(), slot, tile);
+                                slot.onSlotChanged();
+                            }
+                            else if(tile.getFluidInSlot(slot.slotIndex).amount >= tile.getFluidCapacityForSlot(slot.slotIndex)){
+                                if(item.canFill(inventoryPlayer.getHeldItemStack())){
+                                    ItemStack stack = item.fill(slot,inventoryPlayer.getHeldItemStack());
+                                    if(stack != null){
+                                        inventoryPlayer.setHeldItemStack(stack);
+                                        inventoryPlayer.onInventoryChanged();
+                                    }
+                                    slot.onSlotChanged();
+                                }
+                            }
+                        } else if(item.canFill(inventoryPlayer.getHeldItemStack())){
+                            ItemStack stack = item.fill(slot,inventoryPlayer.getHeldItemStack());
+                            if(stack != null){
+                                inventoryPlayer.setHeldItemStack(stack);
+                            }
+                            slot.onSlotChanged();
                         }
-                    } else if(item.canFill(inventoryPlayer.getHeldItemStack())){
-                        ItemStack stack = item.fill(slot,inventoryPlayer.getHeldItemStack());
-                        if(stack != null){
-                            inventoryPlayer.setHeldItemStack(stack);
-                        }
-                        slot.onSlotChanged();
                     }
                 }
             }

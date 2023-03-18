@@ -7,6 +7,7 @@ import sunsetsatellite.fluidapi.mp.packets.PacketUpdateClientFluidRender;
 import sunsetsatellite.fluidapi.util.Connection;
 import sunsetsatellite.fluidapi.util.Direction;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TileEntityFluidContainer extends TileEntity
@@ -14,6 +15,7 @@ public class TileEntityFluidContainer extends TileEntity
     
     public FluidStack[] fluidContents = new FluidStack[1];
     public int[] fluidCapacity = new int[1];
+    public ArrayList<ArrayList<BlockFluid>> acceptedFluids = new ArrayList<>(fluidContents.length);
 
     public FluidStack shownFluid = fluidContents[0];
     public int shownMaxAmount = 0;
@@ -25,6 +27,9 @@ public class TileEntityFluidContainer extends TileEntity
     public TileEntityFluidContainer(){
         for (Direction dir : Direction.values()) {
             connections.put(dir,Connection.NONE);
+        }
+        for (FluidStack ignored : fluidContents) {
+            acceptedFluids.add(new ArrayList<>());
         }
     }
 
@@ -94,6 +99,11 @@ public class TileEntityFluidContainer extends TileEntity
         return fluidCapacity[slot];
     }
 
+    @Override
+    public ArrayList<BlockFluid> getAllowedFluidsForSLot(int slot) {
+        return acceptedFluids.get(slot);
+    }
+
     public int getFluidAmountForSlot(int slot){
         if(fluidContents[0] == null){
             return 0;
@@ -106,10 +116,14 @@ public class TileEntityFluidContainer extends TileEntity
     public void setFluidInSlot(int slot, FluidStack fluid) {
         if(fluid == null){
             this.fluidContents[slot] = null;
+            this.onFluidInventoryChanged();
             return;
         }
-        this.fluidContents[slot] = fluid;
-        this.onFluidInventoryChanged();
+        if(acceptedFluids.get(slot).contains(fluid.liquid) || acceptedFluids.get(slot).isEmpty()){
+            this.fluidContents[slot] = fluid;
+            this.onFluidInventoryChanged();
+        }
+
     }
 
     public void setOrModifyFluidInSlot(int slot, FluidStack fluid, boolean add){

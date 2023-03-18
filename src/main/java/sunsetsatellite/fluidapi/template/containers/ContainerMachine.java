@@ -9,6 +9,7 @@ import sunsetsatellite.fluidapi.template.tiles.TileEntityMachine;
 import sunsetsatellite.fluidapi.api.ContainerFluid;
 import sunsetsatellite.fluidapi.api.SlotFluid;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class ContainerMachine extends ContainerFluid {

@@ -36,7 +36,7 @@ public class BlockFluidTank extends BlockContainer {
         } else
         {
             TileEntityFluidItemContainer tile = (TileEntityFluidItemContainer) world.getBlockTileEntity(i, j, k);
-            ItemStack item = entityplayer.inventory.getCurrentItem();
+            /*ItemStack item = entityplayer.inventory.getCurrentItem();
             if(item != null) {
                 if (item.getItem() instanceof ItemBucketEmpty) {
                     if (entityplayer.inventory.getCurrentItem().getItem() == Item.bucket) {
@@ -87,7 +87,7 @@ public class BlockFluidTank extends BlockContainer {
                     }
                 }
                 return true;
-            }
+            }*/
             if(tile != null) {
                 FluidAPI.displayGui(entityplayer,new GuiFluidTank(entityplayer.inventory, tile),new ContainerFluidTank(entityplayer.inventory,tile),tile);
             }

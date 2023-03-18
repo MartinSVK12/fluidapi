@@ -1,7 +1,10 @@
 package sunsetsatellite.fluidapi.template.tiles;
 
+import net.minecraft.src.Block;
+import net.minecraft.src.BlockFluid;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.Vec3D;
+import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.api.IPipePressurizer;
 import sunsetsatellite.fluidapi.util.Connection;
 import sunsetsatellite.fluidapi.util.Direction;
@@ -17,6 +20,8 @@ public class TileEntityFluidTank extends TileEntityFluidItemContainer
         transferSpeed = 50;
         connections.replace(Direction.Y_POS, Connection.INPUT);
         connections.replace(Direction.Y_NEG, Connection.OUTPUT);
+        acceptedFluids.get(0).add((BlockFluid) FluidAPI.oilFlowing);
+        //acceptedFluids.get(0).add((BlockFluid) Block.fluidWaterFlowing);
     }
 
     @Override
