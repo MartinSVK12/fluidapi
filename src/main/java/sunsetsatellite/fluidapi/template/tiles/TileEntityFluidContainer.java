@@ -88,7 +88,7 @@ public class TileEntityFluidContainer extends TileEntity
 
     @Override
     public FluidStack getFluidInSlot(int slot) {
-        if(this.fluidContents[slot] == null || this.fluidContents[slot].getLiquid() == null){
+        if(this.fluidContents[slot] == null || this.fluidContents[slot].getLiquid() == null || this.fluidContents[slot].amount == 0){
             this.fluidContents[slot] = null;
         }
         return fluidContents[slot];
@@ -114,7 +114,7 @@ public class TileEntityFluidContainer extends TileEntity
 
     @Override
     public void setFluidInSlot(int slot, FluidStack fluid) {
-        if(fluid == null){
+        if(fluid == null || fluid.amount == 0 || fluid.liquid == null){
             this.fluidContents[slot] = null;
             this.onFluidInventoryChanged();
             return;
@@ -142,7 +142,7 @@ public class TileEntityFluidContainer extends TileEntity
     @Override
     public FluidStack decrFluidAmount(int slot, int amount) {
         if(this.fluidContents[slot] != null) {
-            if(this.fluidContents[slot].getLiquid() == null){
+            if(this.fluidContents[slot].getLiquid() == null || this.fluidContents[slot].amount == 0){
                 this.fluidContents[slot] = null;
                 return null;
             }
@@ -169,7 +169,7 @@ public class TileEntityFluidContainer extends TileEntity
     @Override
     public FluidStack incrFluidAmount(int slot, int amount) {
         if(this.fluidContents[slot] != null) {
-            if(this.fluidContents[slot].getLiquid() == null){
+            if(this.fluidContents[slot].getLiquid() == null || this.fluidContents[slot].amount == 0){
                 this.fluidContents[slot] = null;
                 return null;
             }

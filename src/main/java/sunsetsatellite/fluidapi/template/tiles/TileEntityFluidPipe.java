@@ -47,7 +47,7 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
     }
 
     public void AddToExternal(TileEntityFluidContainer inv, FluidStack intFluid, FluidStack extFluid, int amount){
-        if (intFluid.isFluidEqual(extFluid)) {
+        if (intFluid.isFluidEqual(extFluid) && inv.acceptedFluids.get(0).contains(intFluid.liquid)) {
             if (extFluid.amount + amount <= inv.getFluidCapacityForSlot(0)) {
                 if (intFluid.amount >= amount) {
                     inv.incrFluidAmount(0, amount);
@@ -66,7 +66,7 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
     }
 
     public void TakeFromExternal(TileEntityFluidContainer inv, FluidStack intFluid, FluidStack extFluid, int amount){
-        if (intFluid.isFluidEqual(extFluid)) {
+        if (intFluid.isFluidEqual(extFluid) && acceptedFluids.get(0).contains(extFluid)) {
             if (intFluid.amount + amount <= getFluidCapacityForSlot(0)) {
                 if (extFluid.amount >= amount) {
                     inv.decrFluidAmount(0, amount);
