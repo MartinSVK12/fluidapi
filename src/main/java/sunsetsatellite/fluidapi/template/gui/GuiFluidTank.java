@@ -9,7 +9,7 @@ import sunsetsatellite.fluidapi.template.containers.ContainerFluidTank;
 
 public class GuiFluidTank extends GuiFluid {
 
-    String name = "Fluid Tank";
+    public String name = "Fluid Tank";
     public GuiFluidTank(InventoryPlayer inventoryPlayer, TileEntity tile) {
         super(new ContainerFluidTank(inventoryPlayer, (TileEntityFluidItemContainer) tile),inventoryPlayer);
     }

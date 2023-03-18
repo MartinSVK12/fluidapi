@@ -10,7 +10,7 @@ import sunsetsatellite.fluidapi.template.containers.ContainerMachine;
 
 public class GuiMachine extends GuiFluid {
 
-    String name = "Fluid Machine";
+    public String name = "Fluid Machine";
     public GuiMachine(InventoryPlayer inventoryPlayer, TileEntity tile) {
         super(new ContainerMachine(inventoryPlayer, (TileEntityFluidItemContainer) tile),inventoryPlayer);
         machine = (TileEntityMachine)tile;
