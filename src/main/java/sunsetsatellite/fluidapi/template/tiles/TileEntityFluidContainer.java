@@ -203,21 +203,21 @@ public class TileEntityFluidContainer extends TileEntity
 
 
 
-    public void moveFluids(Direction dir, TileEntityFluidPipe tile, int amount){
+    public void moveFluids(Direction dir, TileEntityFluidPipe tile, int amount) {
         if(connections.get(dir) != Connection.NONE && connections.get(dir) == Connection.OUTPUT){
             if(getFluidInSlot(0) != null){
                 if(tile.getFluidInSlot(0) != null){
-                    tile.AddToExternal(this, tile.getFluidInSlot(0),this.getFluidInSlot(0), amount);
+                    tile.TakeFromExternal(this, tile.getFluidInSlot(0),this.getFluidInSlot(0), amount);
                 } else {
-                    tile.insertIntoEmptyExternal(this,tile.getFluidInSlot(0), amount);
+                    tile.extractFromExternalWhenEmpty(this,getFluidInSlot(0), amount);
                 }
             }
         } else if(connections.get(dir) != Connection.NONE && connections.get(dir) == Connection.INPUT){
             if(tile.getFluidInSlot(0) != null){
                 if(getFluidInSlot(0) != null){
-                    tile.TakeFromExternal(this, tile.getFluidInSlot(0),this.getFluidInSlot(0), amount);
+                    tile.AddToExternal(this, tile.getFluidInSlot(0),this.getFluidInSlot(0), amount);
                 } else {
-                    tile.extractFromExternalWhenEmpty(this, getFluidInSlot(0), amount);
+                    tile.insertIntoEmptyExternal(this, tile.getFluidInSlot(0), amount);
                 }
             }
         }
