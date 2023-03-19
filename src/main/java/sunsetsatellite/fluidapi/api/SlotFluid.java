@@ -40,7 +40,11 @@ public class SlotFluid {
     }
 
     public void putStack(FluidStack stack) {
-        if(fluidInventory.getAllowedFluidsForSLot(slotIndex).isEmpty() || fluidInventory.getAllowedFluidsForSLot(slotIndex).contains(stack.liquid)){
+        if(stack == null){
+            this.fluidInventory.setFluidInSlot(this.slotIndex,null);
+            this.onSlotChanged();
+        }
+        else if(fluidInventory.getAllowedFluidsForSLot(slotIndex).isEmpty() || fluidInventory.getAllowedFluidsForSLot(slotIndex).contains(stack.liquid)){
             this.fluidInventory.setFluidInSlot(this.slotIndex, stack);
             this.onSlotChanged();
         }
