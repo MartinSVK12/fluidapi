@@ -100,7 +100,7 @@ public class ContainerFluid extends Container {
             if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof IItemFluidContainer) {
                 IItemFluidContainer item = (IItemFluidContainer) inventoryPlayer.getHeldItemStack().getItem();
                 if(FluidAPI.fluidRegistry.fluids.get(item) != null || FluidAPI.fluidRegistry.fluidContainers.containsValue(item)){
-                    if(tile.acceptedFluids.get(slotID).isEmpty() || tile.acceptedFluids.get(slotID).contains(FluidAPI.fluidRegistry.fluids.get(item))){
+                    if(tile.acceptedFluids.get(slotID).isEmpty() || tile.acceptedFluids.get(slotID).contains(FluidAPI.fluidRegistry.fluids.get(item)) || (IItemFluidContainer) (FluidAPI.fluidRegistry.fluidContainers.get(FluidAPI.fluidRegistry.fluidsInv.get(slot.getFluidStack().liquid))) == item){
                         if(item.canDrain(inventoryPlayer.getHeldItemStack())){
                             if (tile.getFluidInSlot(slot.slotIndex) == null){
                                 item.drain(inventoryPlayer.getHeldItemStack(), slot, tile);
