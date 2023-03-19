@@ -70,7 +70,7 @@ public class ContainerFluid extends Container {
         SlotFluid slot = fluidSlots.get(slotID);
         InventoryPlayer inventoryPlayer = entityplayer.inventory;
         if(slot != null){
-            if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucketEmpty) {
+            if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucketEmpty && FluidAPI.fluidRegistry.fluidContainers.get(FluidAPI.fluidRegistry.fluidsInv.get(slot.getFluidStack().liquid)) == inventoryPlayer.getHeldItemStack().getItem()) {
                 if (slot.getFluidStack() != null && slot.getFluidStack().amount >= 1000) {
                     inventoryPlayer.setHeldItemStack(new ItemStack(FluidAPI.fluidRegistry.fluidsInv.get(slot.getFluidStack().liquid), 1));
                     tile.decrFluidAmount(slot.slotIndex, 1000);
