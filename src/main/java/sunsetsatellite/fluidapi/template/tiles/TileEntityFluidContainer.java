@@ -9,6 +9,7 @@ import sunsetsatellite.fluidapi.util.Direction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class TileEntityFluidContainer extends TileEntity
     implements IFluidInventory {
@@ -23,10 +24,12 @@ public class TileEntityFluidContainer extends TileEntity
     public int transferSpeed = 20;
 
     public HashMap<Direction, Connection> connections = new HashMap<>();
+    public HashMap<Direction, Integer> activeFluidSlots = new HashMap<>();
 
     public TileEntityFluidContainer(){
         for (Direction dir : Direction.values()) {
             connections.put(dir,Connection.NONE);
+            activeFluidSlots.put(dir,0);
         }
         for (FluidStack ignored : fluidContents) {
             acceptedFluids.add(new ArrayList<>());
@@ -51,6 +54,16 @@ public class TileEntityFluidContainer extends TileEntity
             }
         }
 
+        NBTTagCompound connectionsTag = nBTTagCompound1.getCompoundTag("fluidConnections");
+        for (Object con : connectionsTag.func_28110_c()) {
+            connections.replace(Direction.values()[Integer.parseInt(((NBTTagInt)con).getKey())],Connection.values()[((NBTTagInt)con).intValue]);
+        }
+
+        NBTTagCompound activeFluidSlotsTag = nBTTagCompound1.getCompoundTag("fluidActiveSlots");
+        for (Object con : activeFluidSlotsTag.func_28110_c()) {
+            activeFluidSlots.replace(Direction.values()[Integer.parseInt(((NBTTagInt)con).getKey())],((NBTTagInt) con).intValue);
+        }
+
     }
 
     @Override
@@ -69,7 +82,8 @@ public class TileEntityFluidContainer extends TileEntity
         super.writeToNBT(nBTTagCompound1);
         NBTTagList nBTTagList2 = new NBTTagList();
         NBTTagList nbtTagList = new NBTTagList();
-
+        NBTTagCompound connectionsTag = new NBTTagCompound();
+        NBTTagCompound activeFluidSlotsTag = new NBTTagCompound();
         for(int i3 = 0; i3 < this.fluidContents.length; ++i3) {
             if(this.fluidContents[i3] != null && this.fluidContents[i3].getLiquid() != null) {
                 NBTTagCompound nBTTagCompound4 = new NBTTagCompound();
@@ -78,6 +92,17 @@ public class TileEntityFluidContainer extends TileEntity
                 nbtTagList.setTag(nBTTagCompound4);
             }
         }
+        for (Map.Entry<Direction, Integer> entry : activeFluidSlots.entrySet()) {
+            Direction dir = entry.getKey();
+            activeFluidSlotsTag.setInteger(String.valueOf(dir.ordinal()),entry.getValue());
+        }
+        for (Map.Entry<Direction, Connection> entry : connections.entrySet()) {
+            Direction dir = entry.getKey();
+            Connection con = entry.getValue();
+            connectionsTag.setInteger(String.valueOf(dir.ordinal()),con.ordinal());
+        }
+        nBTTagCompound1.setCompoundTag("fluidConnections",connectionsTag);
+        nBTTagCompound1.setCompoundTag("fluidActiveSlots",activeFluidSlotsTag);
         nBTTagCompound1.setTag("Fluids", nbtTagList);
         nBTTagCompound1.setTag("Items", nBTTagList2);
     }
@@ -207,17 +232,17 @@ public class TileEntityFluidContainer extends TileEntity
         if(connections.get(dir) != Connection.NONE && connections.get(dir) == Connection.OUTPUT){
             if(getFluidInSlot(0) != null){
                 if(tile.getFluidInSlot(0) != null){
-                    tile.TakeFromExternal(this, tile.getFluidInSlot(0),this.getFluidInSlot(0), amount);
+                    tile.TakeFromExternal(this, tile.getFluidInSlot(0),this.getFluidInSlot(0), amount,dir);
                 } else {
-                    tile.extractFromExternalWhenEmpty(this,getFluidInSlot(0), amount);
+                    tile.extractFromExternalWhenEmpty(this,getFluidInSlot(0), amount,dir);
                 }
             }
         } else if(connections.get(dir) != Connection.NONE && connections.get(dir) == Connection.INPUT){
             if(tile.getFluidInSlot(0) != null){
                 if(getFluidInSlot(0) != null){
-                    tile.AddToExternal(this, tile.getFluidInSlot(0),this.getFluidInSlot(0), amount);
+                    tile.AddToExternal(this, tile.getFluidInSlot(0),this.getFluidInSlot(0), amount,dir);
                 } else {
-                    tile.insertIntoEmptyExternal(this, tile.getFluidInSlot(0), amount);
+                    tile.insertIntoEmptyExternal(this, tile.getFluidInSlot(0), amount,dir);
                 }
             }
         }
