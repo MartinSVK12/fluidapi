@@ -26,24 +26,24 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
         if(inv.acceptedFluids.get(activeSlot).contains(intFluid.liquid) || inv.acceptedFluids.get(activeSlot).isEmpty()){
             if(intFluid.amount >= amount){
                 inv.setFluidInSlot(activeSlot,new FluidStack(intFluid.getLiquid(),amount));
-                decrFluidAmount(activeSlot,amount);
+                decrFluidAmount(0,amount);
             } else {
                 int size = intFluid.amount;
                 inv.setFluidInSlot(activeSlot,new FluidStack(intFluid.getLiquid(),size));
-                decrFluidAmount(activeSlot,size);
+                decrFluidAmount(0,size);
             }
         }
     }
 
     public void extractFromExternalWhenEmpty(TileEntityFluidContainer inv, FluidStack extFluid, int amount, Direction dir){
         Integer activeSlot = inv.activeFluidSlots.get(dir.getOpposite());
-        if(acceptedFluids.get(activeSlot).contains(extFluid.liquid) || acceptedFluids.get(activeSlot).isEmpty()) {
+        if(acceptedFluids.get(0).contains(extFluid.liquid) || acceptedFluids.get(0).isEmpty()) {
             if (extFluid.amount >= amount) {
-                setFluidInSlot(activeSlot, new FluidStack(extFluid.getLiquid(), amount));
+                setFluidInSlot(0, new FluidStack(extFluid.getLiquid(), amount));
                 inv.decrFluidAmount(activeSlot, amount);
             } else {
                 int size = extFluid.amount;
-                setFluidInSlot(activeSlot, new FluidStack(extFluid.getLiquid(), size));
+                setFluidInSlot(0, new FluidStack(extFluid.getLiquid(), size));
                 inv.decrFluidAmount(activeSlot, size);
             }
         }
@@ -55,36 +55,36 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
             if (extFluid.amount + amount <= inv.getFluidCapacityForSlot(activeSlot)) {
                 if (intFluid.amount >= amount) {
                     inv.incrFluidAmount(activeSlot, amount);
-                    decrFluidAmount(activeSlot, amount);
+                    decrFluidAmount(0, amount);
                 } else {
                     int size = intFluid.amount;
                     inv.incrFluidAmount(activeSlot, size);
-                    decrFluidAmount(activeSlot, size);
+                    decrFluidAmount(0, size);
                 }
             } else if(extFluid.amount + amount > inv.getFluidCapacityForSlot(activeSlot)){
                 int size = inv.getFluidCapacityForSlot(activeSlot) - extFluid.amount;
                 inv.incrFluidAmount(activeSlot, size);
-                decrFluidAmount(activeSlot, size);
+                decrFluidAmount(0, size);
             }
         }
     }
 
     public void TakeFromExternal(TileEntityFluidContainer inv, FluidStack intFluid, FluidStack extFluid, int amount, Direction dir){
         Integer activeSlot = inv.activeFluidSlots.get(dir.getOpposite());
-        if (intFluid.isFluidEqual(extFluid) && (acceptedFluids.get(activeSlot).contains(extFluid.liquid) || acceptedFluids.get(activeSlot).isEmpty())) {
-            if (intFluid.amount + amount <= getFluidCapacityForSlot(activeSlot)) {
+        if (intFluid.isFluidEqual(extFluid) && (acceptedFluids.get(0).contains(extFluid.liquid) || acceptedFluids.get(0).isEmpty())) {
+            if (intFluid.amount + amount <= getFluidCapacityForSlot(0)) {
                 if (extFluid.amount >= amount) {
                     inv.decrFluidAmount(activeSlot, amount);
-                    incrFluidAmount(activeSlot, amount);
+                    incrFluidAmount(0, amount);
                 } else {
                     int size = extFluid.amount;
                     inv.decrFluidAmount(activeSlot, size);
-                    incrFluidAmount(activeSlot, size);
+                    incrFluidAmount(0, size);
                 }
             } else if(intFluid.amount + amount > inv.getFluidCapacityForSlot(activeSlot)){
                 int size = inv.getFluidCapacityForSlot(activeSlot) - intFluid.amount;
                 inv.decrFluidAmount(activeSlot, size);
-                incrFluidAmount(activeSlot, size);
+                incrFluidAmount(0, size);
             }
         }
     }
