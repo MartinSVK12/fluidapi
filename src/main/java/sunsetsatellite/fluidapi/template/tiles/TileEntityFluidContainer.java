@@ -232,18 +232,18 @@ public class TileEntityFluidContainer extends TileEntity
         Integer activeSlot = activeFluidSlots.get(dir);
         if(connections.get(dir) != Connection.NONE && connections.get(dir) == Connection.OUTPUT){
             if(getFluidInSlot(activeSlot) != null){
-                if(tile.getFluidInSlot(activeSlot) != null){
-                    tile.TakeFromExternal(this, tile.getFluidInSlot(activeSlot),this.getFluidInSlot(activeSlot), amount,dir);
+                if(tile.getFluidInSlot(0) != null){
+                    tile.TakeFromExternal(this, tile.getFluidInSlot(0),this.getFluidInSlot(activeSlot), amount,dir);
                 } else {
                     tile.extractFromExternalWhenEmpty(this,getFluidInSlot(activeSlot), amount,dir);
                 }
             }
         } else if(connections.get(dir) != Connection.NONE && connections.get(dir) == Connection.INPUT){
-            if(tile.getFluidInSlot(activeSlot) != null){
+            if(tile.getFluidInSlot(0) != null){
                 if(getFluidInSlot(activeSlot) != null){
-                    tile.AddToExternal(this, tile.getFluidInSlot(activeSlot),this.getFluidInSlot(activeSlot), amount,dir);
+                    tile.AddToExternal(this, tile.getFluidInSlot(0),this.getFluidInSlot(activeSlot), amount,dir);
                 } else {
-                    tile.insertIntoEmptyExternal(this, tile.getFluidInSlot(activeSlot), amount,dir);
+                    tile.insertIntoEmptyExternal(this, tile.getFluidInSlot(0), amount,dir);
                 }
             }
         }
