@@ -22,7 +22,7 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
     }
 
     public void insertIntoEmptyExternal(TileEntityFluidContainer inv, FluidStack intFluid, int amount, Direction dir){
-        Integer activeSlot = inv.activeFluidSlots.get(dir.getOpposite());
+        Integer activeSlot = inv.activeFluidSlots.get(dir);
         if(inv.acceptedFluids.get(activeSlot).contains(intFluid.liquid) || inv.acceptedFluids.get(activeSlot).isEmpty()){
             if(intFluid.amount >= amount){
                 inv.setFluidInSlot(activeSlot,new FluidStack(intFluid.getLiquid(),amount));
@@ -36,7 +36,7 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
     }
 
     public void extractFromExternalWhenEmpty(TileEntityFluidContainer inv, FluidStack extFluid, int amount, Direction dir){
-        Integer activeSlot = inv.activeFluidSlots.get(dir.getOpposite());
+        Integer activeSlot = inv.activeFluidSlots.get(dir);
         if(acceptedFluids.get(0).contains(extFluid.liquid) || acceptedFluids.get(0).isEmpty()) {
             if (extFluid.amount >= amount) {
                 setFluidInSlot(0, new FluidStack(extFluid.getLiquid(), amount));
@@ -50,7 +50,7 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
     }
 
     public void AddToExternal(TileEntityFluidContainer inv, FluidStack intFluid, FluidStack extFluid, int amount, Direction dir){
-        Integer activeSlot = inv.activeFluidSlots.get(dir.getOpposite());
+        Integer activeSlot = inv.activeFluidSlots.get(dir);
         if (intFluid.isFluidEqual(extFluid) && (inv.acceptedFluids.get(activeSlot).contains(intFluid.liquid) || inv.acceptedFluids.get(activeSlot).isEmpty())) {
             if (extFluid.amount + amount <= inv.getFluidCapacityForSlot(activeSlot)) {
                 if (intFluid.amount >= amount) {
@@ -70,7 +70,7 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
     }
 
     public void TakeFromExternal(TileEntityFluidContainer inv, FluidStack intFluid, FluidStack extFluid, int amount, Direction dir){
-        Integer activeSlot = inv.activeFluidSlots.get(dir.getOpposite());
+        Integer activeSlot = inv.activeFluidSlots.get(dir);
         if (intFluid.isFluidEqual(extFluid) && (acceptedFluids.get(0).contains(extFluid.liquid) || acceptedFluids.get(0).isEmpty())) {
             if (intFluid.amount + amount <= getFluidCapacityForSlot(0)) {
                 if (extFluid.amount >= amount) {
