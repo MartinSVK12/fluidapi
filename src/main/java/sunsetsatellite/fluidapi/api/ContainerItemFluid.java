@@ -7,7 +7,7 @@ import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayerMP;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContainertItemFluid extends Container {
+public class ContainerItemFluid extends Container {
 
     public ArrayList<SlotFluid> fluidSlots = new ArrayList<>();
     public List<FluidStack> fluidItemStacks = new ArrayList<>();
@@ -21,7 +21,7 @@ public class ContainertItemFluid extends Container {
     public SlotFluid getFluidSlot(int idx) { return this.fluidSlots.get(idx); }
     public void putFluidInSlot(int idx, FluidStack fluid) { this.getFluidSlot(idx).putStack(fluid);}
 
-    public ContainertItemFluid(IInventory iInventory, ItemInventoryFluid inv){
+    public ContainerItemFluid(IInventory iInventory, ItemInventoryFluid inv){
         this.inv = inv;
     }
 
