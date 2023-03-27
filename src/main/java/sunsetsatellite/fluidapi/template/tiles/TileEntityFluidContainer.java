@@ -125,7 +125,7 @@ public class TileEntityFluidContainer extends TileEntity
     }
 
     @Override
-    public ArrayList<BlockFluid> getAllowedFluidsForSLot(int slot) {
+    public ArrayList<BlockFluid> getAllowedFluidsForSlot(int slot) {
         return acceptedFluids.get(slot);
     }
 
