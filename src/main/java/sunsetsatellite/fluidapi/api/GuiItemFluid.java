@@ -8,10 +8,10 @@ import org.lwjgl.opengl.GL12;
 import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.interfaces.mixins.IPlayerController;
 
-public class GuiFluid extends GuiContainer {
+public class GuiItemFluid extends GuiContainer {
 
-    public GuiFluid(ContainerFluid containerFluid, InventoryPlayer invP) {
-        super(containerFluid);
+    public GuiItemFluid(ContainerItemFluid ContainerItemFluid, InventoryPlayer invP) {
+        super(ContainerItemFluid);
         inventoryPlayer = invP;
     }
 
@@ -31,7 +31,7 @@ public class GuiFluid extends GuiContainer {
         int i9;
         int i10;
         SlotFluid slot6 = null;
-        ContainerFluid fluidContainer = ((ContainerFluid) inventorySlots);
+        ContainerItemFluid fluidContainer = ((ContainerItemFluid) inventorySlots);
         for(int i7 = 0; i7 < fluidContainer.fluidSlots.size(); i7++) {
             SlotFluid slot8 = fluidContainer.fluidSlots.get(i7);
             this.drawFluidSlotInventory(slot8);
@@ -52,13 +52,13 @@ public class GuiFluid extends GuiContainer {
                 i9 = i1 - i4 + 12;
                 i10 = i2 - i5 - 12;
                 int i11 = this.fontRenderer.getStringWidth(string13);
-                int w = mc.fontRenderer.getStringWidth(slot6.getFluidStack().amount+"/"+fluidContainer.tile.getFluidCapacityForSlot(slot6.slotIndex)+" mB");
+                int w = mc.fontRenderer.getStringWidth(slot6.getFluidStack().amount+"/"+fluidContainer.inv.getFluidCapacityForSlot(slot6.slotIndex)+" mB");
                 if (i11 < w) {
                     i11 = w;
                 }
                 drawGradientRect(i9 - 3, i10 - 3, i9 + i11 + 3, i10 + 8 + 15, 0xc0000000, 0xc0000000);
                 fontRenderer.drawStringWithShadow(string13, i9, i10, -1);
-                fontRenderer.drawStringWithShadow(slot6.getFluidStack().amount+"/"+fluidContainer.tile.getFluidCapacityForSlot(slot6.slotIndex)+" mB", i9, i10 + 12, 0xFF808080);
+                fontRenderer.drawStringWithShadow(slot6.getFluidStack().amount+"/"+fluidContainer.inv.getFluidCapacityForSlot(slot6.slotIndex)+" mB", i9, i10 + 12, 0xFF808080);
             }
         }
         GL11.glPopMatrix();
@@ -99,9 +99,9 @@ public class GuiFluid extends GuiContainer {
             }
 
             itemRender.renderItemIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack4, i2, i3,1.0F);
-            ContainerFluid container = ((ContainerFluid) inventorySlots);
+            ContainerItemFluid container = ((ContainerItemFluid) inventorySlots);
             if(slot1.getFluidStack().getLiquid() == Block.fluidWaterFlowing){
-                Color c = new Color().setARGB(Block.fluidWaterFlowing.colorMultiplier(this.mc.theWorld, this.mc.theWorld,container.tile.xCoord,container.tile.yCoord,container.tile.zCoord));
+                Color c = new Color().setARGB(Block.fluidWaterFlowing.colorMultiplier(this.mc.theWorld, this.mc.theWorld,(int)inventoryPlayer.player.posX,(int)inventoryPlayer.player.posY,(int)inventoryPlayer.player.posZ));
                 c.setRGBA(c.getRed(),c.getGreen(),c.getBlue(),0x40);
                 this.drawRect(slot1.xPos, slot1.yPos, slot1.xPos+16, slot1.yPos+16,c.value);
             }
@@ -110,7 +110,7 @@ public class GuiFluid extends GuiContainer {
     }
 
     private SlotFluid getFluidSlotAtPosition(int i1, int i2) {
-        ContainerFluid fluidContainer = ((ContainerFluid) inventorySlots);
+        ContainerItemFluid fluidContainer = ((ContainerItemFluid) inventorySlots);
         for(int i3 = 0; i3 < fluidContainer.fluidSlots.size(); ++i3) {
             SlotFluid slot4 = fluidContainer.fluidSlots.get(i3);
             if(this.getIsMouseOverFluidSlot(slot4, i1, i2)) {
