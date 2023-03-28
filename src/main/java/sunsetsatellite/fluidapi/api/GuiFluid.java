@@ -10,7 +10,7 @@ import sunsetsatellite.fluidapi.interfaces.mixins.IPlayerController;
 
 public class GuiFluid extends GuiContainer {
 
-    public GuiFluid(ContainerFluid containerFluid, InventoryPlayer invP) {
+    public GuiFluid(Container containerFluid, InventoryPlayer invP) {
         super(containerFluid);
         inventoryPlayer = invP;
     }
