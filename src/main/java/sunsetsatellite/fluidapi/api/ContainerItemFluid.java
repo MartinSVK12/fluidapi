@@ -33,7 +33,7 @@ public class ContainerItemFluid extends Container {
         return true;
     }
 
-    protected ItemInventoryFluid inv;
+    public ItemInventoryFluid inv;
 
     @Override
     public void updateInventory() {
