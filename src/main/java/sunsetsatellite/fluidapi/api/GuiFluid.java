@@ -76,7 +76,7 @@ public class GuiFluid extends GuiContainer {
         super.drawGuiContainerForegroundLayer();
     }
 
-    private boolean getIsMouseOverFluidSlot(SlotFluid slot1, int i2, int i3) {
+    protected boolean getIsMouseOverFluidSlot(SlotFluid slot1, int i2, int i3) {
         int i4 = (this.width - this.xSize) / 2;
         int i5 = (this.height - this.ySize) / 2;
         i2 -= i4;
@@ -84,7 +84,7 @@ public class GuiFluid extends GuiContainer {
         return i2 >= slot1.xPos - 1 && i2 < slot1.xPos + 16 + 1 && i3 >= slot1.yPos - 1 && i3 < slot1.yPos + 16 + 1;
     }
 
-    private void drawFluidSlotInventory(SlotFluid slot1) {
+    protected void drawFluidSlotInventory(SlotFluid slot1) {
         int i2 = slot1.xPos;
         int i3 = slot1.yPos;
         if(slot1.getHasStack() && slot1.getFluidStack().liquid != null){
@@ -109,7 +109,7 @@ public class GuiFluid extends GuiContainer {
         }
     }
 
-    private SlotFluid getFluidSlotAtPosition(int i1, int i2) {
+    protected SlotFluid getFluidSlotAtPosition(int i1, int i2) {
         ContainerFluid fluidContainer = ((ContainerFluid) inventorySlots);
         for(int i3 = 0; i3 < fluidContainer.fluidSlots.size(); ++i3) {
             SlotFluid slot4 = fluidContainer.fluidSlots.get(i3);
