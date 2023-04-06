@@ -7,6 +7,7 @@ import sunsetsatellite.fluidapi.util.Direction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class TileEntityFluidItemContainer extends TileEntityFluidContainer
     implements IInventory {
@@ -93,12 +94,24 @@ public class TileEntityFluidItemContainer extends TileEntityFluidContainer
             }
         }
 
+        NBTTagCompound connectionsTag = nBTTagCompound1.getCompoundTag("itemConnections");
+        for (Object con : connectionsTag.func_28110_c()) {
+            itemConnections.replace(Direction.values()[Integer.parseInt(((NBTTagInt)con).getKey())],Connection.values()[((NBTTagInt)con).intValue]);
+        }
+
+        NBTTagCompound activeItemSlotsTag = nBTTagCompound1.getCompoundTag("itemActiveSlots");
+        for (Object con : activeItemSlotsTag.func_28110_c()) {
+            activeItemSlots.replace(Direction.values()[Integer.parseInt(((NBTTagInt)con).getKey())],((NBTTagInt) con).intValue);
+        }
+
     }
 
     public void writeToNBT(NBTTagCompound nBTTagCompound1) {
         super.writeToNBT(nBTTagCompound1);
         NBTTagList nBTTagList2 = new NBTTagList();
         NBTTagList nbtTagList = new NBTTagList();
+        NBTTagCompound connectionsTag = new NBTTagCompound();
+        NBTTagCompound activeItemSlotsTag = new NBTTagCompound();
 
         for(int i3 = 0; i3 < this.itemContents.length; ++i3) {
             if(this.itemContents[i3] != null) {
@@ -117,6 +130,17 @@ public class TileEntityFluidItemContainer extends TileEntityFluidContainer
                 nBTTagList2.setTag(nBTTagCompound4);
             }
         }
+        for (Map.Entry<Direction, Integer> entry : activeItemSlots.entrySet()) {
+            Direction dir = entry.getKey();
+            activeItemSlotsTag.setInteger(String.valueOf(dir.ordinal()),entry.getValue());
+        }
+        for (Map.Entry<Direction, Connection> entry : itemConnections.entrySet()) {
+            Direction dir = entry.getKey();
+            Connection con = entry.getValue();
+            connectionsTag.setInteger(String.valueOf(dir.ordinal()),con.ordinal());
+        }
+        nBTTagCompound1.setCompoundTag("itemConnections",connectionsTag);
+        nBTTagCompound1.setCompoundTag("itemActiveSlots",activeItemSlotsTag);
         nBTTagCompound1.setTag("Items", nbtTagList);
         nBTTagCompound1.setTag("Fluids", nBTTagList2);
     }
