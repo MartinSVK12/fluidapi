@@ -22,8 +22,6 @@ import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidTank;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityMachine;
 import sunsetsatellite.fluidapi.util.Config;
-import sunsetsatellite.guidebookpp.CustomGuidebookRecipeRegistry;
-import sunsetsatellite.guidebookpp.GuidebookCustomRecipePlugin;
 import turniplabs.halplibe.helper.*;
 
 import java.lang.reflect.Field;
@@ -161,7 +159,7 @@ public class FluidAPI implements ModInitializer {
 
     public static void displayGui(EntityPlayer entityplayer, GuiScreen guiScreen, Container container, IInventory tile) {
         if(entityplayer instanceof EntityPlayerMP) {
-            ((IEntityPlayerMP)entityplayer).displayGuiScreen(guiScreen,container,tile);
+            ((IEntityPlayerMP)entityplayer).displayGuiScreen_fluidapi(guiScreen,container,tile);
         } else {
             Minecraft.getMinecraft().displayGuiScreen(guiScreen);
         }

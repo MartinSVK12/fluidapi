@@ -25,7 +25,7 @@ public abstract class EntityPlayerMPMixin extends EntityPlayer implements IEntit
     @Shadow private int currentWindowId;
 
     @Override
-    public void displayGuiScreen(GuiScreen guiScreen, Container container, IInventory inventory) {
+    public void displayGuiScreen_fluidapi(GuiScreen guiScreen, Container container, IInventory inventory) {
         this.getNextWindowId();
         this.playerNetServerHandler.sendPacket(new Packet100OpenWindow(this.currentWindowId, Config.getFromConfig("GuiID",8), inventory.getInvName(), inventory.getSizeInventory()));
         this.craftingInventory = container;

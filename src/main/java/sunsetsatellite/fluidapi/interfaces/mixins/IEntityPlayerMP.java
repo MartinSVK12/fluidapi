@@ -6,7 +6,7 @@ import net.minecraft.src.IInventory;
 import sunsetsatellite.fluidapi.api.FluidStack;
 
 public interface IEntityPlayerMP {
-    void displayGuiScreen(GuiScreen guiScreen, Container container, IInventory inventory);
+    void displayGuiScreen_fluidapi(GuiScreen guiScreen, Container container, IInventory inventory);
 
     void updateFluidSlot(Container container, int i, FluidStack fluidStack);
 }
