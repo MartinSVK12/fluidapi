@@ -2,11 +2,29 @@ package sunsetsatellite.fluidapi.template.tiles;
 
 import net.minecraft.src.*;
 import sunsetsatellite.fluidapi.api.FluidStack;
+import sunsetsatellite.fluidapi.util.Connection;
+import sunsetsatellite.fluidapi.util.Direction;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TileEntityFluidItemContainer extends TileEntityFluidContainer
     implements IInventory {
 
     protected ItemStack[] itemContents = new ItemStack[2];
+
+    public HashMap<Direction, Connection> itemConnections = new HashMap<>();
+    public HashMap<Direction, Integer> activeItemSlots = new HashMap<>();
+
+    public TileEntityFluidItemContainer(){
+        for (Direction dir : Direction.values()) {
+            itemConnections.put(dir,Connection.NONE);
+            activeItemSlots.put(dir,0);
+        }
+        for (FluidStack ignored : fluidContents) {
+            acceptedFluids.add(new ArrayList<>());
+        }
+    }
 
     public int getSizeInventory() {
         return itemContents.length;
