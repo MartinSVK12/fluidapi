@@ -70,6 +70,10 @@ dependencies {
 		exclude(group: 'objects', module: 'client')
 	}
 
+	modImplementation("com.github.MartinSVK12:sunsetutils:1.0"){
+		exclude(group: 'objects', module: 'client')
+	}
+
 }
 
 java {

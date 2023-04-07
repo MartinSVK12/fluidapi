@@ -6,8 +6,8 @@ import net.minecraft.src.TileEntity;
 import net.minecraft.src.Vec3D;
 import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.api.IPipePressurizer;
-import sunsetsatellite.fluidapi.util.Connection;
-import sunsetsatellite.fluidapi.util.Direction;
+import sunsetsatellite.sunsetutils.util.Connection;
+import sunsetsatellite.sunsetutils.util.Direction;
 
 import java.util.ArrayList;
 import java.util.HashMap;

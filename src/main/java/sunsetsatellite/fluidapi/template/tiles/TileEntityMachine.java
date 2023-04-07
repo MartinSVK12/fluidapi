@@ -1,8 +1,8 @@
 package sunsetsatellite.fluidapi.template.tiles;
 
 import net.minecraft.src.*;
-import sunsetsatellite.fluidapi.util.Connection;
-import sunsetsatellite.fluidapi.util.Direction;
+import sunsetsatellite.sunsetutils.util.Connection;
+import sunsetsatellite.sunsetutils.util.Direction;
 import sunsetsatellite.fluidapi.util.MachineRecipes;
 import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.api.IPipePressurizer;

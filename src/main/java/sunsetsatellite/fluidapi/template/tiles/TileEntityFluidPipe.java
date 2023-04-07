@@ -3,7 +3,7 @@ package sunsetsatellite.fluidapi.template.tiles;
 import net.minecraft.src.TileEntity;
 import org.lwjgl.Sys;
 import sunsetsatellite.fluidapi.api.FluidStack;
-import sunsetsatellite.fluidapi.util.Direction;
+import sunsetsatellite.sunsetutils.util.Direction;
 
 import java.util.HashMap;
 import java.util.Objects;

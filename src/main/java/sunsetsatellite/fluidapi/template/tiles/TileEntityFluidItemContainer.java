@@ -2,8 +2,8 @@ package sunsetsatellite.fluidapi.template.tiles;
 
 import net.minecraft.src.*;
 import sunsetsatellite.fluidapi.api.FluidStack;
-import sunsetsatellite.fluidapi.util.Connection;
-import sunsetsatellite.fluidapi.util.Direction;
+import sunsetsatellite.sunsetutils.util.Connection;
+import sunsetsatellite.sunsetutils.util.Direction;
 
 import java.util.ArrayList;
 import java.util.HashMap;

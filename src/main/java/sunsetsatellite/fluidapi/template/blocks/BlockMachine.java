@@ -6,7 +6,7 @@ import sunsetsatellite.fluidapi.template.containers.ContainerMachine;
 import sunsetsatellite.fluidapi.template.gui.GuiMachine;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityMachine;
-import sunsetsatellite.fluidapi.util.Direction;
+import sunsetsatellite.sunsetutils.util.Direction;
 
 import java.util.ArrayList;
 import java.util.Random;
