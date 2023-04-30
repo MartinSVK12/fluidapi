@@ -43,6 +43,22 @@ repositories {
 		metadataSources { artifact() }
 	}
 	ivy {
+		url = "https://github.com/MartinSVK12"
+		patternLayout {
+			artifact "[organisation]/releases/download/[revision]-BTA/[module]-[revision].jar"
+			m2compatible = true
+		}
+		metadataSources { artifact() }
+	}
+	ivy {
+		url = "https://github.com/MartinSVK12"
+		patternLayout {
+			artifact "[organisation]/releases/download/[revision]/[module]-[revision].jar"
+			m2compatible = true
+		}
+		metadataSources { artifact() }
+	}
+	ivy {
 		url = "https://piston-data.mojang.com"
 		patternLayout {
 			artifact "v1/[organisation]/[revision]/[module].jar"
@@ -66,11 +82,11 @@ dependencies {
 	modImplementation "org.slf4j:slf4j-api:1.8.0-beta4"
 	modImplementation "org.apache.logging.log4j:log4j-slf4j18-impl:2.16.0"
 
-	modImplementation('com.github.MartinSVK12:guidebookpp:1.4.1') {
+	modImplementation('guidebookpp:guidebookpp:1.4.1') {
 		exclude(group: 'objects', module: 'client')
 	}
 
-	modImplementation("com.github.MartinSVK12:sunsetutils:1.0"){
+	modImplementation("sunsetutils:sunsetutils:1.0"){
 		exclude(group: 'objects', module: 'client')
 	}
 
