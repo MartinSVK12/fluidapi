@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "fluidapi",
-  "version": "1.4",
+  "version": "1.4.1",
 
   "name": "Fluid API (BTA)",
   "description": "API for fluid transport and storage.",
@@ -21,12 +21,12 @@
     "main": [
         "sunsetsatellite.fluidapi.FluidAPI"
     ],
-    "guidebookpp": [
-        "sunsetsatellite.fluidapi.gbookpp.FluidPlugin"
-    ],
     "fluidapi": [
         "sunsetsatellite.fluidapi.DefaultPlugin",
       "sunsetsatellite.fluidapi.OilPlugin"
+    ],
+    "guidebookpp": [
+      "sunsetsatellite.fluidapi.gbookpp.FluidPlugin"
     ]
   },
   "mixins": [
@@ -40,6 +40,6 @@
     "minecraft": "1.7.6"
   },
   "suggests": {
-    "guidebookpp": ">=1.4"
+    "guidebookpp": ">=1.5"
   }
 }

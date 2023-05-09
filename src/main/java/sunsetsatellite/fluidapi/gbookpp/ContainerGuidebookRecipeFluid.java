@@ -5,18 +5,19 @@ import org.lwjgl.opengl.GL11;
 import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.guidebookpp.GuidebookPlusPlus;
 import sunsetsatellite.guidebookpp.IContainerRecipeBase;
+import sunsetsatellite.guidebookpp.recipes.RecipeBase;
 
 import java.util.ArrayList;
 
 public class ContainerGuidebookRecipeFluid extends ContainerGuidebookRecipeBase
     implements IContainerRecipeBase {
 
-    public ContainerGuidebookRecipeFluid(ItemStack stack, ArrayList<ItemStack> itemInputs, ArrayList<FluidStack> fluidInputs, ArrayList<ItemStack> itemOutputs, ArrayList<FluidStack> fluidOutputs) {
-        this.addSlot(new SlotGuidebook(0, 9, 10, itemInputs.get(0), false));
-        this.addSlot(new SlotGuidebook(1, 69, 19, new ItemStack(fluidOutputs.get(0).liquid,fluidOutputs.get(0).amount), false));
+    public ContainerGuidebookRecipeFluid(ItemStack stack, RecipeFluid recipeFluid) {
+        this.addSlot(new SlotGuidebook(0, 9, 10, recipeFluid.itemInputs.get(0), false));
+        this.addSlot(new SlotGuidebook(1, 69, 19, new ItemStack(recipeFluid.fluidOutputs.get(0).liquid,recipeFluid.fluidOutputs.get(0).amount), false));
     }
 
-    public void drawContainer(GuiGuidebook guidebook, int xSize, int ySize, int index){
+    public void drawContainer(GuiGuidebook guidebook, int xSize, int ySize, int index, RecipeBase recipeBase){
         int i = GuidebookPlusPlus.mc.renderEngine.getTexture("/assets/fluidapi/gui/fluid_recipe_test.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GuidebookPlusPlus.mc.renderEngine.bindTexture(i);
