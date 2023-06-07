@@ -4,6 +4,9 @@ import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import sunsetsatellite.fluidapi.FluidAPI;
+import sunsetsatellite.fluidapi.FluidRegistry;
+
+import java.util.Objects;
 
 import static net.minecraft.src.ItemBucketEmpty.UseBucket;
 
@@ -41,17 +44,29 @@ public class ItemBucketEmptyMixin {
                 int k = movingobjectposition.blockZ;
                 if (world.getBlockId(i, j, k) != 0){
                     Block block = Block.blocksList[world.getBlockId(i, j, k)-1];
-                    if (FluidAPI.fluidRegistry.fluids.containsValue(block) && world.getBlockMetadata(i, j, k) == 0) {
-                        if (UseBucket(entityplayer, new ItemStack(FluidAPI.fluidRegistry.fluidsInv.get(block)))) {
+                    if (block instanceof BlockFluid && world.getBlockMetadata(i, j, k) == 0) {
+                        if (getFilledBucket(entityplayer, new ItemStack(Objects.requireNonNull(FluidRegistry.findFilledContainer(entityplayer.inventory.getCurrentItem().getItem(), (BlockFluid) block))))) {
                             world.setBlockWithNotify(i, j, k, 0);
                             entityplayer.swingItem();
                         }
                     }
                 }
             } else if (movingobjectposition.entityHit instanceof EntityCow) {
-                UseBucket(entityplayer, new ItemStack(Item.bucketMilk));
+                getFilledBucket(entityplayer, new ItemStack(Item.bucketMilk));
             }
         }
         return itemstack;
+    }
+
+    private static boolean getFilledBucket(EntityPlayer entityPlayer, ItemStack ItemToGive) {
+        if (entityPlayer.inventory.getCurrentItem().stackSize <= 1) {
+            entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, ItemToGive);
+            return true;
+        } else if (entityPlayer.inventory.addItemStackToInventory(ItemToGive)) {
+            entityPlayer.inventory.getCurrentItem().consumeItem(entityPlayer);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -33,7 +33,6 @@ public class FluidAPI implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static HashMap<String, ArrayList<Class<?>>> nameToGuiMap = new HashMap<>();
-    public static FluidRegistry fluidRegistry = new FluidRegistry();
 
     public FluidAPI(){
         Config.init();
@@ -70,8 +69,9 @@ public class FluidAPI implements ModInitializer {
         }
         LOGGER.info("Loading plugins..");
         FabricLoader.getInstance().getEntrypointContainers("fluidapi", FluidAPIPlugin.class).forEach(plugin -> {
-            plugin.getEntrypoint().initializePlugin(fluidRegistry,LOGGER);
+            plugin.getEntrypoint().initializePlugin(LOGGER);
         });
+        LOGGER.info("Fluid registry contains "+FluidRegistry.registry.size()+" entries.");
         LOGGER.info("FluidAPI initialized.");
     }
 
