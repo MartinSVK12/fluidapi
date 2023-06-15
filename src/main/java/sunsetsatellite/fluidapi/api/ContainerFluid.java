@@ -35,7 +35,7 @@ public class ContainerFluid extends Container {
         return true;
     }
 
-    protected TileEntityFluidItemContainer tile;
+    public TileEntityFluidItemContainer tile;
 
     @Override
     public void updateInventory() {
@@ -78,7 +78,7 @@ public class ContainerFluid extends Container {
                     Item item = FluidRegistry.findFilledContainer(inventoryPlayer.getHeldItemStack().getItem(),slot.getFluidStack().liquid);
                     if(item != null){
                         inventoryPlayer.setHeldItemStack(new ItemStack(item, 1));
-                        tile.decrFluidAmount(slot.slotIndex, 1000);
+                        tile.fluidContents[slot.slotIndex].amount -= 1000;
                         slot.onPickupFromSlot(slot.getFluidStack());
                         slot.onSlotChanged();
                         return fluidSlots.get(slotID).getFluidStack();

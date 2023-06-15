@@ -77,7 +77,8 @@ public class ContainerItemFluid extends Container {
                     Item item = FluidRegistry.findFilledContainer(inventoryPlayer.getHeldItemStack().getItem(),slot.getFluidStack().liquid);
                     if(item != null){
                         inventoryPlayer.setHeldItemStack(new ItemStack(item, 1));
-                        inv.decrFluidAmount(slot.slotIndex, 1000);
+                        inv.fluidContents[slot.slotIndex].amount -= 1000;
+                        //inv.decrFluidAmount(slot.slotIndex, 1000);
                         slot.onPickupFromSlot(slot.getFluidStack());
                         slot.onSlotChanged();
                         return fluidSlots.get(slotID).getFluidStack();

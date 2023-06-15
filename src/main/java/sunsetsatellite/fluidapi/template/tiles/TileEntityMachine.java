@@ -130,7 +130,7 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
             if(fluidContents[0] == null){
                 setFluidInSlot(0, stack);
             } else if(getFluidInSlot(0).getLiquid() == stack.getLiquid()) {
-                incrFluidAmount(0, stack.amount);
+                fluidContents[0].amount += stack.amount;
             }
             if(this.itemContents[0].getItem().hasContainerItem()) {
                 this.itemContents[0] = new ItemStack(this.itemContents[0].getItem().getContainerItem());
@@ -167,7 +167,7 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
             TileEntity tile = dir.getTileEntity(worldObj,this);
             if (tile instanceof TileEntityFluidPipe) {
                 pressurizePipes((TileEntityFluidPipe) tile, new ArrayList<>());
-                moveFluids(dir, (TileEntityFluidPipe) tile, transferSpeed);
+                moveFluids(dir, (TileEntityFluidPipe) tile);
                 ((TileEntityFluidPipe) tile).rememberTicks = 100;
             }
         }

@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TileEntityFluidTank extends TileEntityFluidItemContainer
+public class TileEntityMultiFluidTank extends TileEntityMassFluidItemContainer
     implements IPipePressurizer {
-    public TileEntityFluidTank(){
-        fluidCapacity[0] = 8000;
+    public TileEntityMultiFluidTank(){
+        fluidCapacity = 16000;
         transferSpeed = 50;
         connections.replace(Direction.Y_POS, Connection.INPUT);
         connections.replace(Direction.Y_NEG, Connection.OUTPUT);
-        acceptedFluids.get(0).addAll(FluidRegistry.getAllFluids());
+        acceptedFluids.addAll(FluidRegistry.getAllFluids());
     }
 
     @Override
@@ -28,7 +28,7 @@ public class TileEntityFluidTank extends TileEntityFluidItemContainer
 
     @Override
     public String getInvName() {
-        return "Fluid Tank";
+        return "Multi Fluid Tank";
     }
 
     public void extractFluids(){

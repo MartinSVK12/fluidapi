@@ -16,11 +16,14 @@ import sunsetsatellite.fluidapi.render.RenderFluidInPipe;
 import sunsetsatellite.fluidapi.template.blocks.BlockFluidPipe;
 import sunsetsatellite.fluidapi.template.blocks.BlockFluidTank;
 import sunsetsatellite.fluidapi.template.blocks.BlockMachine;
+import sunsetsatellite.fluidapi.template.blocks.BlockMultiFluidTank;
 import sunsetsatellite.fluidapi.template.gui.GuiFluidTank;
 import sunsetsatellite.fluidapi.template.gui.GuiMachine;
+import sunsetsatellite.fluidapi.template.gui.GuiMultiFluidTank;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidTank;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityMachine;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityMultiFluidTank;
 import sunsetsatellite.fluidapi.util.Config;
 import turniplabs.halplibe.helper.*;
 
@@ -36,10 +39,16 @@ public class FluidAPI implements ModInitializer {
 
     public FluidAPI(){
         Config.init();
-        PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketSetFluidSlotID",110),true,false, PacketSetFluidSlot.class);
+        /*PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketSetFluidSlotID",110),true,false, PacketSetFluidSlot.class);
         PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketFluidWindowClickID",111),false,true, PacketFluidWindowClick.class);
-        PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketUpdateClientFluidRenderID",112),true,false, PacketUpdateClientFluidRender.class);
+        PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketUpdateClientFluidRenderID",112),true,false, PacketUpdateClientFluidRender.class);*/
 
+        if(Config.getFromConfig("enableMultiTank",1) == 1){
+            fluidTank = BlockHelper.createBlock(MOD_ID,new BlockMultiFluidTank(Config.getFromConfig("multiFluidTank",906),Material.glass),"multiFluidTank","tank.png",Block.soundGlassFootstep,1,1,0);
+            EntityHelper.createTileEntity(TileEntityMultiFluidTank.class,"Multi Fluid Tank");
+            addToNameGuiMap("Multi Fluid Tank", GuiMultiFluidTank.class, TileEntityMultiFluidTank.class);
+
+        }
         if(Config.getFromConfig("enableTank",1) == 1){
             fluidTank = BlockHelper.createBlock(MOD_ID,new BlockFluidTank(Config.getFromConfig("fluidTank",900),Material.glass),"fluidTank","tank.png",Block.soundGlassFootstep,1,1,0);
             EntityHelper.createSpecialTileEntity(TileEntityFluidTank.class,new RenderFluidInBlock(),"Fluid Tank");

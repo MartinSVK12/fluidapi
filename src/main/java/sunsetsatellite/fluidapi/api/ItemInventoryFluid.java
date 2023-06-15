@@ -4,6 +4,7 @@ import net.minecraft.src.BlockFluid;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
+import sunsetsatellite.sunsetutils.util.Direction;
 
 import java.util.ArrayList;
 
@@ -118,7 +119,7 @@ public class ItemInventoryFluid implements IInventory, IFluidInventory {
 
     }
 
-    public void setOrModifyFluidInSlot(int slot, FluidStack fluid, boolean add){
+    /*public void setOrModifyFluidInSlot(int slot, FluidStack fluid, boolean add){
         if(getFluidInSlot(0) == null){
             setFluidInSlot(0, fluid);
         } else if(getFluidInSlot(0).isFluidEqual(fluid)){
@@ -129,9 +130,9 @@ public class ItemInventoryFluid implements IInventory, IFluidInventory {
             }
         }
         this.onFluidInventoryChanged();
-    }
+    }*/
 
-    @Override
+    /*@Override
     public FluidStack decrFluidAmount(int slot, int amount) {
         if(this.fluidContents[slot] != null) {
             if(this.fluidContents[slot].getLiquid() == null || this.fluidContents[slot].amount == 0){
@@ -179,7 +180,7 @@ public class ItemInventoryFluid implements IInventory, IFluidInventory {
         } else {
             return null;
         }
-    }
+    }*/
 
     @Override
     public int getFluidInventorySize() {
@@ -189,6 +190,41 @@ public class ItemInventoryFluid implements IInventory, IFluidInventory {
     @Override
     public void onFluidInventoryChanged() {
 
+    }
+
+    @Override
+    public int getTransferSpeed() {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public int getActiveFluidSlot(Direction dir) {
+        return 0;
+    }
+
+    @Override
+    public FluidStack insertFluid(int slot, FluidStack fluidStack) {
+        FluidStack stack = fluidContents[slot];
+        FluidStack split = fluidStack.splitStack(Math.min(fluidStack.amount,getRemainingCapacity(slot)));
+        if(stack != null){
+            fluidContents[slot].amount += split.amount;
+        } else {
+            fluidContents[slot] = split;
+        }
+        return fluidStack;
+    }
+
+    @Override
+    public int getRemainingCapacity(int slot) {
+        if(fluidContents[slot] == null){
+            return fluidCapacity[slot];
+        }
+        return fluidCapacity[slot]-fluidContents[slot].amount;
+    }
+
+    @Override
+    public boolean canInsertFluid(int slot,FluidStack fluidStack){
+        return Math.min(fluidStack.amount,getRemainingCapacity(slot)) > 0;
     }
 
 

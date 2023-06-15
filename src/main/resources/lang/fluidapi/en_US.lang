@@ -1,5 +1,7 @@
 tile.fluidapi.fluidTank.name=Fluid Tank
 tile.fluidapi.fluidTank.desc=Holds 8 buckets of any fluid.
+tile.fluidapi.multiFluidTank.name=Multi Fluid Tank
+tile.fluidapi.multiFluidTank.desc=Holds 16 buckets of any number of fluids.
 tile.fluidapi.fluidPipe.name=Fluid Pipe
 tile.fluidapi.fluidPipe.desc=Transports fluids around.
 tile.fluidapi.fluidMachine.name=Fluid Machine

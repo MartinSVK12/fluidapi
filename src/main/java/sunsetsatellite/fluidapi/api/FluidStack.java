@@ -55,6 +55,10 @@ public final class FluidStack {
         return stack.liquid == liquid;
     }
 
+    public boolean isFluidEqual(BlockFluid fluid){
+        return liquid == fluid;
+    }
+
     public boolean isStackEqual(FluidStack stack){
         return stack.liquid == liquid && stack.amount == amount;
     }

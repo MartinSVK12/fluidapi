@@ -2,7 +2,11 @@ package sunsetsatellite.fluidapi.template.tiles;
 
 import net.minecraft.src.TileEntity;
 import org.lwjgl.Sys;
+import sunsetsatellite.fluidapi.FluidRegistry;
 import sunsetsatellite.fluidapi.api.FluidStack;
+import sunsetsatellite.fluidapi.api.IFluidInventory;
+import sunsetsatellite.fluidapi.api.IMassFluidInventory;
+import sunsetsatellite.sunsetutils.util.Connection;
 import sunsetsatellite.sunsetutils.util.Direction;
 
 import java.util.HashMap;
@@ -15,13 +19,20 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
     public float size = 0.5f;
 
     public int rememberTicks = 0;
+    public int maxRememberTicks = 100;
 
     public TileEntityFluidPipe(){
-        fluidCapacity[0] = 1000;
+        fluidCapacity[0] = 2000;
         transferSpeed = 20;
+        for (Direction dir : Direction.values()) {
+            connections.put(dir, Connection.BOTH);
+            activeFluidSlots.put(dir,0);
+        }
+        acceptedFluids.get(0).addAll(FluidRegistry.getAllFluids());
+
     }
 
-    public void insertIntoEmptyExternal(TileEntityFluidContainer inv, FluidStack intFluid, int amount, Direction dir){
+    /*public void insertIntoEmptyExternal(TileEntityFluidContainer inv, FluidStack intFluid, int amount, Direction dir){
         Integer activeSlot = inv.activeFluidSlots.get(dir);
         if(inv.acceptedFluids.get(activeSlot).contains(intFluid.liquid) || inv.acceptedFluids.get(activeSlot).isEmpty()){
             if(intFluid.amount >= amount){
@@ -87,7 +98,7 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
                 incrFluidAmount(0, size);
             }
         }
-    }
+    }*/
 
     @Override
     public String getInvName() {
@@ -98,7 +109,7 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
     public void updateEntity() {
         super.updateEntity();
         rememberTicks++;
-        if(rememberTicks >= 100){
+        if(rememberTicks >= maxRememberTicks){
             rememberTicks = 0;
             last = null;
         }
@@ -108,7 +119,31 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
         }
         neighbors.forEach((side, tile) -> {
             if (tile instanceof TileEntityFluidPipe && !tile.equals(last)) {
-                TileEntityFluidContainer inv = (TileEntityFluidPipe) tile;
+                TileEntityFluidPipe inv = (TileEntityFluidPipe) tile;
+                Integer activeSlot = inv.activeFluidSlots.get(side.getOpposite());
+                FluidStack intFluid = getFluidInSlot(0);
+                FluidStack extFluid = inv.getFluidInSlot(activeSlot);
+                //TODO: Readd "pressure" mechanic (fluids cant climb up if pipes are unpressurized)
+                if (isPressurized) {
+                    if (intFluid != null && extFluid == null) {
+                        last = (TileEntityFluidPipe) tile;
+                        ((TileEntityFluidPipe) tile).last = this;
+                        give(side);
+                    } else if (intFluid == null && extFluid != null) {
+                        last = (TileEntityFluidPipe) tile;
+                        ((TileEntityFluidPipe) tile).last = this;
+                        take(extFluid,side);
+                    } else if (intFluid != null) { //if both internal and external aren't null
+                        last = (TileEntityFluidPipe) tile;
+                        ((TileEntityFluidPipe) tile).last = this;
+                        if (intFluid.amount < extFluid.amount) {
+                            take(extFluid,side);
+                        } else {
+                            give(side);
+                        }
+                    }
+                }
+                /*TileEntityFluidContainer inv = (TileEntityFluidPipe) tile;
                 Integer activeSlot = inv.activeFluidSlots.get(side.getOpposite());
                 FluidStack intFluid = getFluidInSlot(activeSlot);
                 FluidStack extFluid = inv.getFluidInSlot(activeSlot);
@@ -148,7 +183,7 @@ public class TileEntityFluidPipe extends TileEntityFluidContainer{
                             }
                         }
                     }
-                }
+                }*/
             }
         });
     }

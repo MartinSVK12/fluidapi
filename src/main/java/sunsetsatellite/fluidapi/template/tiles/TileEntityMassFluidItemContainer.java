@@ -9,15 +9,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TileEntityFluidItemContainer extends TileEntityFluidContainer
-    implements IInventory {
-
+public class TileEntityMassFluidItemContainer extends TileEntityMassFluidContainer implements IInventory {
     protected ItemStack[] itemContents = new ItemStack[2];
 
     public HashMap<Direction, Connection> itemConnections = new HashMap<>();
     public HashMap<Direction, Integer> activeItemSlots = new HashMap<>();
 
-    public TileEntityFluidItemContainer(){
+    public TileEntityMassFluidItemContainer(){
         for (Direction dir : Direction.values()) {
             itemConnections.put(dir,Connection.NONE);
             activeItemSlots.put(dir,0);
@@ -80,17 +78,6 @@ public class TileEntityFluidItemContainer extends TileEntityFluidContainer
             }
         }
 
-        NBTTagList nbtTagList = nBTTagCompound1.getTagList("Fluids");
-        this.fluidContents = new FluidStack[this.getFluidInventorySize()];
-
-        for(int i3 = 0; i3 < nbtTagList.tagCount(); ++i3) {
-            NBTTagCompound nBTTagCompound4 = (NBTTagCompound)nbtTagList.tagAt(i3);
-            int i5 = nBTTagCompound4.getByte("Slot") & 255;
-            if(i5 >= 0 && i5 < this.fluidContents.length) {
-                this.fluidContents[i5] = new FluidStack(nBTTagCompound4);
-            }
-        }
-
         NBTTagCompound connectionsTag = nBTTagCompound1.getCompoundTag("itemConnections");
         for (Object con : connectionsTag.func_28110_c()) {
             itemConnections.replace(Direction.values()[Integer.parseInt(((NBTTagInt)con).getKey())],Connection.values()[((NBTTagInt)con).intValue]);
@@ -105,7 +92,6 @@ public class TileEntityFluidItemContainer extends TileEntityFluidContainer
 
     public void writeToNBT(NBTTagCompound nBTTagCompound1) {
         super.writeToNBT(nBTTagCompound1);
-        NBTTagList nBTTagList2 = new NBTTagList();
         NBTTagList nbtTagList = new NBTTagList();
         NBTTagCompound connectionsTag = new NBTTagCompound();
         NBTTagCompound activeItemSlotsTag = new NBTTagCompound();
@@ -119,14 +105,6 @@ public class TileEntityFluidItemContainer extends TileEntityFluidContainer
             }
         }
 
-        for(int i3 = 0; i3 < this.fluidContents.length; ++i3) {
-            if(this.fluidContents[i3] != null && this.fluidContents[i3].amount != 0 && this.fluidContents[i3].liquid != null) {
-                NBTTagCompound nBTTagCompound4 = new NBTTagCompound();
-                nBTTagCompound4.setByte("Slot", (byte)i3);
-                this.fluidContents[i3].writeToNBT(nBTTagCompound4);
-                nBTTagList2.setTag(nBTTagCompound4);
-            }
-        }
         for (Map.Entry<Direction, Integer> entry : activeItemSlots.entrySet()) {
             Direction dir = entry.getKey();
             activeItemSlotsTag.setInteger(String.valueOf(dir.ordinal()),entry.getValue());
@@ -139,7 +117,6 @@ public class TileEntityFluidItemContainer extends TileEntityFluidContainer
         nBTTagCompound1.setCompoundTag("itemConnections",connectionsTag);
         nBTTagCompound1.setCompoundTag("itemActiveSlots",activeItemSlotsTag);
         nBTTagCompound1.setTag("Items", nbtTagList);
-        nBTTagCompound1.setTag("Fluids", nBTTagList2);
     }
 
     public int getInventoryStackLimit() {

@@ -1,16 +1,22 @@
 package sunsetsatellite.fluidapi.api;
 
 import net.minecraft.src.BlockFluid;
+import sunsetsatellite.sunsetutils.util.Direction;
 
 import java.util.ArrayList;
 
 public interface IFluidInventory {
+    boolean canInsertFluid(int slot, FluidStack fluidStack);
     FluidStack getFluidInSlot(int slot);
     int getFluidCapacityForSlot(int slot);
     ArrayList<BlockFluid> getAllowedFluidsForSlot(int slot);
     void setFluidInSlot(int slot, FluidStack fluid);
-    FluidStack decrFluidAmount(int slot, int amount);
-    FluidStack incrFluidAmount(int slot, int amount);
+    FluidStack insertFluid(int slot, FluidStack fluidStack);
+    int getRemainingCapacity(int slot);
     int getFluidInventorySize();
     void onFluidInventoryChanged();
+
+    int getTransferSpeed();
+
+    int getActiveFluidSlot(Direction dir);
 }
