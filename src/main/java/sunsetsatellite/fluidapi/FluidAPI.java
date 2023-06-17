@@ -92,7 +92,7 @@ public class FluidAPI implements ModInitializer {
         TextureHelper.addTextureToTerrain(modId,texture,origin[0]+2,origin[1]);
         TextureHelper.addTextureToTerrain(modId,texture,origin[0]+1,origin[1]+1);
         TextureHelper.addTextureToTerrain(modId,texture,origin[0]+2,origin[1]+1);
-        return new int[]{origin[0],origin[1],origin[0]+1,origin[1]-1,origin[0]+2,origin[1]-1,origin[0]+1,origin[1],origin[0]+2,origin[1],origin[0],origin[1]};
+        return new int[]{origin[0],origin[1],origin[0]+1,origin[1]+1,origin[0]+2,origin[1]+1,origin[0]+1,origin[1],origin[0]+2,origin[1],origin[0],origin[1]};
     }
 
     public static Block fluidTank;
