@@ -2,7 +2,7 @@ package sunsetsatellite.fluidapi.api;
 
 import net.minecraft.src.*;
 
-public final class FluidStack {
+public class FluidStack {
     public int amount;
     public BlockFluid liquid;
 

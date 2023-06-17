@@ -1,6 +1,7 @@
 package sunsetsatellite.fluidapi.api;
 
 import net.minecraft.src.*;
+import net.minecraft.src.command.ChatColor;
 import net.minecraft.src.helper.Color;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -47,19 +48,12 @@ public class GuiFluid extends GuiContainer {
             }
         }
         if(slot6 != null && slot6.getHasStack() && slot6.getFluidStack().getLiquid() != null) {
-            String string13 = ("" + StringTranslate.getInstance().translateNamedKey(slot6.getFluidStack().getLiquid().getBlockName(0))).trim();
-            if(string13.length() > 0) {
-                i9 = i1 - i4 + 12;
-                i10 = i2 - i5 - 12;
-                int i11 = this.fontRenderer.getStringWidth(string13);
-                int w = mc.fontRenderer.getStringWidth(slot6.getFluidStack().amount+"/"+fluidContainer.tile.getFluidCapacityForSlot(slot6.slotIndex)+" mB");
-                if (i11 < w) {
-                    i11 = w;
-                }
-                drawGradientRect(i9 - 3, i10 - 3, i9 + i11 + 3, i10 + 8 + 15, 0xc0000000, 0xc0000000);
-                fontRenderer.drawStringWithShadow(string13, i9, i10, -1);
-                fontRenderer.drawStringWithShadow(slot6.getFluidStack().amount+"/"+fluidContainer.tile.getFluidCapacityForSlot(slot6.slotIndex)+" mB", i9, i10 + 12, 0xFF808080);
-            }
+            i9 = i1 - i4;
+            i10 = i2 - i5;
+            String name = StringTranslate.getInstance().translateNamedKey(slot6.getFluidStack().getLiquid().getBlockName(0)).replace("Flowing ","").replace("Still ","");
+            String amount = slot6.getFluidStack().amount+"/"+fluidContainer.tile.getFluidCapacityForSlot(slot6.slotIndex)+" mB";
+            String percent = " ("+Math.round(((float)slot6.getFluidStack().amount/(float)fluidContainer.tile.getFluidCapacityForSlot(slot6.slotIndex))*100)+"%)";
+            drawTooltip(name+"\n"+ ChatColor.lightGray+amount+percent,i9,i10,8,-8,true);
         }
         GL11.glPopMatrix();
         GL11.glEnable(GL11.GL_LIGHTING);

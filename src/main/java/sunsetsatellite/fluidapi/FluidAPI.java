@@ -13,6 +13,7 @@ import sunsetsatellite.fluidapi.mp.packets.PacketSetFluidSlot;
 import sunsetsatellite.fluidapi.mp.packets.PacketUpdateClientFluidRender;
 import sunsetsatellite.fluidapi.render.RenderFluidInBlock;
 import sunsetsatellite.fluidapi.render.RenderFluidInPipe;
+import sunsetsatellite.fluidapi.render.RenderMultiFluidInBlock;
 import sunsetsatellite.fluidapi.template.blocks.BlockFluidPipe;
 import sunsetsatellite.fluidapi.template.blocks.BlockFluidTank;
 import sunsetsatellite.fluidapi.template.blocks.BlockMachine;
@@ -45,7 +46,7 @@ public class FluidAPI implements ModInitializer {
 
         if(Config.getFromConfig("enableMultiTank",1) == 1){
             fluidTank = BlockHelper.createBlock(MOD_ID,new BlockMultiFluidTank(Config.getFromConfig("multiFluidTank",906),Material.glass),"multiFluidTank","tank.png",Block.soundGlassFootstep,1,1,0);
-            EntityHelper.createTileEntity(TileEntityMultiFluidTank.class,"Multi Fluid Tank");
+            EntityHelper.createSpecialTileEntity(TileEntityMultiFluidTank.class,new RenderMultiFluidInBlock(),"Multi Fluid Tank");
             addToNameGuiMap("Multi Fluid Tank", GuiMultiFluidTank.class, TileEntityMultiFluidTank.class);
 
         }
@@ -101,35 +102,6 @@ public class FluidAPI implements ModInitializer {
     public static Block oilStill;
     public static Item bucketOil;
     public static int[] oilTex;
-    
-
-
-
-    /*public static void registerFluids(){
-        for (Item b : Item.itemsList) {
-            try {
-                if(b instanceof ItemBucket){
-                    int fluidId = (int) FluidAPI.getPrivateValue(ItemBucket.class,b,0);
-                    if(fluidId > 0){
-
-                    }
-                }
-            } catch (NoSuchFieldException ignored) {}
-        }
-
-        LOGGER.info("Registered fluids:");
-        fluids.forEach((K,V)->{
-            LOGGER.info(K.getItemName() + " -> " + V.getBlockName(0));
-        });
-        LOGGER.info("Inverse:");
-        fluidsInv.forEach((K,V)->{
-            LOGGER.info(K.getBlockName(0) + " -> " + V.getItemName());
-        });
-        LOGGER.info("Containers:");
-        fluidContainers.forEach((K,V)->{
-            LOGGER.info(K.getItemName() + " -> " + V.getItemName());
-        });
-    }*/
 
     public static double map(double valueCoord1,
                              double startCoord1, double endCoord1,
