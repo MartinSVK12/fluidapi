@@ -7,10 +7,8 @@ import net.minecraft.src.helper.Color;
 import org.lwjgl.opengl.GL11;
 import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.api.*;
-import sunsetsatellite.fluidapi.template.containers.ContainerFluidTank;
+import sunsetsatellite.fluidapi.render.RenderFluid;
 import sunsetsatellite.fluidapi.template.containers.ContainerMultiFluidTank;
-import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
-import sunsetsatellite.fluidapi.template.tiles.TileEntityMassFluidContainer;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityMassFluidItemContainer;
 
 import java.util.ArrayList;
@@ -59,12 +57,12 @@ public class GuiMultiFluidTank extends GuiContainer {
                     int j = (width - xSize) / 2;
                     int k = (height - ySize) / 2;
                     int fluidBarSize = (int) FluidAPI.map(fluidStack.amount,0,tile.fluidCapacity,2,sizeY-3);
+                    RenderFluid.drawFluidIntoGui(fontRenderer, this.mc.renderEngine, fluid.blockID, 0, fluid.getBlockTextureFromSide(0), x, y+i-fluidBarSize-2, sizeX-2, fluidBarSize);
                     if (fluidStack.getLiquid() == Block.fluidWaterFlowing && Minecraft.getMinecraft().gameSettings.biomeWater.value) {
                         Color c = new Color().setARGB(Block.fluidWaterFlowing.colorMultiplier(this.mc.theWorld, this.mc.theWorld, tile.xCoord, tile.yCoord, tile.zCoord));
                         c.setRGBA(c.getRed(), c.getGreen(), c.getBlue(), 0x40);
-                        this.drawRect(x,y+i-fluidBarSize,x+sizeX-2,(y+i-fluidBarSize-2)+fluidBarSize, c.value);
+                        RenderFluid.drawFluidIntoGui(fontRenderer, this.mc.renderEngine, fluid.blockID, 0, fluid.getBlockTextureFromSide(0), x, y+i-fluidBarSize-2, sizeX-2, fluidBarSize, c.value);
                     }
-                    drawItemIntoGui(fontRenderer, this.mc.renderEngine, fluid.blockID, 0, fluid.getBlockTextureFromSide(0), x, y+i-fluidBarSize-2, sizeX-2, fluidBarSize,1f,1f);
                     fluidLayers.add(new FluidLayer(id,x,y+i-fluidBarSize-2,sizeX-2,fluidBarSize,fluidStack));
                     id++;
 
@@ -72,40 +70,6 @@ public class GuiMultiFluidTank extends GuiContainer {
                 }
             }
         }
-    }
-
-    @Override
-    protected void drawRect(int minX, int minY, int maxX, int maxY, int i1) {
-        int temp;
-        if (minX < maxX) {
-            temp = minX;
-            minX = maxX;
-            maxX = temp;
-        }
-
-        if (minY < maxY) {
-            temp = minY;
-            minY = maxY;
-            maxY = temp;
-        }
-
-        float f = (float)(i1 >> 24 & 255) / 255.0F;
-        float f1 = (float)(i1 >> 16 & 255) / 255.0F;
-        float f2 = (float)(i1 >> 8 & 255) / 255.0F;
-        float f3 = (float)(i1 & 255) / 255.0F;
-        Tessellator tessellator = Tessellator.instance;
-        GL11.glEnable(3042);
-        GL11.glDisable(3553);
-        GL11.glBlendFunc(770, 771);
-        GL11.glColor4f(f1, f2, f3, f);
-        tessellator.startDrawingQuads();
-        tessellator.addVertex(minX, maxY, 0.0);
-        tessellator.addVertex(maxX, maxY, 0.0);
-        tessellator.addVertex(maxX, minY, 0.0);
-        tessellator.addVertex(minX, minY, 0.0);
-        tessellator.draw();
-        GL11.glEnable(3553);
-        GL11.glDisable(3042);
     }
 
     public FluidLayer getFluidLayerAtPosition(int x, int y){
@@ -148,34 +112,6 @@ public class GuiMultiFluidTank extends GuiContainer {
                 });
             }
         }
-    }
-
-    public void drawItemIntoGui(FontRenderer fontrenderer, RenderEngine renderengine, int id, int meta, int iconIndex, int x, int y, int sizeX, int sizeY, float brightness, float alpha) {
-        //GL11.glDisable(2896);
-        int tileWidth;
-        if (id < Block.blocksList.length) {
-            renderengine.bindTexture(renderengine.getTexture("/terrain.png"));
-            tileWidth = TextureFX.tileWidthTerrain;
-        } else {
-            renderengine.bindTexture(renderengine.getTexture("/gui/items.png"));
-            tileWidth = TextureFX.tileWidthItems;
-        }
-        //GL11.glColor4f(brightness, brightness, brightness, alpha);
-        renderTexturedQuad(x, y, sizeX, sizeY, iconIndex % net.minecraft.shared.Minecraft.TEXTURE_ATLAS_WIDTH_TILES * tileWidth, iconIndex / net.minecraft.shared.Minecraft.TEXTURE_ATLAS_WIDTH_TILES * tileWidth, tileWidth, tileWidth);
-        //GL11.glEnable(2896);
-        GL11.glEnable(2884);
-    }
-
-    public void renderTexturedQuad(int x, int y, int sizeX, int sizeY, int tileX, int tileY, int tileWidth, int tileHeight) {
-        float f1 = 1.0F / (float)(net.minecraft.shared.Minecraft.TEXTURE_ATLAS_WIDTH_TILES * tileWidth);
-        float f2 = 1.0F / (float)(net.minecraft.shared.Minecraft.TEXTURE_ATLAS_WIDTH_TILES * tileHeight);
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(x, y + sizeY, 0.0, (float)(tileX) * f1, (float)(tileY + tileHeight) * f2);
-        tessellator.addVertexWithUV(x + sizeX, y + sizeY, 0.0, (float)(tileX + tileWidth) * f1, (float)(tileY + tileHeight) * f2);
-        tessellator.addVertexWithUV(x + sizeX, y, 0.0, (float)(tileX + tileWidth) * f1, (float)(tileY) * f2);
-        tessellator.addVertexWithUV(x, y, 0.0, (float)(tileX) * f1, (float)(tileY) * f2);
-        tessellator.draw();
     }
 
     protected void drawGuiContainerForegroundLayer()

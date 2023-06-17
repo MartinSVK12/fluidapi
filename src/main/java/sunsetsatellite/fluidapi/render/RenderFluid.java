@@ -618,4 +618,56 @@ public class RenderFluid {
         tessellator.draw();
     }
 
+    public static void drawFluidIntoGui(FontRenderer fontrenderer, RenderEngine renderengine, int id, int meta, int iconIndex, int x, int y, int sizeX, int sizeY) {
+        int tileWidth;
+        if (id < Block.blocksList.length) {
+            renderengine.bindTexture(renderengine.getTexture("/terrain.png"));
+            tileWidth = TextureFX.tileWidthTerrain;
+        } else {
+            renderengine.bindTexture(renderengine.getTexture("/gui/items.png"));
+            tileWidth = TextureFX.tileWidthItems;
+        }
+        Block block = Block.blocksList[id];
+        int color = block.getRenderColor(meta);
+        if(color != 16777215) {
+            float r = (color >> 16 & 0xFF) / 255.0F;
+            float g = (color >> 8 & 0xFF) / 255.0F;
+            float b = (color & 0xFF) / 255.0F;
+            GL11.glColor3f(r, g, b);
+        } else {
+            GL11.glColor3f(1,1,1);
+        }
+        renderTexturedQuad(x, y, sizeX, sizeY, iconIndex % net.minecraft.shared.Minecraft.TEXTURE_ATLAS_WIDTH_TILES * tileWidth, iconIndex / net.minecraft.shared.Minecraft.TEXTURE_ATLAS_WIDTH_TILES * tileWidth, tileWidth, tileWidth);
+        GL11.glEnable(2884);
+    }
+
+    public static void drawFluidIntoGui(FontRenderer fontrenderer, RenderEngine renderengine, int id, int meta, int iconIndex, int x, int y, int sizeX, int sizeY, int color) {
+        int tileWidth;
+        if (id < Block.blocksList.length) {
+            renderengine.bindTexture(renderengine.getTexture("/terrain.png"));
+            tileWidth = TextureFX.tileWidthTerrain;
+        } else {
+            renderengine.bindTexture(renderengine.getTexture("/gui/items.png"));
+            tileWidth = TextureFX.tileWidthItems;
+        }
+        float r = (color >> 16 & 0xFF) / 255.0F;
+        float g = (color >> 8 & 0xFF) / 255.0F;
+        float b = (color & 0xFF) / 255.0F;
+        GL11.glColor3f(r, g, b);
+        renderTexturedQuad(x, y, sizeX, sizeY, iconIndex % net.minecraft.shared.Minecraft.TEXTURE_ATLAS_WIDTH_TILES * tileWidth, iconIndex / net.minecraft.shared.Minecraft.TEXTURE_ATLAS_WIDTH_TILES * tileWidth, tileWidth, tileWidth);
+        GL11.glEnable(2884);
+    }
+
+    public static void renderTexturedQuad(int x, int y, int sizeX, int sizeY, int tileX, int tileY, int tileWidth, int tileHeight) {
+        float f1 = 1.0F / (float)(net.minecraft.shared.Minecraft.TEXTURE_ATLAS_WIDTH_TILES * tileWidth);
+        float f2 = 1.0F / (float)(net.minecraft.shared.Minecraft.TEXTURE_ATLAS_WIDTH_TILES * tileHeight);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(x, y + sizeY, 0.0, (float)(tileX) * f1, (float)(tileY + tileHeight) * f2);
+        tessellator.addVertexWithUV(x + sizeX, y + sizeY, 0.0, (float)(tileX + tileWidth) * f1, (float)(tileY + tileHeight) * f2);
+        tessellator.addVertexWithUV(x + sizeX, y, 0.0, (float)(tileX + tileWidth) * f1, (float)(tileY) * f2);
+        tessellator.addVertexWithUV(x, y, 0.0, (float)(tileX) * f1, (float)(tileY) * f2);
+        tessellator.draw();
+    }
+
 }
