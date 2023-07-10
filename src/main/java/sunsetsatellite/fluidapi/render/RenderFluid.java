@@ -592,7 +592,15 @@ public class RenderFluid {
             Color c = new Color().setARGB(Block.fluidWaterFlowing.colorMultiplier(world, world, x,y,z));
             GL11.glColor4f(c.getRed()/255.0f,c.getGreen()/255.0f,c.getBlue()/255.0f,1.0f);
         } else {
-            GL11.glColor4f(1.0f,1.0F,1.0f,1.0f);
+            int color = block.getRenderColor(i);
+            if(color != 16777215) {
+                float r = (color >> 16 & 0xFF) / 255.0F;
+                float g = (color >> 8 & 0xFF) / 255.0F;
+                float b = (color & 0xFF) / 255.0F;
+                GL11.glColor3f(r, g, b);
+            } else {
+                GL11.glColor3f(1,1,1);
+            }
         }
         this.renderBottomFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(0, i));
         tessellator.draw();
