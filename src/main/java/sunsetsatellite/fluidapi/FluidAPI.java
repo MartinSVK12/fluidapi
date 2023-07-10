@@ -40,9 +40,9 @@ public class FluidAPI implements ModInitializer {
 
     public FluidAPI(){
         Config.init();
-        /*PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketSetFluidSlotID",110),true,false, PacketSetFluidSlot.class);
+        PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketSetFluidSlotID",110),true,false, PacketSetFluidSlot.class);
         PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketFluidWindowClickID",111),false,true, PacketFluidWindowClick.class);
-        PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketUpdateClientFluidRenderID",112),true,false, PacketUpdateClientFluidRender.class);*/
+        PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketUpdateClientFluidRenderID",112),true,false, PacketUpdateClientFluidRender.class);
 
         if(Config.getFromConfig("enableMultiTank",1) == 1){
             fluidTank = BlockHelper.createBlock(MOD_ID,new BlockMultiFluidTank(Config.getFromConfig("multiFluidTank",906),Material.glass),"multiFluidTank","tank.png",Block.soundGlassFootstep,1,1,0);
@@ -84,15 +84,15 @@ public class FluidAPI implements ModInitializer {
         LOGGER.info("Fluid registry contains "+FluidRegistry.registry.size()+" entries.");
         LOGGER.info("FluidAPI initialized.");
     }
-
-    public static int[] registerFluidTexture(String modId, String texture){
+    public static int[] registerFluidTexture(String modId, String texture) {
         int[] origin = BlockCoords.nextCoords();
-        TextureHelper.addTextureToTerrain(modId,texture,origin[0],origin[1]);
-        TextureHelper.addTextureToTerrain(modId,texture,origin[0]+1,origin[1]);
-        TextureHelper.addTextureToTerrain(modId,texture,origin[0]+2,origin[1]);
-        TextureHelper.addTextureToTerrain(modId,texture,origin[0]+1,origin[1]+1);
-        TextureHelper.addTextureToTerrain(modId,texture,origin[0]+2,origin[1]+1);
-        return new int[]{origin[0],origin[1],origin[0]+1,origin[1]+1,origin[0]+2,origin[1]+1,origin[0]+1,origin[1],origin[0]+2,origin[1],origin[0],origin[1]};
+        TextureHelper.addTextureToTerrain(modId, texture, origin[0], origin[1]);
+        /*TextureHelper.addTextureToTerrain(modId, texture, origin[0] + 1, origin[1]);
+        TextureHelper.addTextureToTerrain(modId, texture, origin[0] + 2, origin[1]);
+        TextureHelper.addTextureToTerrain(modId, texture, origin[0] + 1, origin[1] + 1);
+        TextureHelper.addTextureToTerrain(modId, texture, origin[0] + 2, origin[1] + 1);*/
+        return new int[]{origin[0], origin[1], origin[0], origin[1], origin[0], origin[1], origin[0], origin[1], origin[0], origin[1], origin[0], origin[1]};
+        //return new int[]{origin[0], origin[1], origin[0] + 1, origin[1] + 1, origin[0] + 2, origin[1] + 1, origin[0] + 1, origin[1], origin[0] + 2, origin[1], origin[0], origin[1]};
     }
 
     public static Block fluidTank;
