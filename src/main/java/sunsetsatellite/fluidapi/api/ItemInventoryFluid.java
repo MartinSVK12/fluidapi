@@ -9,7 +9,7 @@ import sunsetsatellite.sunsetutils.util.Direction;
 import java.util.ArrayList;
 
 public class ItemInventoryFluid implements IInventory, IFluidInventory {
-    public final ItemStack[] contents = new ItemStack[2];
+    public ItemStack[] contents = new ItemStack[2];
 
     public FluidStack[] fluidContents = new FluidStack[1];
     public int[] fluidCapacity = new int[1];
