@@ -25,12 +25,12 @@ import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidTank;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityMachine;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityMultiFluidTank;
-import sunsetsatellite.fluidapi.util.Config;
 import turniplabs.halplibe.helper.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class FluidAPI implements ModInitializer {
     public static final String MOD_ID = "fluidapi";
@@ -38,31 +38,32 @@ public class FluidAPI implements ModInitializer {
 
     public static HashMap<String, ArrayList<Class<?>>> nameToGuiMap = new HashMap<>();
 
-    public FluidAPI(){
-        Config.init();
-        PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketSetFluidSlotID",110),true,false, PacketSetFluidSlot.class);
-        PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketFluidWindowClickID",111),false,true, PacketFluidWindowClick.class);
-        PacketAccessor.callAddIdClassMapping(Config.getFromConfig("PacketUpdateClientFluidRenderID",112),true,false, PacketUpdateClientFluidRender.class);
+    public static final sunsetsatellite.sunsetutils.util.Config config = new sunsetsatellite.sunsetutils.util.Config(MOD_ID, mapOf(new String[]{"enableTank","enablePump","enablePipes","enableMachine","enableOil","GuiID","PacketSetFluidSlotID","PacketFluidWindowClickID","PacketUpdateClientFluidRender"},new String[]{"0","0","0","0","0","8","110","111","112"}), new Class[]{FluidAPI.class});
 
-        if(Config.getFromConfig("enableMultiTank",1) == 1){
-            fluidTank = BlockHelper.createBlock(MOD_ID,new BlockMultiFluidTank(Config.getFromConfig("multiFluidTank",906),Material.glass),"multiFluidTank","tank.png",Block.soundGlassFootstep,1,1,0);
+    public FluidAPI(){
+        PacketAccessor.callAddIdClassMapping(config.getFromConfig("PacketSetFluidSlotID",110),true,false, PacketSetFluidSlot.class);
+        PacketAccessor.callAddIdClassMapping(config.getFromConfig("PacketFluidWindowClickID",111),false,true, PacketFluidWindowClick.class);
+        PacketAccessor.callAddIdClassMapping(config.getFromConfig("PacketUpdateClientFluidRenderID",112),true,false, PacketUpdateClientFluidRender.class);
+
+        if(config.getFromConfig("enableMultiTank",1) == 1){
+            fluidTank = BlockHelper.createBlock(MOD_ID,new BlockMultiFluidTank(config.getFromConfig("multiFluidTank",906),Material.glass),"multiFluidTank","tank.png",Block.soundGlassFootstep,1,1,0);
             EntityHelper.createSpecialTileEntity(TileEntityMultiFluidTank.class,new RenderMultiFluidInBlock(),"Multi Fluid Tank");
             addToNameGuiMap("Multi Fluid Tank", GuiMultiFluidTank.class, TileEntityMultiFluidTank.class);
 
         }
-        if(Config.getFromConfig("enableTank",1) == 1){
-            fluidTank = BlockHelper.createBlock(MOD_ID,new BlockFluidTank(Config.getFromConfig("fluidTank",900),Material.glass),"fluidTank","tank.png",Block.soundGlassFootstep,1,1,0);
+        if(config.getFromConfig("enableTank",1) == 1){
+            fluidTank = BlockHelper.createBlock(MOD_ID,new BlockFluidTank(config.getFromConfig("fluidTank",900),Material.glass),"fluidTank","tank.png",Block.soundGlassFootstep,1,1,0);
             EntityHelper.createSpecialTileEntity(TileEntityFluidTank.class,new RenderFluidInBlock(),"Fluid Tank");
             addToNameGuiMap("Fluid Tank", GuiFluidTank.class, TileEntityFluidTank.class);
 
         }
-        if(Config.getFromConfig("enablePipes",1) == 1){
-            fluidPipe = BlockHelper.createBlock(MOD_ID,new BlockFluidPipe(Config.getFromConfig("fluidPipe",901)),"fluidPipe","pipe.png",Block.soundGlassFootstep,1,1,0);
+        if(config.getFromConfig("enablePipes",1) == 1){
+            fluidPipe = BlockHelper.createBlock(MOD_ID,new BlockFluidPipe(config.getFromConfig("fluidPipe",901)),"fluidPipe","pipe.png",Block.soundGlassFootstep,1,1,0);
             EntityHelper.createSpecialTileEntity(TileEntityFluidPipe.class,new RenderFluidInPipe(),"Fluid Pipe");
 
         }
-        if(Config.getFromConfig("enableMachine",1) == 1){
-            fluidMachine = BlockHelper.createBlock(MOD_ID,new BlockMachine(Config.getFromConfig("fluidMachine",902),Material.glass),"fluidMachine","tank.png","tank.png","machine.png","tank.png","tank.png","tank.png",Block.soundGlassFootstep,1,1,0);
+        if(config.getFromConfig("enableMachine",1) == 1){
+            fluidMachine = BlockHelper.createBlock(MOD_ID,new BlockMachine(config.getFromConfig("fluidMachine",902),Material.glass),"fluidMachine","tank.png","tank.png","machine.png","tank.png","tank.png","tank.png",Block.soundGlassFootstep,1,1,0);
             EntityHelper.createSpecialTileEntity(TileEntityMachine.class,new RenderFluidInBlock(),"Fluid Machine");
             addToNameGuiMap("Fluid Machine", GuiMachine.class, TileEntityMachine.class);
         }
@@ -70,12 +71,11 @@ public class FluidAPI implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Config.init();
-        if(Config.getFromConfig("enableOil",1) == 1){
+        if(config.getFromConfig("enableOil",1) == 1){
             oilTex = registerFluidTexture(MOD_ID,"oil.png");
-            oilFlowing = BlockHelper.createBlock(MOD_ID,new BlockFluidFlowing(Config.getFromConfig("oil",903),Material.water),"oilFlowing","oil.png",Block.soundPowderFootstep,1.0f,1.0f,0).setNotInCreativeMenu().setPlaceOverwrites().setTexCoords(oilTex[0],oilTex[1],oilTex[2],oilTex[3],oilTex[4],oilTex[5],oilTex[6],oilTex[7],oilTex[8],oilTex[9],oilTex[10],oilTex[11]);
-            oilStill = BlockHelper.createBlock(MOD_ID,new BlockFluidStill(Config.getFromConfig("oil",903)+1,Material.water),"oilStill","oil.png",Block.soundPowderFootstep,1.0f,1.0f,0).setNotInCreativeMenu().setPlaceOverwrites().setTexCoords(oilTex[0],oilTex[1],oilTex[2],oilTex[3],oilTex[4],oilTex[5],oilTex[6],oilTex[7],oilTex[8],oilTex[9],oilTex[10],oilTex[11]);
-            bucketOil = ItemHelper.createItem(MOD_ID,new ItemBucket(Config.getFromConfig("bucketOil",500),oilFlowing.blockID),"bucketOil","bucketOil.png").setContainerItem(Item.bucket);
+            oilFlowing = BlockHelper.createBlock(MOD_ID,new BlockFluidFlowing(config.getFromConfig("oil",903),Material.water),"oilFlowing","oil.png",Block.soundPowderFootstep,1.0f,1.0f,0).setNotInCreativeMenu().setPlaceOverwrites().setTexCoords(oilTex[0],oilTex[1],oilTex[2],oilTex[3],oilTex[4],oilTex[5],oilTex[6],oilTex[7],oilTex[8],oilTex[9],oilTex[10],oilTex[11]);
+            oilStill = BlockHelper.createBlock(MOD_ID,new BlockFluidStill(config.getFromConfig("oil",903)+1,Material.water),"oilStill","oil.png",Block.soundPowderFootstep,1.0f,1.0f,0).setNotInCreativeMenu().setPlaceOverwrites().setTexCoords(oilTex[0],oilTex[1],oilTex[2],oilTex[3],oilTex[4],oilTex[5],oilTex[6],oilTex[7],oilTex[8],oilTex[9],oilTex[10],oilTex[11]);
+            bucketOil = ItemHelper.createItem(MOD_ID,new ItemBucket(config.getFromConfig("bucketOil",500),oilFlowing.blockID),"bucketOil","bucketOil.png").setContainerItem(Item.bucket);
         }
         LOGGER.info("Loading plugins..");
         FabricLoader.getInstance().getEntrypointContainers("fluidapi", FluidAPIPlugin.class).forEach(plugin -> {
@@ -114,6 +114,17 @@ public class FluidAPI implements ModInitializer {
 
         double ratio = (endCoord2 - startCoord2) / (endCoord1 - startCoord1);
         return ratio * (valueCoord1 - startCoord1) + startCoord2;
+    }
+
+    public static <K,V> Map<K,V> mapOf(K[] keys, V[] values){
+        if(keys.length != values.length){
+            throw new IllegalArgumentException("Arrays differ in size!");
+        }
+        HashMap<K,V> map = new HashMap<>();
+        for (int i = 0; i < keys.length; i++) {
+            map.put(keys[i],values[i]);
+        }
+        return map;
     }
 
     public static Object getPrivateValue(Class instanceclass, Object instance, int fieldindex) throws IllegalArgumentException, SecurityException, NoSuchFieldException {

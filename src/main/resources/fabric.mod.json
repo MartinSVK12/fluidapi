@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "fluidapi",
-  "version": "1.6.3",
+  "version": "1.6.4",
 
   "name": "Fluid API (BTA)",
   "description": "API for fluid transport and storage.",

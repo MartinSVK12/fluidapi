@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import sunsetsatellite.fluidapi.util.Config;
 import sunsetsatellite.fluidapi.api.ContainerFluid;
 import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidContainer;
@@ -30,7 +29,7 @@ public class NetClientHandlerMixin extends NetHandler implements INetClientHandl
             at = @At("TAIL")
     )
     public void handleOpenWindow(Packet100OpenWindow packet100openwindow, CallbackInfo ci) {
-        if(packet100openwindow.inventoryType == Config.getFromConfig("GuiID",8)){
+        if(packet100openwindow.inventoryType == FluidAPI.config.getFromConfig("GuiID",8)){
             TileEntity tile;
             try {
                 tile = (TileEntity) FluidAPI.nameToGuiMap.get(packet100openwindow.windowTitle).get(1).getDeclaredConstructor().newInstance();
