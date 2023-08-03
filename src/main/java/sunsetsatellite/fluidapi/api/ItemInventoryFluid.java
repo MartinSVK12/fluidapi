@@ -1,9 +1,10 @@
 package sunsetsatellite.fluidapi.api;
 
-import net.minecraft.src.BlockFluid;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.ItemStack;
+
+import net.minecraft.core.block.BlockFluid;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.player.inventory.IInventory;
 import sunsetsatellite.sunsetutils.util.Direction;
 
 import java.util.ArrayList;

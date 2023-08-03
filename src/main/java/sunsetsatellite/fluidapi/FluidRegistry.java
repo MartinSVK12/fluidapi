@@ -1,9 +1,8 @@
 package sunsetsatellite.fluidapi;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.BlockFluid;
-import net.minecraft.src.Item;
-import sunsetsatellite.guidebookpp.GuidebookPlusPlus;
+
+import net.minecraft.core.block.BlockFluid;
+import net.minecraft.core.item.Item;
 
 import java.util.ArrayList;
 import java.util.HashMap;

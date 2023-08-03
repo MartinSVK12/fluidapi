@@ -1,20 +1,25 @@
 package sunsetsatellite.fluidapi.template.blocks;
 
-import net.minecraft.src.*;
+
+import net.minecraft.core.block.BlockTileEntity;
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.block.material.Material;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.world.World;
 import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
 
 import java.util.Random;
 
-public class BlockFluidPipe extends BlockContainer {
+public class BlockFluidPipe extends BlockTileEntity {
 
-	public BlockFluidPipe(int i) {
-		super(i, Material.glass);
+	public BlockFluidPipe(String key, int i) {
+		super(key, i, Material.glass);
 	}
 
     @Override
     public boolean blockActivated(World world, int i, int j, int k, EntityPlayer entityplayer) {
-        if(entityplayer.isSneaking() && !world.isMultiplayerAndNotHost){
+        if(entityplayer.isSneaking() && !world.isClientSide){
             TileEntityFluidPipe tile = (TileEntityFluidPipe) world.getBlockTileEntity(i,j,k);
             if(tile.getFluidInSlot(0) != null && tile.getFluidInSlot(0).getLiquid() != null){
                 entityplayer.addChatMessage("Liquid: "+tile.getFluidInSlot(0).toString());
@@ -40,16 +45,11 @@ public class BlockFluidPipe extends BlockContainer {
 
     public int idDropped(int i, Random random)
     {
-        return FluidAPI.fluidPipe.blockID;
+        return FluidAPI.fluidPipe.id;
     }
 
     @Override
-    public int getRenderType() {
-        return 30;
-    }
-
-    @Override
-    protected TileEntity getBlockEntity() {
+    protected TileEntity getNewBlockEntity() {
         return new TileEntityFluidPipe();
     }
 }

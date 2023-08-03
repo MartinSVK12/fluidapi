@@ -1,6 +1,9 @@
 package sunsetsatellite.fluidapi.api;
 
-import net.minecraft.src.*;
+
+import com.mojang.nbt.CompoundTag;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.BlockFluid;
 
 public class FluidStack {
     public int amount;
@@ -11,7 +14,7 @@ public class FluidStack {
         liquid = item;
     }
 
-    public FluidStack(NBTTagCompound nbt){
+    public FluidStack(CompoundTag nbt){
         readFromNBT(nbt);
     }
 
@@ -24,16 +27,16 @@ public class FluidStack {
         return new FluidStack(this.liquid, amount);
     }
 
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+    public CompoundTag writeToNBT(CompoundTag nbt) {
         if(liquid != null){
-            nbt.setShort("liquid", (short) liquid.blockID);
-            nbt.setInteger("amount",amount);
+            nbt.putShort("liquid", (short) liquid.id);
+            nbt.putInt("amount",amount);
         }
         return nbt;
     }
 
-    public void readFromNBT(NBTTagCompound nbt){
-        if(nbt.hasKey("liquid")){
+    public void readFromNBT(CompoundTag nbt){
+        if(nbt.containsKey("liquid")){
             this.liquid = (BlockFluid) Block.blocksList[nbt.getShort("liquid")];
             this.amount = nbt.getInteger("amount");
         }
@@ -44,11 +47,11 @@ public class FluidStack {
     }
 
     public String getFluidName(){
-        return liquid.getBlockName(0);
+        return liquid.getLanguageKey(0);
     }
 
     public String toString(){
-        return amount+"mB "+liquid.getBlockName(0);
+        return amount+"mB "+liquid.getLanguageKey(0);
     }
 
     public boolean isFluidEqual(FluidStack stack){

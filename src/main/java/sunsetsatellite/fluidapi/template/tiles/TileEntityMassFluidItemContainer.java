@@ -1,11 +1,15 @@
 package sunsetsatellite.fluidapi.template.tiles;
 
-import net.minecraft.src.*;
-import sunsetsatellite.fluidapi.api.FluidStack;
+
+import com.mojang.nbt.CompoundTag;
+import com.mojang.nbt.IntTag;
+import com.mojang.nbt.ListTag;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.player.inventory.IInventory;
 import sunsetsatellite.sunsetutils.util.Connection;
 import sunsetsatellite.sunsetutils.util.Direction;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +21,7 @@ public class TileEntityMassFluidItemContainer extends TileEntityMassFluidContain
 
     public TileEntityMassFluidItemContainer(){
         for (Direction dir : Direction.values()) {
-            itemConnections.put(dir,Connection.NONE);
+            itemConnections.put(dir, Connection.NONE);
             activeItemSlots.put(dir,0);
         }
     }
@@ -65,58 +69,58 @@ public class TileEntityMassFluidItemContainer extends TileEntityMassFluidContain
         return "Generic Fluid & Item Container";
     }
 
-    public void readFromNBT(NBTTagCompound nBTTagCompound1) {
-        super.readFromNBT(nBTTagCompound1);
-        NBTTagList nBTTagList2 = nBTTagCompound1.getTagList("Items");
+    public void readFromNBT(CompoundTag CompoundTag1) {
+        super.readFromNBT(CompoundTag1);
+        ListTag nBTTagList2 = CompoundTag1.getList("Items");
         this.itemContents = new ItemStack[this.getSizeInventory()];
 
         for(int i3 = 0; i3 < nBTTagList2.tagCount(); ++i3) {
-            NBTTagCompound nBTTagCompound4 = (NBTTagCompound)nBTTagList2.tagAt(i3);
-            int i5 = nBTTagCompound4.getByte("Slot") & 255;
+            CompoundTag CompoundTag4 = (CompoundTag)nBTTagList2.tagAt(i3);
+            int i5 = CompoundTag4.getByte("Slot") & 255;
             if(i5 >= 0 && i5 < this.itemContents.length) {
-                this.itemContents[i5] = new ItemStack(nBTTagCompound4);
+                this.itemContents[i5] = ItemStack.readItemStackFromNbt(CompoundTag4);
             }
         }
 
-        NBTTagCompound connectionsTag = nBTTagCompound1.getCompoundTag("itemConnections");
-        for (Object con : connectionsTag.func_28110_c()) {
-            itemConnections.replace(Direction.values()[Integer.parseInt(((NBTTagInt)con).getKey())],Connection.values()[((NBTTagInt)con).intValue]);
+        CompoundTag connectionsTag = CompoundTag1.getCompound("itemConnections");
+        for (Object con : connectionsTag.getValues()) {
+            itemConnections.replace(Direction.values()[Integer.parseInt(((IntTag)con).getTagName())],Connection.values()[((IntTag)con).getValue()]);
         }
 
-        NBTTagCompound activeItemSlotsTag = nBTTagCompound1.getCompoundTag("itemActiveSlots");
-        for (Object con : activeItemSlotsTag.func_28110_c()) {
-            activeItemSlots.replace(Direction.values()[Integer.parseInt(((NBTTagInt)con).getKey())],((NBTTagInt) con).intValue);
+        CompoundTag activeItemSlotsTag = CompoundTag1.getCompound("itemActiveSlots");
+        for (Object con : activeItemSlotsTag.getValues()) {
+            activeItemSlots.replace(Direction.values()[Integer.parseInt(((IntTag)con).getTagName())],((IntTag) con).getValue());
         }
 
     }
 
-    public void writeToNBT(NBTTagCompound nBTTagCompound1) {
-        super.writeToNBT(nBTTagCompound1);
-        NBTTagList nbtTagList = new NBTTagList();
-        NBTTagCompound connectionsTag = new NBTTagCompound();
-        NBTTagCompound activeItemSlotsTag = new NBTTagCompound();
+    public void writeToNBT(CompoundTag CompoundTag1) {
+        super.writeToNBT(CompoundTag1);
+        ListTag nbtTagList = new ListTag();
+        CompoundTag connectionsTag = new CompoundTag();
+        CompoundTag activeItemSlotsTag = new CompoundTag();
 
         for(int i3 = 0; i3 < this.itemContents.length; ++i3) {
             if(this.itemContents[i3] != null) {
-                NBTTagCompound nBTTagCompound4 = new NBTTagCompound();
-                nBTTagCompound4.setByte("Slot", (byte)i3);
-                this.itemContents[i3].writeToNBT(nBTTagCompound4);
-                nbtTagList.setTag(nBTTagCompound4);
+                CompoundTag CompoundTag4 = new CompoundTag();
+                CompoundTag4.putByte("Slot", (byte)i3);
+                this.itemContents[i3].writeToNBT(CompoundTag4);
+                nbtTagList.addTag(CompoundTag4);
             }
         }
 
         for (Map.Entry<Direction, Integer> entry : activeItemSlots.entrySet()) {
             Direction dir = entry.getKey();
-            activeItemSlotsTag.setInteger(String.valueOf(dir.ordinal()),entry.getValue());
+            activeItemSlotsTag.putInt(String.valueOf(dir.ordinal()),entry.getValue());
         }
         for (Map.Entry<Direction, Connection> entry : itemConnections.entrySet()) {
             Direction dir = entry.getKey();
             Connection con = entry.getValue();
-            connectionsTag.setInteger(String.valueOf(dir.ordinal()),con.ordinal());
+            connectionsTag.putInt(String.valueOf(dir.ordinal()),con.ordinal());
         }
-        nBTTagCompound1.setCompoundTag("itemConnections",connectionsTag);
-        nBTTagCompound1.setCompoundTag("itemActiveSlots",activeItemSlotsTag);
-        nBTTagCompound1.setTag("Items", nbtTagList);
+        CompoundTag1.putCompound("itemConnections",connectionsTag);
+        CompoundTag1.putCompound("itemActiveSlots",activeItemSlotsTag);
+        CompoundTag1.put("Items", nbtTagList);
     }
 
     public int getInventoryStackLimit() {
@@ -124,6 +128,6 @@ public class TileEntityMassFluidItemContainer extends TileEntityMassFluidContain
     }
 
     public boolean canInteractWith(EntityPlayer entityPlayer1) {
-        return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && entityPlayer1.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D) <= 64.0D;
+        return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && entityPlayer1.distanceToSqr((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D) <= 64.0D;
     }
 }

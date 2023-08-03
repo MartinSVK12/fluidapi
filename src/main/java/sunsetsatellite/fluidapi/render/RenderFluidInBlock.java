@@ -1,24 +1,28 @@
 package sunsetsatellite.fluidapi.render;
 
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.*;
+import net.minecraft.client.render.FontRenderer;
+import net.minecraft.client.render.RenderEngine;
+import net.minecraft.client.render.tileentity.TileEntityRenderer;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.entity.TileEntity;
 import org.lwjgl.opengl.GL11;
-import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidContainer;
 
-public class RenderFluidInBlock extends TileEntitySpecialRenderer {
+public class RenderFluidInBlock extends TileEntityRenderer<TileEntity> {
     @Override
-    public void renderTileEntityAt(TileEntity tileEntity1, double d2, double d4, double d6, float f8) {
+    public void doRender(TileEntity tileEntity1, double d2, double d4, double d6, float f8) {
 
 
 
         float fluidAmount = 0;
         float fluidMaxAmount = 1;
-        int fluidId = 0;//FluidAPI.fluidTank.blockID;
+        int fluidId = 0;//FluidAPI.fluidTank.id;
 
-        if(Minecraft.getMinecraft().theWorld.isMultiplayerAndNotHost){
+        if(Minecraft.getMinecraft(Minecraft.class).theWorld.isClientSide){
             if(((TileEntityFluidContainer) tileEntity1).shownFluid != null){
-                fluidId = ((TileEntityFluidContainer) tileEntity1).shownFluid.getLiquid().blockID;
+                fluidId = ((TileEntityFluidContainer) tileEntity1).shownFluid.getLiquid().id;
                 fluidAmount = ((TileEntityFluidContainer) tileEntity1).shownFluid.amount;
                 fluidMaxAmount = ((TileEntityFluidContainer) tileEntity1).shownMaxAmount;
             }
@@ -27,7 +31,7 @@ public class RenderFluidInBlock extends TileEntitySpecialRenderer {
                 if(((TileEntityFluidContainer) tileEntity1).fluidContents[0].getLiquid() != null){
                     fluidMaxAmount = ((TileEntityFluidContainer) tileEntity1).getFluidCapacityForSlot(0);
                     fluidAmount = ((TileEntityFluidContainer) tileEntity1).fluidContents[0].amount;
-                    fluidId = ((TileEntityFluidContainer) tileEntity1).fluidContents[0].getLiquid().blockID;
+                    fluidId = ((TileEntityFluidContainer) tileEntity1).fluidContents[0].getLiquid().id;
                 }
             }
         }
@@ -42,7 +46,7 @@ public class RenderFluidInBlock extends TileEntitySpecialRenderer {
             GL11.glTranslatef(0.01F, 0.0f, 0.01f);
 
             GL11.glDisable(GL11.GL_LIGHTING);
-            drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine.minecraft.renderEngine, fluidId, 0,0, 0, 0, tileEntity1);
+            drawBlock(this.getFontRenderer(), this.renderDispatcher.renderEngine.minecraft.renderEngine, fluidId, 0,0, 0, 0, tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
 
             GL11.glPopMatrix();

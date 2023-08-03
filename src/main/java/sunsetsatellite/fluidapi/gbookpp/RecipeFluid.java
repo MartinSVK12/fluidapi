@@ -1,7 +1,8 @@
 package sunsetsatellite.fluidapi.gbookpp;
 
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.StringTranslate;
+
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.lang.I18n;
 import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.guidebookpp.recipes.RecipeBase;
 
@@ -135,13 +136,13 @@ public class RecipeFluid extends RecipeBase {
 
     @Override
     public boolean contains(String s) {
-        StringTranslate translator = StringTranslate.getInstance();
+        I18n translator = I18n.getInstance();
         return containsInput(s) || containsOutput(s);
     }
 
     @Override
     public boolean containsInput(String s) {
-        StringTranslate translator = StringTranslate.getInstance();
+        I18n translator = I18n.getInstance();
         for (ItemStack input : itemInputs) {
             if(translator.translateKey(input.getItemName()+".name").toLowerCase().contains(s.toLowerCase())){
                 return true;
@@ -152,7 +153,7 @@ public class RecipeFluid extends RecipeBase {
 
     @Override
     public boolean containsOutput(String s) {
-        StringTranslate translator = StringTranslate.getInstance();
+        I18n translator = I18n.getInstance();
         for (ItemStack output : itemOutputs) {
             if(translator.translateKey(output.getItemName()+".name").toLowerCase().contains(s.toLowerCase())){
                 return true;

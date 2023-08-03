@@ -1,14 +1,24 @@
 package sunsetsatellite.fluidapi.api;
 
-import net.minecraft.src.*;
-import net.minecraft.src.command.ChatColor;
-import net.minecraft.src.helper.Color;
+
+import net.minecraft.client.gui.GuiContainer;
+import net.minecraft.client.gui.GuiTooltip;
+import net.minecraft.client.render.Lighting;
+import net.minecraft.client.render.block.color.BlockColorDispatcher;
+import net.minecraft.client.render.entity.ItemEntityRenderer;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.lang.I18n;
+import net.minecraft.core.net.command.TextFormatting;
+import net.minecraft.core.player.inventory.InventoryPlayer;
+import net.minecraft.core.util.helper.Color;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.interfaces.mixins.IPlayerController;
 import sunsetsatellite.fluidapi.render.RenderFluid;
+import turniplabs.halplibe.helper.RenderHelper;
 
 public class GuiFluid extends GuiContainer {
 
@@ -24,7 +34,7 @@ public class GuiFluid extends GuiContainer {
         int i5 = (this.height - this.ySize) / 2;
         GL11.glPushMatrix();
         GL11.glRotatef(120.0F, 1.0F, 0.0F, 0.0F);
-        RenderHelper.enableStandardItemLighting();
+        Lighting.turnOn();
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslatef((float)i4, (float)i5, 0.0F);
@@ -51,10 +61,15 @@ public class GuiFluid extends GuiContainer {
         if(slot6 != null && slot6.getHasStack() && slot6.getFluidStack().getLiquid() != null) {
             i9 = i1 - i4;
             i10 = i2 - i5;
-            String name = StringTranslate.getInstance().translateNamedKey(slot6.getFluidStack().getLiquid().getBlockName(0)).replace("Flowing ","").replace("Still ","");
+            String name = I18n.getInstance().translateNameKey(slot6.getFluidStack().getLiquid().getLanguageKey(0)).replace("Flowing ","").replace("Still ","");
             String amount = slot6.getFluidStack().amount+"/"+fluidContainer.tile.getFluidCapacityForSlot(slot6.slotIndex)+" mB";
             String percent = " ("+Math.round(((float)slot6.getFluidStack().amount/(float)fluidContainer.tile.getFluidCapacityForSlot(slot6.slotIndex))*100)+"%)";
-            drawTooltip(name+"\n"+ ChatColor.lightGray+amount+percent,i9,i10,8,-8,true);
+            GuiTooltip tooltip = new GuiTooltip(mc);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            tooltip.render(name+"\n"+TextFormatting.LIGHT_GRAY+amount+percent,i9,i10,8,-8);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
         }
         GL11.glPopMatrix();
         GL11.glEnable(GL11.GL_LIGHTING);
@@ -96,7 +111,8 @@ public class GuiFluid extends GuiContainer {
             RenderFluid.drawFluidIntoGui(this.fontRenderer, this.mc.renderEngine, itemStack4.itemID,itemStack4.getMetadata(),itemStack4.getIconIndex(), i2, i3, 16, 16);
             ContainerFluid container = ((ContainerFluid) inventorySlots);
             if(slot1.getFluidStack().getLiquid() == Block.fluidWaterFlowing){
-                Color c = new Color().setARGB(Block.fluidWaterFlowing.colorMultiplier(this.mc.theWorld, this.mc.theWorld,container.tile.xCoord,container.tile.yCoord,container.tile.zCoord));
+                int waterColor = BlockColorDispatcher.getInstance().getDispatch(Block.fluidWaterFlowing).getWorldColor(this.mc.theWorld,container.tile.xCoord,container.tile.yCoord,container.tile.zCoord);
+                Color c = new Color().setARGB(waterColor);
                 c.setRGBA(c.getRed(),c.getGreen(),c.getBlue(),0x40);
                 RenderFluid.drawFluidIntoGui(this.fontRenderer, this.mc.renderEngine, itemStack4.itemID,itemStack4.getMetadata(),itemStack4.getIconIndex(), i2, i3, 16, 16,c.value);
             }
@@ -151,12 +167,5 @@ public class GuiFluid extends GuiContainer {
         super.initGui();
     }
     private InventoryPlayer inventoryPlayer;
-    public RenderItem itemRender;
-    {
-        try {
-            itemRender = (RenderItem) FluidAPI.getPrivateValue(GuiContainer.class, this,"itemRenderer");
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    public ItemEntityRenderer itemRender = new ItemEntityRenderer();
 }

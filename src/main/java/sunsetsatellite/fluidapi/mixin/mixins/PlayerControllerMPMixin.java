@@ -1,7 +1,11 @@
 package sunsetsatellite.fluidapi.mixin.mixins;
 
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.*;
+import net.minecraft.client.net.handler.NetClientHandler;
+import net.minecraft.client.player.controller.PlayerController;
+import net.minecraft.client.player.controller.PlayerControllerMP;
+import net.minecraft.core.entity.player.EntityPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import sunsetsatellite.fluidapi.api.ContainerFluid;
@@ -15,7 +19,8 @@ import sunsetsatellite.fluidapi.mp.packets.PacketFluidWindowClick;
         remap = false
 )
 public class PlayerControllerMPMixin extends PlayerController implements IPlayerControllerMP {
-    @Shadow protected NetClientHandler netHandler;
+    @Shadow
+    protected NetClientHandler netHandler;
 
     public PlayerControllerMPMixin(Minecraft minecraft) {
         super(minecraft);
@@ -23,7 +28,7 @@ public class PlayerControllerMPMixin extends PlayerController implements IPlayer
 
     @Override
     public FluidStack fluidPickUpFromInventory(int i, int slotID, int button, boolean shift, boolean control, EntityPlayer entityplayer) {
-        short word0 = entityplayer.craftingInventory.func_20111_a(entityplayer.inventory);
+        short word0 = entityplayer.craftingInventory.getActionId(entityplayer.inventory);
         FluidStack fluidStack = null;
         if(entityplayer.craftingInventory instanceof ContainerFluid){
             fluidStack = ((ContainerFluid)entityplayer.craftingInventory).clickFluidSlot(slotID, button, shift, control, entityplayer);

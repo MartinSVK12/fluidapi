@@ -1,7 +1,12 @@
 package sunsetsatellite.fluidapi.template.blocks;
 
-import net.minecraft.src.*;
-import sunsetsatellite.fluidapi.*;
+
+import net.minecraft.core.block.BlockTileEntityRotatable;
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.block.material.Material;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.world.World;
+import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.template.containers.ContainerMachine;
 import sunsetsatellite.fluidapi.template.gui.GuiMachine;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
@@ -11,14 +16,14 @@ import sunsetsatellite.sunsetutils.util.Direction;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class BlockMachine extends BlockContainerRotatable {
-    public BlockMachine(int i, Material material) {
-        super(i, material);
+public class BlockMachine extends BlockTileEntityRotatable {
+    public BlockMachine(String key, int i, Material material) {
+        super(key, i, material);
     }
 
     public int idDropped(int i, Random random)
     {
-        return FluidAPI.fluidMachine.blockID;
+        return FluidAPI.fluidMachine.id;
     }
 
     public void onBlockAdded(World world, int i, int j, int k) {
@@ -27,7 +32,7 @@ public class BlockMachine extends BlockContainerRotatable {
 
     public boolean blockActivated(World world, int i, int j, int k, EntityPlayer entityplayer)
     {
-        if(world.isMultiplayerAndNotHost)
+        if(world.isClientSide)
         {
             return true;
         } else
@@ -60,7 +65,7 @@ public class BlockMachine extends BlockContainerRotatable {
     }
 
     @Override
-    protected TileEntity getBlockEntity() {
+    protected TileEntity getNewBlockEntity() {
         return new TileEntityMachine();
     }
 }

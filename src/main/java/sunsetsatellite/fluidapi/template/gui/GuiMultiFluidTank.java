@@ -1,12 +1,23 @@
 package sunsetsatellite.fluidapi.template.gui;
 
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.*;
-import net.minecraft.src.command.ChatColor;
-import net.minecraft.src.helper.Color;
+import net.minecraft.client.gui.GuiContainer;
+import net.minecraft.client.gui.GuiTooltip;
+import net.minecraft.client.render.block.color.BlockColorDispatcher;
+import net.minecraft.client.render.entity.ItemEntityRenderer;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.BlockFluid;
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.lang.I18n;
+import net.minecraft.core.net.command.TextFormatting;
+import net.minecraft.core.player.inventory.InventoryPlayer;
+import net.minecraft.core.util.helper.Color;
+import net.minecraft.core.util.helper.Side;
 import org.lwjgl.opengl.GL11;
 import sunsetsatellite.fluidapi.FluidAPI;
-import sunsetsatellite.fluidapi.api.*;
+import sunsetsatellite.fluidapi.api.FluidLayer;
+import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.render.RenderFluid;
 import sunsetsatellite.fluidapi.template.containers.ContainerMultiFluidTank;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityMassFluidItemContainer;
@@ -18,15 +29,15 @@ public class GuiMultiFluidTank extends GuiContainer {
 
     public String name = "Multi Fluid Tank";
     public TileEntityMassFluidItemContainer tile;
-    public RenderItem itemRender;
+    public ItemEntityRenderer itemRender = new ItemEntityRenderer();
     public ArrayList<FluidLayer> fluidLayers = new ArrayList<>();
-    {
+    /*{
         try {
-            itemRender = (RenderItem) FluidAPI.getPrivateValue(GuiContainer.class, this,"itemRenderer");
+            itemRender = (ItemEntityRenderer) FluidAPI.getPrivateValue(GuiContainer.class, this,"itemRenderer");
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
     public GuiMultiFluidTank(InventoryPlayer inventoryPlayer, TileEntity tile) {
         super(new ContainerMultiFluidTank(inventoryPlayer, (TileEntityMassFluidItemContainer) tile));
@@ -36,7 +47,7 @@ public class GuiMultiFluidTank extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float f)
     {
-        int i = mc.renderEngine.getTexture("assets/fluidapi/gui/multitank_gui.png");
+        int i = mc.renderEngine.getTexture("/assets/fluidapi/gui/multitank_gui.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(i);
         int j = (width - xSize) / 2;
@@ -57,11 +68,12 @@ public class GuiMultiFluidTank extends GuiContainer {
                     int j = (width - xSize) / 2;
                     int k = (height - ySize) / 2;
                     int fluidBarSize = (int) FluidAPI.map(fluidStack.amount,0,tile.fluidCapacity,2,sizeY-3);
-                    RenderFluid.drawFluidIntoGui(fontRenderer, this.mc.renderEngine, fluid.blockID, 0, fluid.getBlockTextureFromSide(0), x, y+i-fluidBarSize-2, sizeX-2, fluidBarSize);
-                    if (fluidStack.getLiquid() == Block.fluidWaterFlowing && Minecraft.getMinecraft().gameSettings.biomeWater.value) {
-                        Color c = new Color().setARGB(Block.fluidWaterFlowing.colorMultiplier(this.mc.theWorld, this.mc.theWorld, tile.xCoord, tile.yCoord, tile.zCoord));
+                    RenderFluid.drawFluidIntoGui(fontRenderer, this.mc.renderEngine, fluid.id, 0, fluid.getBlockTextureFromSideAndMetadata(Side.BOTTOM,0), x, y+i-fluidBarSize-2, sizeX-2, fluidBarSize);
+                    if (fluidStack.getLiquid() == Block.fluidWaterFlowing && Minecraft.getMinecraft(Minecraft.class).gameSettings.biomeWater.value) {
+                        int waterColor = BlockColorDispatcher.getInstance().getDispatch(Block.fluidWaterFlowing).getWorldColor(this.mc.theWorld,tile.xCoord,tile.yCoord,tile.zCoord);
+                        Color c = new Color().setARGB(waterColor);
                         c.setRGBA(c.getRed(), c.getGreen(), c.getBlue(), 0x40);
-                        RenderFluid.drawFluidIntoGui(fontRenderer, this.mc.renderEngine, fluid.blockID, 0, fluid.getBlockTextureFromSide(0), x, y+i-fluidBarSize-2, sizeX-2, fluidBarSize, c.value);
+                        RenderFluid.drawFluidIntoGui(fontRenderer, this.mc.renderEngine, fluid.id, 0, fluid.getBlockTextureFromSideAndMetadata(Side.BOTTOM,0), x, y+i-fluidBarSize-2, sizeX-2, fluidBarSize, c.value);
                     }
                     fluidLayers.add(new FluidLayer(id,x,y+i-fluidBarSize-2,sizeX-2,fluidBarSize,fluidStack));
                     id++;
@@ -92,10 +104,15 @@ public class GuiMultiFluidTank extends GuiContainer {
         super.drawScreen(x, y, renderPartialTicks);
         FluidLayer layer = getFluidLayerAtPosition(x,y);
         if(layer != null){
-            String name = StringTranslate.getInstance().translateNamedKey(layer.getFluidStack().getLiquid().getBlockName(0)).replace("Flowing ","").replace("Still ","");
+            String name = I18n.getInstance().translateNameKey(layer.getFluidStack().getLiquid().getLanguageKey(0)).replace("Flowing ","").replace("Still ","");
             String amount = layer.getFluidStack().amount+"/"+tile.getFluidCapacityForSlot(layer.id)+" mB";
             String percent = " ("+Math.round(((float)layer.getFluidStack().amount/(float)tile.getFluidCapacityForSlot(layer.id))*100)+"%)";
-            drawTooltip(name+"\n"+ChatColor.lightGray+amount+percent,x,y,8,-8,true);
+            GuiTooltip tooltip = new GuiTooltip(mc);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            tooltip.render(name+"\n"+TextFormatting.LIGHT_GRAY+amount+percent,x,y,8,-8);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
         }
     }
 

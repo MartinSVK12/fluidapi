@@ -8,6 +8,7 @@
     "mixins.EntityPlayerMPMixin",
     "mixins.GuiContainerMixin",
     "mixins.ItemBucketEmptyMixin",
+    "mixins.MinecraftMixin",
     "mixins.NetClientHandlerMixin",
     "mixins.NetServerHandlerMixin",
     "mixins.PlayerControllerMixin",

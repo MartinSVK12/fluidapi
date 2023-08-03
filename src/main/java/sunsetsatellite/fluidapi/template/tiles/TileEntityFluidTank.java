@@ -1,10 +1,8 @@
 package sunsetsatellite.fluidapi.template.tiles;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.BlockFluid;
-import net.minecraft.src.TileEntity;
+
+import net.minecraft.core.block.entity.TileEntity;
 import sunsetsatellite.fluidapi.FluidRegistry;
-import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.api.IPipePressurizer;
 import sunsetsatellite.sunsetutils.util.Connection;
 import sunsetsatellite.sunsetutils.util.Direction;

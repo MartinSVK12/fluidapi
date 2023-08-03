@@ -1,11 +1,12 @@
 package sunsetsatellite.fluidapi.template.gui;
 
-import net.minecraft.src.InventoryPlayer;
-import net.minecraft.src.TileEntity;
+
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.player.inventory.InventoryPlayer;
 import org.lwjgl.opengl.GL11;
-import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
 import sunsetsatellite.fluidapi.api.GuiFluid;
 import sunsetsatellite.fluidapi.template.containers.ContainerFluidTank;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
 
 public class GuiFluidTank extends GuiFluid {
 
@@ -17,7 +18,7 @@ public class GuiFluidTank extends GuiFluid {
     @Override
     protected void drawGuiContainerBackgroundLayer(float f)
     {
-        int i = mc.renderEngine.getTexture("assets/fluidapi/gui/tank_gui.png");
+        int i = mc.renderEngine.getTexture("/assets/fluidapi/gui/tank_gui.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(i);
         int j = (width - xSize) / 2;

@@ -1,6 +1,7 @@
 package sunsetsatellite.fluidapi.mixin.accessors;
 
-import net.minecraft.src.Packet;
+
+import net.minecraft.core.net.packet.Packet;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 

@@ -1,13 +1,19 @@
 package sunsetsatellite.fluidapi.gbookpp;
 
-import net.minecraft.src.*;
+
+import net.minecraft.client.gui.GuiGuidebook;
+import net.minecraft.core.InventoryAction;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.player.inventory.ContainerGuidebookRecipeBase;
+import net.minecraft.core.player.inventory.slot.Slot;
+import net.minecraft.core.player.inventory.slot.SlotGuidebook;
 import org.lwjgl.opengl.GL11;
-import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.guidebookpp.GuidebookPlusPlus;
 import sunsetsatellite.guidebookpp.IContainerRecipeBase;
 import sunsetsatellite.guidebookpp.recipes.RecipeBase;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ContainerGuidebookRecipeFluid extends ContainerGuidebookRecipeBase
     implements IContainerRecipeBase {
@@ -31,7 +37,12 @@ public class ContainerGuidebookRecipeFluid extends ContainerGuidebookRecipeBase
     };
 
     @Override
-    public void quickMoveItems(int i, EntityPlayer entityPlayer, boolean bl, boolean bl2) {
+    public List<Integer> getMoveSlots(InventoryAction inventoryAction, Slot slot, int i, EntityPlayer entityPlayer) {
+        return null;
+    }
 
+    @Override
+    public List<Integer> getTargetSlots(InventoryAction inventoryAction, Slot slot, int i, EntityPlayer entityPlayer) {
+        return null;
     }
 }

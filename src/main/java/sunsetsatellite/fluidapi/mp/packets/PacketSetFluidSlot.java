@@ -1,6 +1,10 @@
 package sunsetsatellite.fluidapi.mp.packets;
 
-import net.minecraft.src.*;
+
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.BlockFluid;
+import net.minecraft.core.net.handler.NetHandler;
+import net.minecraft.core.net.packet.Packet;
 import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.interfaces.mixins.INetClientHandler;
 
@@ -45,7 +49,7 @@ public class PacketSetFluidSlot extends Packet {
         if (this.fluidStack == null) {
             dataoutputstream.writeShort(-1);
         } else {
-            dataoutputstream.writeShort(this.fluidStack.liquid.blockID);
+            dataoutputstream.writeShort(this.fluidStack.liquid.id);
             dataoutputstream.writeInt(this.fluidStack.amount);
         }
 

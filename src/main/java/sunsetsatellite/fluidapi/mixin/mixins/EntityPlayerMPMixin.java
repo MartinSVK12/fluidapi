@@ -1,6 +1,15 @@
 package sunsetsatellite.fluidapi.mixin.mixins;
 
-import net.minecraft.src.*;
+
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.core.crafting.ICrafting;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.net.packet.Packet100OpenWindow;
+import net.minecraft.core.player.inventory.Container;
+import net.minecraft.core.player.inventory.IInventory;
+import net.minecraft.core.world.World;
+import net.minecraft.server.entity.player.EntityPlayerMP;
+import net.minecraft.server.net.handler.NetServerHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import sunsetsatellite.fluidapi.FluidAPI;
@@ -18,7 +27,8 @@ public abstract class EntityPlayerMPMixin extends EntityPlayer implements IEntit
         super(world);
     }
 
-    @Shadow protected abstract void getNextWindowId();
+    @Shadow
+    protected abstract void getNextWindowId();
 
     @Shadow public NetServerHandler playerNetServerHandler;
 

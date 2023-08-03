@@ -1,16 +1,17 @@
 package sunsetsatellite.fluidapi.gbookpp;
 
-import net.minecraft.src.*;
+
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.player.inventory.ContainerGuidebookRecipeBase;
 import sunsetsatellite.fluidapi.FluidAPI;
-import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.util.MachineRecipes;
 import sunsetsatellite.guidebookpp.GuidebookPlusPlus;
 import sunsetsatellite.guidebookpp.IRecipeHandlerBase;
 import sunsetsatellite.guidebookpp.RecipeGroup;
 import sunsetsatellite.guidebookpp.RecipeRegistry;
-import sunsetsatellite.guidebookpp.recipes.RecipeCrafting;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class RecipeHandlerFluid
     implements IRecipeHandlerBase {
@@ -23,7 +24,7 @@ public class RecipeHandlerFluid
     public void addRecipes() {
         GuidebookPlusPlus.LOGGER.info("Adding recipes for: " + this.getClass().getSimpleName());
         ArrayList<RecipeFluid> recipes = new ArrayList<>();
-        MachineRecipes.getInstance().getRecipeList().forEach((I,O)->{
+        MachineRecipes.getInstance().getRecipeList().forEach((I, O)->{
             recipes.add(new RecipeFluid(
                     new ArrayList<>(Arrays.asList(new ItemStack(I,1,0))),
                     new ArrayList<>(),

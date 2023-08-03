@@ -1,25 +1,30 @@
 package sunsetsatellite.fluidapi.template.blocks;
 
-import net.minecraft.src.*;
+
+import net.minecraft.core.block.BlockTileEntity;
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.block.material.Material;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.world.World;
 import sunsetsatellite.fluidapi.FluidAPI;
-import sunsetsatellite.fluidapi.template.containers.ContainerFluidTank;
 import sunsetsatellite.fluidapi.template.containers.ContainerMultiFluidTank;
-import sunsetsatellite.fluidapi.template.gui.GuiFluidTank;
 import sunsetsatellite.fluidapi.template.gui.GuiMultiFluidTank;
-import sunsetsatellite.fluidapi.template.tiles.*;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityMassFluidItemContainer;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityMultiFluidTank;
 import sunsetsatellite.sunsetutils.util.Direction;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class BlockMultiFluidTank extends BlockContainer {
-    public BlockMultiFluidTank(int i1, Material material3) {
-        super(i1, material3);
+public class BlockMultiFluidTank extends BlockTileEntity {
+    public BlockMultiFluidTank(String key, int i1, Material material3) {
+        super(key, i1, material3);
     }
 
     public int idDropped(int i, Random random)
     {
-        return FluidAPI.fluidTank.blockID;
+        return FluidAPI.fluidTank.id;
     }
 
     public void onBlockAdded(World world, int i, int j, int k) {
@@ -28,7 +33,7 @@ public class BlockMultiFluidTank extends BlockContainer {
 
     public boolean blockActivated(World world, int i, int j, int k, EntityPlayer entityplayer)
     {
-        if(world.isMultiplayerAndNotHost)
+        if(world.isClientSide)
         {
             return true;
         } else
@@ -61,7 +66,7 @@ public class BlockMultiFluidTank extends BlockContainer {
     }
 
     @Override
-    protected TileEntity getBlockEntity() {
+    protected TileEntity getNewBlockEntity() {
         return new TileEntityMultiFluidTank();
     }
 }

@@ -1,11 +1,16 @@
 package sunsetsatellite.fluidapi.template.tiles;
 
-import net.minecraft.src.*;
-import sunsetsatellite.sunsetutils.util.Connection;
-import sunsetsatellite.sunsetutils.util.Direction;
-import sunsetsatellite.fluidapi.util.MachineRecipes;
+
+import com.mojang.nbt.CompoundTag;
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.crafting.LookupFuelFurnace;
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.world.World;
 import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.api.IPipePressurizer;
+import sunsetsatellite.fluidapi.util.MachineRecipes;
+import sunsetsatellite.sunsetutils.util.Connection;
+import sunsetsatellite.sunsetutils.util.Direction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +63,7 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
         } else if(canProcess()) {
             progressMaxTicks = 200;
         }
-        if(!worldObj.isMultiplayerAndNotHost){
+        if(!worldObj.isClientSide){
             if (progressTicks == 0 && canProcess()){
                 update = fuel();
             }
@@ -89,21 +94,21 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nBTTagCompound1) {
-        super.readFromNBT(nBTTagCompound1);
-        fuelBurnTicks = nBTTagCompound1.getShort("BurnTime");
-        progressTicks = nBTTagCompound1.getShort("ProcessTime");
-        progressMaxTicks = nBTTagCompound1.getInteger("MaxProcessTime");
-        fuelMaxBurnTicks = nBTTagCompound1.getShort("MaxBurnTime");
+    public void readFromNBT(CompoundTag CompoundTag1) {
+        super.readFromNBT(CompoundTag1);
+        fuelBurnTicks = CompoundTag1.getShort("BurnTime");
+        progressTicks = CompoundTag1.getShort("ProcessTime");
+        progressMaxTicks = CompoundTag1.getInteger("MaxProcessTime");
+        fuelMaxBurnTicks = CompoundTag1.getShort("MaxBurnTime");
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nBTTagCompound1) {
-        super.writeToNBT(nBTTagCompound1);
-        nBTTagCompound1.setShort("BurnTime", (short)this.fuelBurnTicks);
-        nBTTagCompound1.setShort("ProcessTime", (short)this.progressTicks);
-        nBTTagCompound1.setShort("MaxBurnTime", (short)this.fuelMaxBurnTicks);
-        nBTTagCompound1.setInteger("MaxProcessTime",this.progressMaxTicks);
+    public void writeToNBT(CompoundTag CompoundTag1) {
+        super.writeToNBT(CompoundTag1);
+        CompoundTag1.putShort("BurnTime", (short)this.fuelBurnTicks);
+        CompoundTag1.putShort("ProcessTime", (short)this.progressTicks);
+        CompoundTag1.putShort("MaxBurnTime", (short)this.fuelMaxBurnTicks);
+        CompoundTag1.putInt("MaxProcessTime",this.progressMaxTicks);
     }
 
     public boolean fuel(){
@@ -126,7 +131,7 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
 
     public void processItem(){
         if(canProcess()){
-            FluidStack stack = MachineRecipes.getInstance().getResult(this.itemContents[0].getItem().itemID);
+            FluidStack stack = MachineRecipes.getInstance().getResult(this.itemContents[0].getItem().id);
             if(fluidContents[0] == null){
                 setFluidInSlot(0, stack);
             } else if(getFluidInSlot(0).getLiquid() == stack.getLiquid()) {
@@ -153,7 +158,7 @@ public class TileEntityMachine extends TileEntityFluidItemContainer
     }
 
     private int getItemBurnTime(ItemStack stack) {
-        return stack == null ? 0 : LookupFuelFurnace.fuelFurnace().getFuelYield(stack.getItem().itemID);
+        return stack == null ? 0 : LookupFuelFurnace.instance.getFuelYield(stack.getItem().id);
     }
 
     public boolean isBurning(){

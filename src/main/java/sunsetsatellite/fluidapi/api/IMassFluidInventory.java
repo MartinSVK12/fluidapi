@@ -1,6 +1,7 @@
 package sunsetsatellite.fluidapi.api;
 
-import net.minecraft.src.BlockFluid;
+
+import net.minecraft.core.block.BlockFluid;
 import sunsetsatellite.sunsetutils.util.Direction;
 
 public interface IMassFluidInventory extends IFluidInventory {

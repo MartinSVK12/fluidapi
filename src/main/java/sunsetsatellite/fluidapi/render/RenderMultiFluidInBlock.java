@@ -1,15 +1,18 @@
 package sunsetsatellite.fluidapi.render;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.src.*;
+
+import net.minecraft.client.render.FontRenderer;
+import net.minecraft.client.render.RenderEngine;
+import net.minecraft.client.render.tileentity.TileEntityRenderer;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.entity.TileEntity;
 import org.lwjgl.opengl.GL11;
 import sunsetsatellite.fluidapi.api.FluidStack;
-import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidContainer;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityMultiFluidTank;
 
-public class RenderMultiFluidInBlock extends TileEntitySpecialRenderer {
+public class RenderMultiFluidInBlock extends TileEntityRenderer<TileEntity> {
     @Override
-    public void renderTileEntityAt(TileEntity tileEntity, double d2, double d4, double d6, float f8) {
+    public void doRender(TileEntity tileEntity, double d2, double d4, double d6, float f8) {
         TileEntityMultiFluidTank tile = (TileEntityMultiFluidTank) tileEntity;
         float fluidAmount = 0;
         float fluidMaxAmount = 1;
@@ -19,7 +22,7 @@ public class RenderMultiFluidInBlock extends TileEntitySpecialRenderer {
         for (FluidStack fluidStack : tile.fluidContents) {
             fluidMaxAmount = tile.fluidCapacity;
             fluidAmount = fluidStack.amount;
-            fluidId = fluidStack.getLiquid().blockID;
+            fluidId = fluidStack.getLiquid().id;
             float amount = Math.abs((fluidAmount / fluidMaxAmount) - 0.01f);
             if(fluidId != 0){
                 GL11.glPushMatrix();
@@ -29,7 +32,7 @@ public class RenderMultiFluidInBlock extends TileEntitySpecialRenderer {
                 GL11.glTranslatef(0.01F, 0.0f, 0.01f);
                 i+=1*amount;
                 GL11.glDisable(GL11.GL_LIGHTING);
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine.minecraft.renderEngine, fluidId, 0,0, 0, 0, tileEntity);
+                drawBlock(this.getFontRenderer(), this.renderDispatcher.renderEngine.minecraft.renderEngine, fluidId, 0,0, 0, 0, tileEntity);
                 GL11.glEnable(GL11.GL_LIGHTING);
 
                 GL11.glPopMatrix();

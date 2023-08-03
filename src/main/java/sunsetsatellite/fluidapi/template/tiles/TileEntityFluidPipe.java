@@ -1,16 +1,13 @@
 package sunsetsatellite.fluidapi.template.tiles;
 
-import net.minecraft.src.TileEntity;
-import org.lwjgl.Sys;
+
+import net.minecraft.core.block.entity.TileEntity;
 import sunsetsatellite.fluidapi.FluidRegistry;
 import sunsetsatellite.fluidapi.api.FluidStack;
-import sunsetsatellite.fluidapi.api.IFluidInventory;
-import sunsetsatellite.fluidapi.api.IMassFluidInventory;
 import sunsetsatellite.sunsetutils.util.Connection;
 import sunsetsatellite.sunsetutils.util.Direction;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class TileEntityFluidPipe extends TileEntityFluidContainer{
     public boolean isPressurized = false;

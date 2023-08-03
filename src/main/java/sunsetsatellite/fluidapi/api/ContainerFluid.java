@@ -1,10 +1,20 @@
 package sunsetsatellite.fluidapi.api;
 
-import net.minecraft.src.*;
-import sunsetsatellite.fluidapi.FluidAPI;
+
+import net.minecraft.core.InventoryAction;
+import net.minecraft.core.crafting.ICrafting;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.item.Item;
+import net.minecraft.core.item.ItemBucket;
+import net.minecraft.core.item.ItemBucketEmpty;
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.player.inventory.Container;
+import net.minecraft.core.player.inventory.IInventory;
+import net.minecraft.core.player.inventory.InventoryPlayer;
+import net.minecraft.core.player.inventory.slot.Slot;
 import sunsetsatellite.fluidapi.FluidRegistry;
-import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
 import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayerMP;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +36,6 @@ public class ContainerFluid extends Container {
     public ContainerFluid(IInventory iInventory, TileEntityFluidItemContainer tileEntityFluidItemContainer){
         tile = tileEntityFluidItemContainer;
     }
-
-    @Override
-    public void quickMoveItems(int i, EntityPlayer entityPlayer, boolean bl, boolean bl2) {}
 
     @Override
     public boolean isUsableByPlayer(EntityPlayer entityPlayer1) {
@@ -60,8 +67,13 @@ public class ContainerFluid extends Container {
     }
 
     @Override
-    public ItemStack clickInventorySlot(int slotID, int button, boolean shift, boolean control, EntityPlayer player) {
-        return super.clickInventorySlot(slotID, button, shift, control, player);
+    public List<Integer> getMoveSlots(InventoryAction inventoryAction, Slot slot, int i, EntityPlayer entityPlayer) {
+        return null;
+    }
+
+    @Override
+    public List<Integer> getTargetSlots(InventoryAction inventoryAction, Slot slot, int i, EntityPlayer entityPlayer) {
+        return null;
     }
 
     public FluidStack clickFluidSlot(int slotID, int button, boolean shift, boolean control, EntityPlayer entityplayer) {

@@ -1,6 +1,7 @@
 package sunsetsatellite.fluidapi.api;
 
-import net.minecraft.src.ItemStack;
+
+import net.minecraft.core.item.ItemStack;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidContainer;
 
 public interface IItemFluidContainer {

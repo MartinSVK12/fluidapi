@@ -1,7 +1,8 @@
 package sunsetsatellite.fluidapi.util;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.BlockFluid;
+
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.BlockFluid;
 import sunsetsatellite.fluidapi.api.FluidStack;
 
 import java.util.HashMap;
@@ -15,8 +16,8 @@ public class MachineRecipes {
     }
 
     private MachineRecipes() {
-        this.addRecipe(Block.ice.blockID,new FluidStack((BlockFluid) Block.fluidWaterFlowing,1000));
-        this.addRecipe(Block.obsidian.blockID,new FluidStack((BlockFluid) Block.fluidLavaFlowing,1000));
+        this.addRecipe(Block.ice.id,new FluidStack((BlockFluid) Block.fluidWaterFlowing,1000));
+        this.addRecipe(Block.obsidian.id,new FluidStack((BlockFluid) Block.fluidLavaFlowing,1000));
     }
 
     public void addRecipe(int id, FluidStack stack) {

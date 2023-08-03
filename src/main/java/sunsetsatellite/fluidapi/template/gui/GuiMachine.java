@@ -1,12 +1,13 @@
 package sunsetsatellite.fluidapi.template.gui;
 
-import net.minecraft.src.InventoryPlayer;
-import net.minecraft.src.TileEntity;
+
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.player.inventory.InventoryPlayer;
 import org.lwjgl.opengl.GL11;
-import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
-import sunsetsatellite.fluidapi.template.tiles.TileEntityMachine;
 import sunsetsatellite.fluidapi.api.GuiFluid;
 import sunsetsatellite.fluidapi.template.containers.ContainerMachine;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityMachine;
 
 public class GuiMachine extends GuiFluid {
 

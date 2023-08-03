@@ -1,21 +1,27 @@
 package sunsetsatellite.fluidapi.render;
 
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.*;
+import net.minecraft.client.render.FontRenderer;
+import net.minecraft.client.render.RenderEngine;
+import net.minecraft.client.render.tileentity.TileEntityRenderer;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.world.World;
 import org.lwjgl.opengl.GL11;
 import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.api.IFluidInventory;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidContainer;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
 
-public class RenderFluidInPipe extends TileEntitySpecialRenderer {
+public class RenderFluidInPipe extends TileEntityRenderer<TileEntity> {
     @Override
-    public void renderTileEntityAt(TileEntity tileEntity1, double d2, double d4, double d6, float f8) {
+    public void doRender(TileEntity tileEntity1, double d2, double d4, double d6, float f8) {
 
         int i = tileEntity1.xCoord;
         int j = tileEntity1.yCoord;
         int k = tileEntity1.zCoord;
-        World blockAccess = this.tileEntityRenderer.renderEngine.minecraft.theWorld;
+        World blockAccess = this.renderDispatcher.renderEngine.minecraft.theWorld;
         Block block = FluidAPI.fluidPipe;
 
         GL11.glPushMatrix();
@@ -24,9 +30,9 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
         float fluidMaxAmount = 1;
         int fluidId = -1;
 
-        if(Minecraft.getMinecraft().theWorld.isMultiplayerAndNotHost){
+        if(Minecraft.getMinecraft(Minecraft.class).theWorld.isClientSide){
             if(((TileEntityFluidContainer) tileEntity1).shownFluid != null){
-                fluidId = ((TileEntityFluidContainer) tileEntity1).shownFluid.getLiquid().blockID;
+                fluidId = ((TileEntityFluidContainer) tileEntity1).shownFluid.getLiquid().id;
                 fluidAmount = ((TileEntityFluidContainer) tileEntity1).shownFluid.amount;
                 fluidMaxAmount = ((TileEntityFluidContainer) tileEntity1).shownMaxAmount;
             }
@@ -35,17 +41,17 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
                 if(((TileEntityFluidContainer) tileEntity1).fluidContents[0].getLiquid() != null){
                     fluidMaxAmount = ((TileEntityFluidContainer) tileEntity1).getFluidCapacityForSlot(0);
                     fluidAmount = ((TileEntityFluidContainer) tileEntity1).fluidContents[0].amount;
-                    fluidId = ((TileEntityFluidContainer) tileEntity1).fluidContents[0].getLiquid().blockID;
+                    fluidId = ((TileEntityFluidContainer) tileEntity1).fluidContents[0].getLiquid().id;
                 }
             }
         }
 
-        boolean flag = blockAccess.getBlockId(i + 1, j, k) == block.blockID || (blockAccess.getBlockTileEntity(i + 1, j, k) instanceof IFluidInventory);
-        boolean flag1 = blockAccess.getBlockId(i - 1, j, k) == block.blockID || (blockAccess.getBlockTileEntity(i - 1, j, k) instanceof IFluidInventory);
-        boolean flag2 = blockAccess.getBlockId(i, j + 1, k) == block.blockID || (blockAccess.getBlockTileEntity(i, j + 1, k) instanceof IFluidInventory);
-        boolean flag3 = blockAccess.getBlockId(i, j - 1, k) == block.blockID || (blockAccess.getBlockTileEntity(i, j - 1, k) instanceof IFluidInventory);
-        boolean flag4 = blockAccess.getBlockId(i, j, k + 1) == block.blockID || (blockAccess.getBlockTileEntity(i, j, k + 1) instanceof IFluidInventory);
-        boolean flag5 = blockAccess.getBlockId(i, j, k - 1) == block.blockID || (blockAccess.getBlockTileEntity(i, j, k - 1) instanceof IFluidInventory);
+        boolean flag = blockAccess.getBlockId(i + 1, j, k) == block.id || (blockAccess.getBlockTileEntity(i + 1, j, k) instanceof IFluidInventory);
+        boolean flag1 = blockAccess.getBlockId(i - 1, j, k) == block.id || (blockAccess.getBlockTileEntity(i - 1, j, k) instanceof IFluidInventory);
+        boolean flag2 = blockAccess.getBlockId(i, j + 1, k) == block.id || (blockAccess.getBlockTileEntity(i, j + 1, k) instanceof IFluidInventory);
+        boolean flag3 = blockAccess.getBlockId(i, j - 1, k) == block.id || (blockAccess.getBlockTileEntity(i, j - 1, k) instanceof IFluidInventory);
+        boolean flag4 = blockAccess.getBlockId(i, j, k + 1) == block.id || (blockAccess.getBlockTileEntity(i, j, k + 1) instanceof IFluidInventory);
+        boolean flag5 = blockAccess.getBlockId(i, j, k - 1) == block.id || (blockAccess.getBlockTileEntity(i, j, k - 1) instanceof IFluidInventory);
 
 
         float amount = (fluidAmount / fluidMaxAmount);
@@ -63,7 +69,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
         GL11.glDisable(GL11.GL_LIGHTING);
 
         if(fluidId != -1)
-        drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0,tileEntity1);
+        drawBlock(this.getFontRenderer(), this.renderDispatcher.renderEngine, fluidId, 0,0, 0, 0,tileEntity1);
         GL11.glEnable(GL11.GL_LIGHTING);
 
         GL11.glPopMatrix();
@@ -76,7 +82,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
             GL11.glScalef(0.5f, mapped,0.5f);
             GL11.glDisable(GL11.GL_LIGHTING);
             if(fluidId != -1)
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0,tileEntity1);
+                drawBlock(this.getFontRenderer(), this.renderDispatcher.renderEngine, fluidId, 0,0, 0, 0,tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
         }
@@ -88,7 +94,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
             GL11.glScalef(0.5f, mapped,0.5f);
             GL11.glDisable(GL11.GL_LIGHTING);
             if(fluidId != -1)
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0,tileEntity1);
+                drawBlock(this.getFontRenderer(), this.renderDispatcher.renderEngine, fluidId, 0,0, 0, 0,tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
         }
@@ -100,7 +106,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
             GL11.glScalef(mapped, 0.5f,mapped);
             GL11.glDisable(GL11.GL_LIGHTING);
             if(fluidId != -1)
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0,tileEntity1);
+                drawBlock(this.getFontRenderer(), this.renderDispatcher.renderEngine, fluidId, 0,0, 0, 0,tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
         }
@@ -112,7 +118,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
             GL11.glScalef(mapped, 0.5f,mapped);
             GL11.glDisable(GL11.GL_LIGHTING);
             if(fluidId != -1)
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0, tileEntity1);
+                drawBlock(this.getFontRenderer(), this.renderDispatcher.renderEngine, fluidId, 0,0, 0, 0, tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
         }
@@ -124,7 +130,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
             GL11.glScalef(0.5f, mapped,0.5f);
             GL11.glDisable(GL11.GL_LIGHTING);
             if(fluidId != -1)
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0, tileEntity1);
+                drawBlock(this.getFontRenderer(), this.renderDispatcher.renderEngine, fluidId, 0,0, 0, 0, tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
         }
@@ -136,7 +142,7 @@ public class RenderFluidInPipe extends TileEntitySpecialRenderer {
             GL11.glScalef(0.5f, mapped,0.5f);
             GL11.glDisable(GL11.GL_LIGHTING);
             if(fluidId != -1)
-                drawBlock(this.getFontRenderer(), this.tileEntityRenderer.renderEngine, fluidId, 0,0, 0, 0, tileEntity1);
+                drawBlock(this.getFontRenderer(), this.renderDispatcher.renderEngine, fluidId, 0,0, 0, 0, tileEntity1);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
         }

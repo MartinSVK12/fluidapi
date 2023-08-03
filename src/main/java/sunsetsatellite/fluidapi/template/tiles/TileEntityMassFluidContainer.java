@@ -1,8 +1,13 @@
 package sunsetsatellite.fluidapi.template.tiles;
 
-import net.minecraft.src.*;
+
+import com.mojang.nbt.CompoundTag;
+import com.mojang.nbt.IntTag;
+import com.mojang.nbt.ListTag;
+import net.minecraft.core.block.BlockFluid;
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.entity.player.EntityPlayer;
 import org.jetbrains.annotations.NotNull;
-import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.api.IFluidInventory;
 import sunsetsatellite.fluidapi.api.IFluidTransfer;
@@ -25,7 +30,7 @@ public class TileEntityMassFluidContainer extends TileEntity implements IMassFlu
 
     public TileEntityMassFluidContainer(){
         for (Direction dir : Direction.values()) {
-            connections.put(dir,Connection.NONE);
+            connections.put(dir, Connection.NONE);
             fluidFilters.put(dir,null);
         }
 
@@ -40,7 +45,7 @@ public class TileEntityMassFluidContainer extends TileEntity implements IMassFlu
     }
 
     public boolean canInteractWith(EntityPlayer entityPlayer1) {
-        return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && entityPlayer1.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D) <= 64.0D;
+        return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && entityPlayer1.distanceToSqr((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D) <= 64.0D;
     }
 
     @Override
@@ -234,45 +239,45 @@ public class TileEntityMassFluidContainer extends TileEntity implements IMassFlu
         }
     }
 
-    public void writeToNBT(NBTTagCompound nBTTagCompound1) {
-        super.writeToNBT(nBTTagCompound1);
-        NBTTagList nBTTagList2 = new NBTTagList();
-        NBTTagList nbtTagList = new NBTTagList();
-        NBTTagCompound connectionsTag = new NBTTagCompound();
+    public void writeToNBT(CompoundTag CompoundTag1) {
+        super.writeToNBT(CompoundTag1);
+        ListTag nBTTagList2 = new ListTag();
+        ListTag nbtTagList = new ListTag();
+        CompoundTag connectionsTag = new CompoundTag();
         for(int i3 = 0; i3 < this.fluidContents.size(); ++i3) {
             if(this.fluidContents.get(i3) != null && this.fluidContents.get(i3).getLiquid() != null) {
-                NBTTagCompound nBTTagCompound4 = new NBTTagCompound();
-                nBTTagCompound4.setInteger("Slot", i3);
-                this.fluidContents.get(i3).writeToNBT(nBTTagCompound4);
-                nbtTagList.setTag(nBTTagCompound4);
+                CompoundTag CompoundTag4 = new CompoundTag();
+                CompoundTag4.putInt("Slot", i3);
+                this.fluidContents.get(i3).writeToNBT(CompoundTag4);
+                nbtTagList.addTag(CompoundTag4);
             }
         }
         for (Map.Entry<Direction, Connection> entry : connections.entrySet()) {
             Direction dir = entry.getKey();
             Connection con = entry.getValue();
-            connectionsTag.setInteger(String.valueOf(dir.ordinal()),con.ordinal());
+            connectionsTag.putInt(String.valueOf(dir.ordinal()),con.ordinal());
         }
-        nBTTagCompound1.setCompoundTag("fluidConnections",connectionsTag);
-        nBTTagCompound1.setTag("Fluids", nbtTagList);
-        nBTTagCompound1.setTag("Items", nBTTagList2);
+        CompoundTag1.putCompound("fluidConnections",connectionsTag);
+        CompoundTag1.put("Fluids", nbtTagList);
+        CompoundTag1.put("Items", nBTTagList2);
     }
 
-    public void readFromNBT(NBTTagCompound nBTTagCompound1) {
-        super.readFromNBT(nBTTagCompound1);
+    public void readFromNBT(CompoundTag CompoundTag1) {
+        super.readFromNBT(CompoundTag1);
 
-        NBTTagList nbtTagList = nBTTagCompound1.getTagList("Fluids");
+        ListTag nbtTagList = CompoundTag1.getList("Fluids");
         this.fluidContents = new ArrayList<>();
 
         for(int i3 = 0; i3 < nbtTagList.tagCount(); ++i3) {
-            NBTTagCompound nBTTagCompound4 = (NBTTagCompound)nbtTagList.tagAt(i3);
-            int i5 = nBTTagCompound4.getInteger("Slot");
-            this.fluidContents.add(new FluidStack(nBTTagCompound4));
+            CompoundTag CompoundTag4 = (CompoundTag)nbtTagList.tagAt(i3);
+            int i5 = CompoundTag4.getInteger("Slot");
+            this.fluidContents.add(new FluidStack(CompoundTag4));
             //}
         }
 
-        NBTTagCompound connectionsTag = nBTTagCompound1.getCompoundTag("fluidConnections");
-        for (Object con : connectionsTag.func_28110_c()) {
-            connections.replace(Direction.values()[Integer.parseInt(((NBTTagInt)con).getKey())],Connection.values()[((NBTTagInt)con).intValue]);
+        CompoundTag connectionsTag = CompoundTag1.getCompound("fluidConnections");
+        for (Object con : connectionsTag.getValues()) {
+            connections.replace(Direction.values()[Integer.parseInt(((IntTag)con).getTagName())],Connection.values()[((IntTag)con).getValue()]);
         }
     }
 

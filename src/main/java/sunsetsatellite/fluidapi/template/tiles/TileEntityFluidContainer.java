@@ -1,8 +1,14 @@
 package sunsetsatellite.fluidapi.template.tiles;
 
-import net.minecraft.src.*;
+
+import com.mojang.nbt.CompoundTag;
+import com.mojang.nbt.IntTag;
+import com.mojang.nbt.ListTag;
+import net.minecraft.core.block.BlockFluid;
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.server.entity.player.EntityPlayerMP;
 import org.jetbrains.annotations.NotNull;
-import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.api.FluidStack;
 import sunsetsatellite.fluidapi.api.IFluidInventory;
 import sunsetsatellite.fluidapi.api.IFluidTransfer;
@@ -135,28 +141,28 @@ public class TileEntityFluidContainer extends TileEntity
         return "Generic Fluid Container";
     }
 
-    public void readFromNBT(NBTTagCompound nBTTagCompound1) {
-        super.readFromNBT(nBTTagCompound1);
+    public void readFromNBT(CompoundTag CompoundTag1) {
+        super.readFromNBT(CompoundTag1);
 
-        NBTTagList nbtTagList = nBTTagCompound1.getTagList("Fluids");
+        ListTag nbtTagList = CompoundTag1.getList("Fluids");
         this.fluidContents = new FluidStack[this.getFluidInventorySize()];
 
         for(int i3 = 0; i3 < nbtTagList.tagCount(); ++i3) {
-            NBTTagCompound nBTTagCompound4 = (NBTTagCompound)nbtTagList.tagAt(i3);
-            int i5 = nBTTagCompound4.getByte("Slot") & 255;
+            CompoundTag CompoundTag4 = (CompoundTag)nbtTagList.tagAt(i3);
+            int i5 = CompoundTag4.getByte("Slot") & 255;
             if(i5 >= 0 && i5 < this.fluidContents.length) {
-                this.fluidContents[i5] = new FluidStack(nBTTagCompound4);
+                this.fluidContents[i5] = new FluidStack(CompoundTag4);
             }
         }
 
-        NBTTagCompound connectionsTag = nBTTagCompound1.getCompoundTag("fluidConnections");
-        for (Object con : connectionsTag.func_28110_c()) {
-            connections.replace(Direction.values()[Integer.parseInt(((NBTTagInt)con).getKey())],Connection.values()[((NBTTagInt)con).intValue]);
+        CompoundTag connectionsTag = CompoundTag1.getCompound("fluidConnections");
+        for (Object con : connectionsTag.getValues()) {
+            connections.replace(Direction.values()[Integer.parseInt(((IntTag)con).getTagName())],Connection.values()[((IntTag)con).getValue()]);
         }
 
-        NBTTagCompound activeFluidSlotsTag = nBTTagCompound1.getCompoundTag("fluidActiveSlots");
-        for (Object con : activeFluidSlotsTag.func_28110_c()) {
-            activeFluidSlots.replace(Direction.values()[Integer.parseInt(((NBTTagInt)con).getKey())],((NBTTagInt) con).intValue);
+        CompoundTag activeFluidSlotsTag = CompoundTag1.getCompound("fluidActiveSlots");
+        for (Object con : activeFluidSlotsTag.getValues()) {
+            activeFluidSlots.replace(Direction.values()[Integer.parseInt(((IntTag)con).getTagName())],((IntTag) con).getValue());
         }
 
     }
@@ -164,7 +170,7 @@ public class TileEntityFluidContainer extends TileEntity
     @Override
     public void updateEntity() {
         super.updateEntity();
-        if(!worldObj.isMultiplayerAndNotHost){
+        if(!worldObj.isClientSide){
             for (EntityPlayer player : worldObj.players) {
                 if(player instanceof EntityPlayerMP){
                     ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new PacketUpdateClientFluidRender(xCoord,yCoord,zCoord,fluidContents[0],fluidCapacity[0]));
@@ -173,37 +179,37 @@ public class TileEntityFluidContainer extends TileEntity
         }
     }
 
-    public void writeToNBT(NBTTagCompound nBTTagCompound1) {
-        super.writeToNBT(nBTTagCompound1);
-        NBTTagList nBTTagList2 = new NBTTagList();
-        NBTTagList nbtTagList = new NBTTagList();
-        NBTTagCompound connectionsTag = new NBTTagCompound();
-        NBTTagCompound activeFluidSlotsTag = new NBTTagCompound();
+    public void writeToNBT(CompoundTag CompoundTag1) {
+        super.writeToNBT(CompoundTag1);
+        ListTag nBTTagList2 = new ListTag();
+        ListTag nbtTagList = new ListTag();
+        CompoundTag connectionsTag = new CompoundTag();
+        CompoundTag activeFluidSlotsTag = new CompoundTag();
         for(int i3 = 0; i3 < this.fluidContents.length; ++i3) {
             if(this.fluidContents[i3] != null && this.fluidContents[i3].getLiquid() != null) {
-                NBTTagCompound nBTTagCompound4 = new NBTTagCompound();
-                nBTTagCompound4.setByte("Slot", (byte)i3);
-                this.fluidContents[i3].writeToNBT(nBTTagCompound4);
-                nbtTagList.setTag(nBTTagCompound4);
+                CompoundTag CompoundTag4 = new CompoundTag();
+                CompoundTag4.putByte("Slot", (byte)i3);
+                this.fluidContents[i3].writeToNBT(CompoundTag4);
+                nbtTagList.addTag(CompoundTag4);
             }
         }
         for (Map.Entry<Direction, Integer> entry : activeFluidSlots.entrySet()) {
             Direction dir = entry.getKey();
-            activeFluidSlotsTag.setInteger(String.valueOf(dir.ordinal()),entry.getValue());
+            activeFluidSlotsTag.putInt(String.valueOf(dir.ordinal()),entry.getValue());
         }
         for (Map.Entry<Direction, Connection> entry : connections.entrySet()) {
             Direction dir = entry.getKey();
             Connection con = entry.getValue();
-            connectionsTag.setInteger(String.valueOf(dir.ordinal()),con.ordinal());
+            connectionsTag.putInt(String.valueOf(dir.ordinal()),con.ordinal());
         }
-        nBTTagCompound1.setCompoundTag("fluidConnections",connectionsTag);
-        nBTTagCompound1.setCompoundTag("fluidActiveSlots",activeFluidSlotsTag);
-        nBTTagCompound1.setTag("Fluids", nbtTagList);
-        nBTTagCompound1.setTag("Items", nBTTagList2);
+        CompoundTag1.putCompound("fluidConnections",connectionsTag);
+        CompoundTag1.putCompound("fluidActiveSlots",activeFluidSlotsTag);
+        CompoundTag1.put("Fluids", nbtTagList);
+        CompoundTag1.put("Items", nBTTagList2);
     }
 
     public boolean canInteractWith(EntityPlayer entityPlayer1) {
-        return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && entityPlayer1.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D) <= 64.0D;
+        return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && entityPlayer1.distanceToSqr((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D) <= 64.0D;
     }
 
     @Override
