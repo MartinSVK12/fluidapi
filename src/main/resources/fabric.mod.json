@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "fluidapi",
+  "version": "1.6.6",
+
+  "name": "FluidAPI",
+  "description": "API for fluid transport and storage.",
+  "icon": "icon.png",
+  "authors": [
+    "MartinSVK12"
+  ],
+  "contact": {
+    "homepage": "https://github.com/MartinSVK12/fluidapi",
+    "sources": "https://github.com/MartinSVK12/fluidapi"
+  },
+
+  "license": "MIT",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "sunsetsatellite.fluidapi.FluidAPI"
+    ],
+    "fluidapi": [
+      "sunsetsatellite.fluidapi.DefaultPlugin",
+      "sunsetsatellite.fluidapi.OilPlugin"
+    ],
+    "guidebookpp": [
+      "sunsetsatellite.fluidapi.gbookpp.FluidPlugin"
+    ]
+  },
+  "mixins": [
+    "fluidapi.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.13.3",
+    "halplibe": ">=2.1.0",
+    "sunsetutils": ">=1.7.1",
+    "minecraft": "1.7.7.0"
+  },
+  "suggests": {
+    "guidebookpp": ">=1.5.3"
+  }
+}

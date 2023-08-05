@@ -2,12 +2,14 @@ package sunsetsatellite.fluidapi.api;
 
 
 import net.minecraft.client.gui.GuiContainer;
+import net.minecraft.client.gui.GuiTooltip;
 import net.minecraft.client.render.Lighting;
 import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
+import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.player.inventory.InventoryPlayer;
 import net.minecraft.core.util.helper.Color;
 import org.lwjgl.input.Keyboard;
@@ -15,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.interfaces.mixins.IPlayerController;
+import sunsetsatellite.fluidapi.render.RenderFluid;
 
 public class GuiItemFluid extends GuiContainer {
 
@@ -55,19 +58,17 @@ public class GuiItemFluid extends GuiContainer {
             }
         }
         if(slot6 != null && slot6.getHasStack() && slot6.getFluidStack().getLiquid() != null) {
-            String string13 = ("" + I18n.getInstance().translateNameKey(slot6.getFluidStack().getLiquid().getLanguageKey(0))).trim();
-            if(string13.length() > 0) {
-                i9 = i1 - i4 + 12;
-                i10 = i2 - i5 - 12;
-                int i11 = this.fontRenderer.getStringWidth(string13);
-                int w = mc.fontRenderer.getStringWidth(slot6.getFluidStack().amount+"/"+fluidContainer.inv.getFluidCapacityForSlot(slot6.slotIndex)+" mB");
-                if (i11 < w) {
-                    i11 = w;
-                }
-                drawGradientRect(i9 - 3, i10 - 3, i9 + i11 + 3, i10 + 8 + 15, 0xc0000000, 0xc0000000);
-                fontRenderer.drawStringWithShadow(string13, i9, i10, -1);
-                fontRenderer.drawStringWithShadow(slot6.getFluidStack().amount+"/"+fluidContainer.inv.getFluidCapacityForSlot(slot6.slotIndex)+" mB", i9, i10 + 12, 0xFF808080);
-            }
+            i9 = i1 - i4;
+            i10 = i2 - i5;
+            String name = I18n.getInstance().translateNameKey(slot6.getFluidStack().getLiquid().getLanguageKey(0)).replace("Flowing ","").replace("Still ","");
+            String amount = slot6.getFluidStack().amount+"/"+fluidContainer.inv.getFluidCapacityForSlot(slot6.slotIndex)+" mB";
+            String percent = " ("+Math.round(((float)slot6.getFluidStack().amount/(float)fluidContainer.inv.getFluidCapacityForSlot(slot6.slotIndex))*100)+"%)";
+            GuiTooltip tooltip = new GuiTooltip(mc);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            tooltip.render(name+"\n"+ TextFormatting.LIGHT_GRAY+amount+percent,i9,i10,8,-8);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
         }
         GL11.glPopMatrix();
         GL11.glEnable(GL11.GL_LIGHTING);
@@ -106,14 +107,13 @@ public class GuiItemFluid extends GuiContainer {
                 return;
             }
 
-            itemRender.renderItemIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack4, i2, i3,1.0F);
+            RenderFluid.drawFluidIntoGui(this.fontRenderer, this.mc.renderEngine, itemStack4.itemID,itemStack4.getMetadata(),itemStack4.getIconIndex(), i2, i3, 16, 16);
             ContainerItemFluid container = ((ContainerItemFluid) inventorySlots);
             if(slot1.getFluidStack().getLiquid() == Block.fluidWaterFlowing){
-                int waterColor = BlockColorDispatcher.getInstance().getDispatch(Block.fluidWaterFlowing).getWorldColor(this.mc.theWorld,(int)inventoryPlayer.player.x,(int)inventoryPlayer.player.y,(int)inventoryPlayer.player.z);
-                Color c = new Color().setARGB(0);
-                //Color c = new Color().setARGB(Block.fluidWaterFlowing.colorMultiplier(this.mc.theWorld, this.mc.theWorld,(int)inventoryPlayer.player.posX,(int)inventoryPlayer.player.posY,(int)inventoryPlayer.player.posZ));
+                int waterColor = BlockColorDispatcher.getInstance().getDispatch(Block.fluidWaterFlowing).getWorldColor(this.mc.theWorld, (int) this.mc.thePlayer.x, (int) this.mc.thePlayer.y, (int) this.mc.thePlayer.z);
+                Color c = new Color().setARGB(waterColor);
                 c.setRGBA(c.getRed(),c.getGreen(),c.getBlue(),0x40);
-                this.drawRect(slot1.xPos, slot1.yPos, slot1.xPos+16, slot1.yPos+16,c.value);
+                RenderFluid.drawFluidIntoGui(this.fontRenderer, this.mc.renderEngine, itemStack4.itemID,itemStack4.getMetadata(),itemStack4.getIconIndex(), i2, i3, 16, 16,c.value);
             }
             itemRender.renderItemOverlayIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack4, i2, i3,1.0F);
         }
