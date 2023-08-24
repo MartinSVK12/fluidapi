@@ -21,11 +21,6 @@ public class BlockMachine extends BlockTileEntityRotatable {
         super(key, i, material);
     }
 
-    public int idDropped(int i, Random random)
-    {
-        return FluidAPI.fluidMachine.id;
-    }
-
     public void onBlockAdded(World world, int i, int j, int k) {
         super.onBlockAdded(world, i, j, k);
     }

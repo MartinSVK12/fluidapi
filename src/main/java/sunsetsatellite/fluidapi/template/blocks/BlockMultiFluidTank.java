@@ -22,11 +22,6 @@ public class BlockMultiFluidTank extends BlockTileEntity {
         super(key, i1, material3);
     }
 
-    public int idDropped(int i, Random random)
-    {
-        return FluidAPI.fluidTank.id;
-    }
-
     public void onBlockAdded(World world, int i, int j, int k) {
         super.onBlockAdded(world, i, j, k);
     }

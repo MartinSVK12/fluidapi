@@ -43,11 +43,6 @@ public class BlockFluidPipe extends BlockTileEntity {
         return false;
     }
 
-    public int idDropped(int i, Random random)
-    {
-        return FluidAPI.fluidPipe.id;
-    }
-
     @Override
     protected TileEntity getNewBlockEntity() {
         return new TileEntityFluidPipe();
