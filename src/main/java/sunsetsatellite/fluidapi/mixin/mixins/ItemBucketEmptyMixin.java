@@ -15,6 +15,7 @@ import net.minecraft.core.util.phys.Vec3d;
 import net.minecraft.core.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import sunsetsatellite.fluidapi.FluidRegistry;
 
@@ -24,7 +25,12 @@ import java.util.Objects;
         value = {ItemBucketEmpty.class},
         remap = false
 )
-public class ItemBucketEmptyMixin {
+public abstract class ItemBucketEmptyMixin {
+    @Shadow
+    public static boolean useBucket(EntityPlayer player, ItemStack itemToGive) {
+        return false;
+    }
+
     /**
      * @author MartinSVK12
      * @reason Custom bucket pickup support.
@@ -61,7 +67,7 @@ public class ItemBucketEmptyMixin {
                 if (world.getBlockId(i, j, k) != 0){
                     Block block = Block.blocksList[world.getBlockId(i, j, k)-1];
                     if (block instanceof BlockFluid && world.getBlockMetadata(i, j, k) == 0) {
-                        if (getFilledBucket(entityplayer, new ItemStack(Objects.requireNonNull(FluidRegistry.findFilledContainer(entityplayer.inventory.getCurrentItem().getItem(), (BlockFluid) block))))) {
+                        if (useBucket(entityplayer, new ItemStack(Objects.requireNonNull(FluidRegistry.findFilledContainer(entityplayer.inventory.getCurrentItem().getItem(), (BlockFluid) block))))) {
                             world.setBlockWithNotify(i, j, k, 0);
                             entityplayer.swingItem();
                         }
@@ -80,7 +86,7 @@ public class ItemBucketEmptyMixin {
                     entityplayer.swingItem();
                 }*/
             } else if (movingobjectposition.entity instanceof EntityCow) {
-                getFilledBucket(entityplayer, new ItemStack(Item.bucketMilk));
+                useBucket(entityplayer, new ItemStack(Item.bucketMilk));
             }
 
             return itemstack;
@@ -124,16 +130,4 @@ public class ItemBucketEmptyMixin {
         return itemstack;
     }*/
 
-    @Unique
-    private static boolean getFilledBucket(EntityPlayer entityPlayer, ItemStack ItemToGive) {
-        if (entityPlayer.inventory.getCurrentItem().stackSize <= 1) {
-            entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, ItemToGive);
-            return true;
-        } else if (entityPlayer.inventory.addItemStackToInventory(ItemToGive)) {
-            entityPlayer.inventory.getCurrentItem().consumeItem(entityPlayer);
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

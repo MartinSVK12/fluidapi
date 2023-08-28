@@ -85,7 +85,7 @@ dependencies {
 	modImplementation "bta-halplibe:halplibe:${project.halplibe_version}"
 
 	modImplementation "ModMenu:ModMenu:2.0.0"
-	modImplementation "sunsetutils:sunsetutils:1.7.1"
+	modImplementation "sunsetutils:sunsetutils:1.8.2"
 	modImplementation "guidebookpp:guidebookpp:1.5.3"
 
 	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
