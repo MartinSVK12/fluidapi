@@ -33,7 +33,7 @@ public class GuiItemFluid extends GuiContainer {
         int i5 = (this.height - this.ySize) / 2;
         GL11.glPushMatrix();
         GL11.glRotatef(120.0F, 1.0F, 0.0F, 0.0F);
-        Lighting.enableInventoryLight();
+        Lighting.disable();
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslatef((float)i4, (float)i5, 0.0F);
@@ -70,6 +70,7 @@ public class GuiItemFluid extends GuiContainer {
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_DEPTH_TEST);
         }
+        Lighting.enableInventoryLight();
         GL11.glPopMatrix();
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
