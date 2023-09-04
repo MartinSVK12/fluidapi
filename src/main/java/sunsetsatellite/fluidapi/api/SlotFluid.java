@@ -1,8 +1,10 @@
 package sunsetsatellite.fluidapi.api;
 
+import net.minecraft.core.block.BlockFluid;
+
 public class SlotFluid {
     public final IFluidInventory fluidInventory;
-    protected final int slotIndex;
+    public int slotIndex;
     public int slotNumber;
     public int xPos;
     public int yPos;
@@ -22,7 +24,7 @@ public class SlotFluid {
         this.onSlotChanged();
     }
 
-    public boolean isFluidValid(FluidStack stack) {
+    public boolean isFluidValid(BlockFluid stack) {
         return true;
     }
 

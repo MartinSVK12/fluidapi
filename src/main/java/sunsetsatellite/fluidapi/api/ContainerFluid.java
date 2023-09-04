@@ -2,6 +2,7 @@ package sunsetsatellite.fluidapi.api;
 
 
 import net.minecraft.core.InventoryAction;
+import net.minecraft.core.block.BlockFluid;
 import net.minecraft.core.crafting.ICrafting;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.Item;
@@ -83,6 +84,7 @@ public class ContainerFluid extends Container {
         SlotFluid slot = fluidSlots.get(slotID);
         InventoryPlayer inventoryPlayer = entityplayer.inventory;
         if(slot != null){
+            //extract fluid into bucket
             if(inventoryPlayer.getHeldItemStack() != null
                     && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucketEmpty
                     && FluidRegistry.getEmptyContainersForFluid(slot.getFluidStack().liquid).contains(inventoryPlayer.getHeldItemStack().getItem())) {
@@ -97,31 +99,42 @@ public class ContainerFluid extends Container {
                     }
                 }
             }
+            //insert fluid from bucket
             if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucket) {
                 ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
+                BlockFluid fluid = FluidRegistry.getFluidForContainer(bucket);
                 if (slot.getFluidStack() == null) {
                     if(tile.acceptedFluids.get(slotID).isEmpty() || tile.acceptedFluids.get(slotID).contains(FluidRegistry.getFluidForContainer(bucket))){
-                        inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
-                        slot.putStack(new FluidStack(FluidRegistry.getFluidForContainer(bucket), 1000));
-                        slot.onSlotChanged();
+                        if(slot.isFluidValid(fluid)){
+                            inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
+                            slot.putStack(new FluidStack(FluidRegistry.getFluidForContainer(bucket), 1000));
+                            slot.onSlotChanged();
+                        }
                     }
                 } else if (slot.getFluidStack() != null && slot.getFluidStack().getLiquid() == FluidRegistry.getFluidForContainer(bucket)) {
                     if (slot.getFluidStack().amount + 1000 <= tile.getFluidCapacityForSlot(slot.slotIndex)) {
-                        if(tile.acceptedFluids.get(slotID).isEmpty() || tile.acceptedFluids.get(slotID).contains(FluidRegistry.getFluidForContainer(bucket))){
-                            inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
-                            slot.getFluidStack().amount += 1000;
-                            slot.onSlotChanged();
+                        if(tile.acceptedFluids.get(slotID).isEmpty() || tile.acceptedFluids.get(slotID).contains(fluid)){
+                            if(slot.isFluidValid(fluid)){
+                                inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
+                                slot.getFluidStack().amount += 1000;
+                                slot.onSlotChanged();
+                            }
                         }
                     }
                 }
             }
+            //I/O from custom fluid container items
             if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof IItemFluidContainer) {
                 IItemFluidContainer item = (IItemFluidContainer) inventoryPlayer.getHeldItemStack().getItem();
+                BlockFluid fluid = FluidRegistry.getFluidForContainer((Item) item);
                 if(FluidRegistry.getFluidForContainer((Item) item) != null){
                     if(tile.acceptedFluids.get(slotID).isEmpty()
                             || tile.acceptedFluids.get(slotID).contains(FluidRegistry.getFluidForContainer((Item) item))
                             || (slot.getFluidStack() != null
-                            && FluidRegistry.getContainersForFluid(slot.getFluidStack().liquid).contains(item))){
+                            && FluidRegistry.getContainersForFluid(slot.getFluidStack().liquid).contains(item))
+                            && slot.isFluidValid(fluid))
+                    {
+                        //drain
                         if(item.canDrain(inventoryPlayer.getHeldItemStack())){
                             if (tile.getFluidInSlot(slot.slotIndex) == null){
                                 item.drain(inventoryPlayer.getHeldItemStack(), slot, tile);
@@ -141,7 +154,7 @@ public class ContainerFluid extends Container {
                                     slot.onSlotChanged();
                                 }
                             }
-                        } else if(item.canFill(inventoryPlayer.getHeldItemStack())){
+                        } else if(item.canFill(inventoryPlayer.getHeldItemStack())){ //fill
                             ItemStack stack = item.fill(slot,inventoryPlayer.getHeldItemStack());
                             if(stack != null){
                                 inventoryPlayer.setHeldItemStack(stack);

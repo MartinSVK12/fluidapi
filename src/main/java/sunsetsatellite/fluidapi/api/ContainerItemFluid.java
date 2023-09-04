@@ -2,6 +2,7 @@ package sunsetsatellite.fluidapi.api;
 
 
 import net.minecraft.core.InventoryAction;
+import net.minecraft.core.block.BlockFluid;
 import net.minecraft.core.crafting.ICrafting;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.Item;
@@ -90,7 +91,6 @@ public class ContainerItemFluid extends Container {
                     if(item != null){
                         inventoryPlayer.setHeldItemStack(new ItemStack(item, 1));
                         inv.fluidContents[slot.slotIndex].amount -= 1000;
-                        //inv.decrFluidAmount(slot.slotIndex, 1000);
                         slot.onPickupFromSlot(slot.getFluidStack());
                         slot.onSlotChanged();
                         return fluidSlots.get(slotID).getFluidStack();
@@ -99,29 +99,37 @@ public class ContainerItemFluid extends Container {
             }
             if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucket) {
                 ItemBucket bucket = (ItemBucket) inventoryPlayer.getHeldItemStack().getItem();
+                BlockFluid fluid = FluidRegistry.getFluidForContainer(bucket);
                 if (slot.getFluidStack() == null) {
                     if(inv.acceptedFluids.get(slotID).isEmpty() || inv.acceptedFluids.get(slotID).contains(FluidRegistry.getFluidForContainer(bucket))){
-                        inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
-                        slot.putStack(new FluidStack(FluidRegistry.getFluidForContainer(bucket), 1000));
-                        slot.onSlotChanged();
+                        if(slot.isFluidValid(fluid)) {
+                            inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
+                            slot.putStack(new FluidStack(FluidRegistry.getFluidForContainer(bucket), 1000));
+                            slot.onSlotChanged();
+                        }
                     }
                 } else if (slot.getFluidStack() != null && slot.getFluidStack().getLiquid() == FluidRegistry.getFluidForContainer(bucket)) {
                     if (slot.getFluidStack().amount + 1000 <= inv.getFluidCapacityForSlot(slot.slotIndex)) {
                         if(inv.acceptedFluids.get(slotID).isEmpty() || inv.acceptedFluids.get(slotID).contains(FluidRegistry.getFluidForContainer(bucket))){
-                            inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
-                            slot.getFluidStack().amount += 1000;
-                            slot.onSlotChanged();
+                            if(slot.isFluidValid(fluid)){
+                                inventoryPlayer.setHeldItemStack(new ItemStack(bucket.getContainerItem(), 1));
+                                slot.getFluidStack().amount += 1000;
+                                slot.onSlotChanged();
+                            }
                         }
                     }
                 }
             }
             if(inventoryPlayer.getHeldItemStack() != null && inventoryPlayer.getHeldItemStack().getItem() instanceof IItemFluidContainer) {
                 IItemFluidContainer item = (IItemFluidContainer) inventoryPlayer.getHeldItemStack().getItem();
+                BlockFluid fluid = FluidRegistry.getFluidForContainer((Item) item);
                 if(FluidRegistry.getFluidForContainer((Item) item) != null){
                     if(inv.acceptedFluids.get(slotID).isEmpty()
                             || inv.acceptedFluids.get(slotID).contains(FluidRegistry.getFluidForContainer((Item) item))
                             || (slot.getFluidStack() != null
-                            && FluidRegistry.getContainersForFluid(slot.getFluidStack().liquid).contains(item))){
+                            && FluidRegistry.getContainersForFluid(slot.getFluidStack().liquid).contains(item))
+                            && slot.isFluidValid(fluid))
+                    {
                         if(item.canDrain(inventoryPlayer.getHeldItemStack())){
                             if (inv.getFluidInSlot(slot.slotIndex) == null){
                                 item.drain(inventoryPlayer.getHeldItemStack(), slot, inv);
