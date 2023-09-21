@@ -84,14 +84,31 @@ public class ContainerFluid extends Container {
         SlotFluid slot = fluidSlots.get(slotID);
         InventoryPlayer inventoryPlayer = entityplayer.inventory;
         if(slot != null){
-            //extract fluid into bucket
-            if(inventoryPlayer.getHeldItemStack() != null
-                    && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucketEmpty
-                    && FluidRegistry.getEmptyContainersForFluid(slot.getFluidStack().liquid).contains(inventoryPlayer.getHeldItemStack().getItem())) {
-                if (slot.getFluidStack() != null && slot.getFluidStack().amount >= 1000) {
-                    Item item = FluidRegistry.findFilledContainer(inventoryPlayer.getHeldItemStack().getItem(),slot.getFluidStack().liquid);
-                    if(item != null){
-                        inventoryPlayer.setHeldItemStack(new ItemStack(item, 1));
+            if (slot.getFluidStack() != null && slot.getFluidStack().amount >= 1000) {
+                //extract fluid into bucket
+                if (inventoryPlayer.getHeldItemStack() != null
+                        && inventoryPlayer.getHeldItemStack().getItem() instanceof ItemBucketEmpty
+                        && FluidRegistry.getEmptyContainersForFluid(slot.getFluidStack().liquid).contains(inventoryPlayer.getHeldItemStack().getItem())) {
+
+                    Item item = FluidRegistry.findFilledContainer(inventoryPlayer.getHeldItemStack().getItem(), slot.getFluidStack().liquid);
+                    if (item != null) {
+                        ItemStack stack = new ItemStack(item,1);
+                        if(inventoryPlayer.getHeldItemStack().stackSize > 1){
+                            boolean isInvFull = true;
+                            for (int i = 0; i < inventoryPlayer.mainInventory.length; ++i) {
+                                if (inventoryPlayer.mainInventory[i] == null){
+                                    isInvFull = false;
+                                    break;
+                                }
+                            }
+                            if(isInvFull){
+                                return fluidSlots.get(slotID).getFluidStack();
+                            }
+                            inventoryPlayer.insertItem(stack,false);
+                            inventoryPlayer.getHeldItemStack().stackSize--;
+                        } else {
+                            inventoryPlayer.setHeldItemStack(stack);
+                        }
                         tile.fluidContents[slot.slotIndex].amount -= 1000;
                         slot.onPickupFromSlot(slot.getFluidStack());
                         slot.onSlotChanged();
