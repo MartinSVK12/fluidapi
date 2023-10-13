@@ -10,7 +10,6 @@ import net.minecraft.client.render.block.model.BlockModelDispatcher;
 import net.minecraft.client.render.block.model.BlockModelRenderBlocks;
 import net.minecraft.client.sound.block.BlockSounds;
 import net.minecraft.core.block.Block;
-import net.minecraft.core.block.BlockFluid;
 import net.minecraft.core.block.BlockFluidFlowing;
 import net.minecraft.core.block.BlockFluidStill;
 import net.minecraft.core.block.entity.TileEntity;
@@ -24,7 +23,7 @@ import net.minecraft.core.player.inventory.IInventory;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayerMP;
+import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayer;
 import sunsetsatellite.fluidapi.mixin.accessors.PacketAccessor;
 import sunsetsatellite.fluidapi.mp.packets.PacketFluidWindowClick;
 import sunsetsatellite.fluidapi.mp.packets.PacketSetFluidSlot;
@@ -36,6 +35,9 @@ import sunsetsatellite.fluidapi.template.blocks.BlockFluidPipe;
 import sunsetsatellite.fluidapi.template.blocks.BlockFluidTank;
 import sunsetsatellite.fluidapi.template.blocks.BlockMachine;
 import sunsetsatellite.fluidapi.template.blocks.BlockMultiFluidTank;
+import sunsetsatellite.fluidapi.template.containers.ContainerFluidTank;
+import sunsetsatellite.fluidapi.template.containers.ContainerMachine;
+import sunsetsatellite.fluidapi.template.containers.ContainerMultiFluidTank;
 import sunsetsatellite.fluidapi.template.gui.GuiFluidTank;
 import sunsetsatellite.fluidapi.template.gui.GuiMachine;
 import sunsetsatellite.fluidapi.template.gui.GuiMultiFluidTank;
@@ -67,13 +69,13 @@ public class FluidAPI implements ModInitializer {
         if(config.getFromConfig("enableMultiTank",1) == 1){
             multiFluidTank = new BlockBuilder(MOD_ID).setTextures("tank.png").setBlockSound(BlockSounds.GLASS).setHardness(1).setResistance(1).build(new BlockMultiFluidTank("multiFluidTank",config.getFromConfig("multiFluidTank",906),Material.glass));
             EntityHelper.createSpecialTileEntity(TileEntityMultiFluidTank.class,new RenderMultiFluidInBlock(),"Multi Fluid Tank");
-            addToNameGuiMap("Multi Fluid Tank", GuiMultiFluidTank.class, TileEntityMultiFluidTank.class);
+            addToNameGuiMap("Multi Fluid Tank", GuiMultiFluidTank.class, TileEntityMultiFluidTank.class, ContainerMultiFluidTank.class);
 
         }
         if(config.getFromConfig("enableTank",1) == 1){
             fluidTank = new BlockBuilder(MOD_ID).setTextures("tank.png").setBlockSound(BlockSounds.GLASS).setHardness(1).setResistance(1).build(new BlockFluidTank("fluidTank",config.getFromConfig("fluidTank",907),Material.glass));
             EntityHelper.createSpecialTileEntity(TileEntityFluidTank.class,new RenderFluidInBlock(),"Fluid Tank");
-            addToNameGuiMap("Fluid Tank", GuiFluidTank.class, TileEntityFluidTank.class);
+            addToNameGuiMap("Fluid Tank", GuiFluidTank.class, TileEntityFluidTank.class, ContainerFluidTank.class);
 
         }
         if(config.getFromConfig("enablePipes",1) == 1){
@@ -84,7 +86,7 @@ public class FluidAPI implements ModInitializer {
         if(config.getFromConfig("enableMachine",1) == 1){
             fluidMachine = new BlockBuilder(MOD_ID).setTextures("tank.png").setNorthTexture("machine.png").setBlockSound(BlockSounds.GLASS).setHardness(1).setResistance(1).build(new BlockMachine("fluidMachine",config.getFromConfig("fluidMachine",952),Material.glass));
             EntityHelper.createSpecialTileEntity(TileEntityMachine.class,new RenderFluidInBlock(),"Fluid Machine");
-            addToNameGuiMap("Fluid Machine", GuiMachine.class, TileEntityMachine.class);
+            addToNameGuiMap("Fluid Machine", GuiMachine.class, TileEntityMachine.class, ContainerMachine.class);
         }
     }
 
@@ -172,18 +174,11 @@ public class FluidAPI implements ModInitializer {
         }
     }
 
-    public static void displayGui(EntityPlayer entityplayer, GuiScreen guiScreen, Container container, IInventory tile) {
-        if(entityplayer instanceof EntityPlayerMP) {
-            ((IEntityPlayerMP)entityplayer).displayGuiScreen_fluidapi(guiScreen,container,tile);
-        } else {
-            Minecraft.getMinecraft(Minecraft.class).displayGuiScreen(guiScreen);
-        }
-    }
-
-    public static void addToNameGuiMap(String name, Class<? extends Gui> guiClass, Class<? extends TileEntity> tileEntityClass){
+    public static void addToNameGuiMap(String name, Class<? extends Gui> guiClass, Class<? extends TileEntity> tileEntityClass, Class<? extends Container> containerClass){
         ArrayList<Class<?>> list = new ArrayList<>();
         list.add(guiClass);
         list.add(tileEntityClass);
+        list.add(containerClass);
         nameToGuiMap.put(name,list);
     }
 

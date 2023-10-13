@@ -17,7 +17,7 @@ import java.util.Map;
 public class TileEntityFluidItemContainer extends TileEntityFluidContainer
     implements IInventory {
 
-    protected ItemStack[] itemContents = new ItemStack[2];
+    public ItemStack[] itemContents = new ItemStack[2];
 
     public HashMap<Direction, Connection> itemConnections = new HashMap<>();
     public HashMap<Direction, Integer> activeItemSlots = new HashMap<>();

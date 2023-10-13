@@ -7,8 +7,10 @@ import net.minecraft.core.block.material.Material;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.world.World;
 import sunsetsatellite.fluidapi.FluidAPI;
+import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayer;
 import sunsetsatellite.fluidapi.template.containers.ContainerMachine;
 import sunsetsatellite.fluidapi.template.gui.GuiMachine;
+import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidPipe;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityMachine;
 import sunsetsatellite.sunsetutils.util.Direction;
@@ -27,17 +29,13 @@ public class BlockMachine extends BlockTileEntityRotatable {
 
     public boolean blockActivated(World world, int i, int j, int k, EntityPlayer entityplayer)
     {
-        if(world.isClientSide)
-        {
-            return true;
-        } else
-        {
+        if (!world.isClientSide) {
             TileEntityMachine tile = (TileEntityMachine) world.getBlockTileEntity(i, j, k);
             if(tile != null) {
-                FluidAPI.displayGui(entityplayer,new GuiMachine(entityplayer.inventory, tile),new ContainerMachine(entityplayer.inventory,tile),tile);
+                ((IEntityPlayer)entityplayer).displayGuiScreen_fluidapi(tile);
             }
-            return true;
         }
+        return true;
     }
 
     @Override

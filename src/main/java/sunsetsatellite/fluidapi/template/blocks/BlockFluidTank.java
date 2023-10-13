@@ -7,6 +7,7 @@ import net.minecraft.core.block.material.Material;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.world.World;
 import sunsetsatellite.fluidapi.FluidAPI;
+import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayer;
 import sunsetsatellite.fluidapi.template.containers.ContainerFluidTank;
 import sunsetsatellite.fluidapi.template.gui.GuiFluidTank;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
@@ -28,17 +29,13 @@ public class BlockFluidTank extends BlockTileEntity {
 
     public boolean blockActivated(World world, int i, int j, int k, EntityPlayer entityplayer)
     {
-        if(world.isClientSide)
-        {
-            return true;
-        } else
-        {
+        if (!world.isClientSide) {
             TileEntityFluidItemContainer tile = (TileEntityFluidItemContainer) world.getBlockTileEntity(i, j, k);
             if(tile != null) {
-                FluidAPI.displayGui(entityplayer,new GuiFluidTank(entityplayer.inventory, tile),new ContainerFluidTank(entityplayer.inventory,tile),tile);
+                ((IEntityPlayer)entityplayer).displayGuiScreen_fluidapi(tile);
             }
-            return true;
         }
+        return true;
     }
 
     @Override

@@ -14,7 +14,7 @@ import net.minecraft.core.player.inventory.IInventory;
 import net.minecraft.core.player.inventory.InventoryPlayer;
 import net.minecraft.core.player.inventory.slot.Slot;
 import sunsetsatellite.fluidapi.FluidRegistry;
-import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayerMP;
+import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayer;
 import sunsetsatellite.fluidapi.template.tiles.TileEntityFluidItemContainer;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class ContainerFluid extends Container {
             FluidStack fluidStack1 = this.fluidItemStacks.get(i);
             this.fluidItemStacks.set(i, fluidStack1);
             for (ICrafting crafter : this.crafters) {
-                ((IEntityPlayerMP) crafter).updateFluidSlot(this, i, fluidStack);
+                ((IEntityPlayer) crafter).updateFluidSlot(this, i, fluidStack);
 
             }
         }

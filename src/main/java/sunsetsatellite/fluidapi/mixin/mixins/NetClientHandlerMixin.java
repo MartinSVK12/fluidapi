@@ -7,6 +7,7 @@ import net.minecraft.client.net.handler.NetClientHandler;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.net.handler.NetHandler;
 import net.minecraft.core.net.packet.Packet100OpenWindow;
+import net.minecraft.core.player.inventory.IInventory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.api.ContainerFluid;
+import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayer;
 import sunsetsatellite.fluidapi.interfaces.mixins.INetClientHandler;
 import sunsetsatellite.fluidapi.mp.packets.PacketSetFluidSlot;
 import sunsetsatellite.fluidapi.mp.packets.PacketUpdateClientFluidRender;
@@ -43,11 +45,7 @@ public class NetClientHandlerMixin extends NetHandler implements INetClientHandl
                      NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
-            try {
-                this.mc.displayGuiScreen((GuiScreen) FluidAPI.nameToGuiMap.get(packet100openwindow.windowTitle).get(0).getDeclaredConstructors()[0].newInstance(this.mc.thePlayer.inventory,tile));
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
+            ((IEntityPlayer)mc.thePlayer).displayGuiScreen_fluidapi((IInventory) tile);
             this.mc.thePlayer.craftingInventory.windowId = packet100openwindow.windowId;
         }
     }

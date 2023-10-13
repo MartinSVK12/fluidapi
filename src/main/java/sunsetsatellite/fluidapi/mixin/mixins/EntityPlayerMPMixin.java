@@ -12,16 +12,20 @@ import net.minecraft.server.entity.player.EntityPlayerMP;
 import net.minecraft.server.net.handler.NetServerHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import sunsetsatellite.fluidapi.FluidAPI;
 import sunsetsatellite.fluidapi.api.FluidStack;
-import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayerMP;
+import sunsetsatellite.fluidapi.interfaces.mixins.IEntityPlayer;
 import sunsetsatellite.fluidapi.mp.packets.PacketSetFluidSlot;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
 @Mixin(
         value = EntityPlayerMP.class,
         remap = false
 )
-public abstract class EntityPlayerMPMixin extends EntityPlayer implements IEntityPlayerMP, ICrafting {
+public abstract class EntityPlayerMPMixin extends EntityPlayer implements IEntityPlayer, ICrafting {
 
     public EntityPlayerMPMixin(World world) {
         super(world);
@@ -34,13 +38,21 @@ public abstract class EntityPlayerMPMixin extends EntityPlayer implements IEntit
 
     @Shadow private int currentWindowId;
 
+    @Unique
+    private final EntityPlayerMP thisAs = (EntityPlayerMP)(Object)this;
+
     @Override
-    public void displayGuiScreen_fluidapi(GuiScreen guiScreen, Container container, IInventory inventory) {
+    public void displayGuiScreen_fluidapi(IInventory inventory) {
         this.getNextWindowId();
+        ArrayList<Class<?>> list = FluidAPI.nameToGuiMap.get(inventory.getInvName());
         this.playerNetServerHandler.sendPacket(new Packet100OpenWindow(this.currentWindowId, FluidAPI.config.getFromConfig("GuiID",8), inventory.getInvName(), inventory.getSizeInventory()));
-        this.craftingInventory = container;
+        try {
+            this.craftingInventory = (Container)list.get(2).getDeclaredConstructors()[0].newInstance(thisAs.inventory, inventory);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
         this.craftingInventory.windowId = this.currentWindowId;
-        this.craftingInventory.onContainerInit(((EntityPlayerMP)((Object)this)));
+        this.craftingInventory.onContainerInit(thisAs);
     }
 
     @Override

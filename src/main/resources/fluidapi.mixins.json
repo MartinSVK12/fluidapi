@@ -5,7 +5,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "accessors.PacketAccessor",
+    "mixins.EntityPlayerMixin",
     "mixins.EntityPlayerMPMixin",
+    "mixins.EntityPlayerSPMixin",
     "mixins.GuiContainerMixin",
     "mixins.ItemBucketEmptyMixin",
     "mixins.MinecraftMixin",

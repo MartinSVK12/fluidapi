@@ -214,6 +214,7 @@ public class TileEntityFluidContainer extends TileEntity
 
     @Override
     public FluidStack getFluidInSlot(int slot) {
+        if(this.fluidContents.length == 0) return null;
         if(this.fluidContents[slot] == null || this.fluidContents[slot].getLiquid() == null || this.fluidContents[slot].amount == 0){
             this.fluidContents[slot] = null;
         }
