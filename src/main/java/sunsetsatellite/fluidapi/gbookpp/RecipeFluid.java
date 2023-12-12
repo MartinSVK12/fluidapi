@@ -15,15 +15,15 @@ public class RecipeFluid extends RecipeBase {
     public ArrayList<ItemStack> itemOutputs;
     public ArrayList<FluidStack> fluidOutputs;
     public int cost;
-    public float duration;
+    public int id;
 
-    public RecipeFluid(ArrayList<ItemStack> itemInputs, ArrayList<FluidStack> fluidInputs, ArrayList<ItemStack> itemOutputs, ArrayList<FluidStack> fluidOutputs, int cost, float duration) {
+    public RecipeFluid(ArrayList<ItemStack> itemInputs, ArrayList<FluidStack> fluidInputs, ArrayList<ItemStack> itemOutputs, ArrayList<FluidStack> fluidOutputs, int cost, int id) {
         this.itemInputs = itemInputs;
         this.fluidInputs = fluidInputs;
         this.itemOutputs = itemOutputs;
         this.fluidOutputs = fluidOutputs;
         this.cost = cost;
-        this.duration = duration;
+        this.id = id;
     }
 
 
@@ -35,7 +35,7 @@ public class RecipeFluid extends RecipeBase {
                 ", itemOutputs=" + itemOutputs +
                 ", fluidOutputs=" + fluidOutputs +
                 ", cost=" + cost +
-                ", duration=" + duration +
+                ", id=" + id +
                 ", group=" + group +
                 '}';
     }
